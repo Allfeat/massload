@@ -75,7 +75,9 @@ Common role codes to map:
 7. For ISWC: remove punctuation with `replace`, ensure "T" prefix with `ensure_prefix`
 8. For workType: use `map` to convert CSV values to "Original" (only valid value) or omit invalid types
 9. MAP ALL COLUMNS that correspond to MIDDS fields - do not skip any mappable columns!
-10. Return ONLY the JSON object, no explanations or markdown"#,
+10. Return ONLY the JSON object, no explanations or markdown
+11. DO NOT use `expand` section - only use `transforms`
+12. For combined roles like "CA" or "C+A", just map to "Composer" (the primary role)"#,
         matrix_schema = MATRIX_SCHEMA
     )
 }
