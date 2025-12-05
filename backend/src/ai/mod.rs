@@ -59,6 +59,13 @@ pub struct AiClient {
 struct AnthropicResponse {
     content: Vec<ContentBlock>,
     stop_reason: Option<String>,
+    usage: Option<UsageInfo>,
+}
+
+#[derive(Debug, Deserialize)]
+struct UsageInfo {
+    input_tokens: u32,
+    output_tokens: u32,
 }
 
 #[derive(Debug, Deserialize)]
@@ -228,6 +235,18 @@ impl AiClient {
             if stop_reason == "max_tokens" {
                 println!("      ⚠️  Response was truncated! Increase max_tokens.");
             }
+        }
+        
+        // Log token usage for cost estimation
+        if let Some(ref usage) = response.usage {
+            let input_cost = (usage.input_tokens as f64 / 1_000_000.0) * 3.0;
+            let output_cost = (usage.output_tokens as f64 / 1_000_000.0) * 15.0;
+            let total_cost = input_cost + output_cost;
+            println!("      📊 Tokens: {} input + {} output = {} total", 
+                usage.input_tokens, usage.output_tokens, 
+                usage.input_tokens + usage.output_tokens);
+            println!("      💰 Cost: ${:.4} (input ${:.4} + output ${:.4})", 
+                total_cost, input_cost, output_cost);
         }
 
         // Extract text from response
