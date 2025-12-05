@@ -1,0 +1,10 @@
+ISWC,Title,Creation Year,Instrumental,Language,BPM,Key,Work Type,Creator IPI,Creator ISNI,Creator Role,Opus,Catalog Number,Number of Voices
+T5555555551,Complete Pop Song,2024,false,English,120,Am,Original,500000001,,Composer,,,
+T5555555551,Complete Pop Song,2024,false,English,120,Am,Original,500000002,0000000512345678,Author,,,
+T5555555551,Complete Pop Song,2024,false,English,120,Am,Original,500000003,,Publisher,,,
+T5555555552,Full Classical Suite,1750,true,,72,Dm,Original,500000004,0000000543218765,Composer,Op. 42,BWV 999,4
+T5555555553,Jazz Standard Rework,2023,false,English,140,Bb,Adaptation,500000005,,Arranger,,,
+T5555555553,Jazz Standard Rework,2023,false,English,140,Bb,Adaptation,500000006,,Adapter,,,
+T5555555554,Electronic Instrumental,2024,true,,128,Fs,Original,500000007,0000000598761234,Composer,,,
+T5555555555,Multi-Voice Choral,1600,true,Latin,60,C,Original,500000008,,Composer,Op. 1 No. 3,,8
+

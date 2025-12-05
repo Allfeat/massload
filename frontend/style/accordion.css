@@ -1,0 +1,193 @@
+/* Accordion styles for preview items */
+.preview-item.expanded {
+    background: #2a2a2a;
+    border-left-color: #00d4ff;
+}
+
+.preview-item-header {
+    user-select: none;
+}
+
+.preview-item-header:hover {
+    opacity: 0.8;
+}
+
+.preview-item-expanded {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #333;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== MIDDS Format Display ===== */
+.midds-work {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 13px;
+}
+
+.midds-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+    margin-bottom: 5px;
+}
+
+.midds-badge {
+    background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+    color: #0A0A0A;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.midds-type {
+    color: #00d4ff;
+    font-weight: 600;
+}
+
+.midds-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.midds-label {
+    color: #00ff88;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.midds-label::before {
+    content: '•';
+    color: #333;
+}
+
+.midds-count {
+    color: #666;
+    font-weight: 400;
+}
+
+.midds-value {
+    color: #FAFAFA;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    border-left: 2px solid #00d4ff;
+}
+
+.iswc-value {
+    color: #00d4ff;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.midds-lang {
+    background: rgba(0, 212, 255, 0.15);
+    color: #00d4ff;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    margin-left: 10px;
+}
+
+/* Arrays */
+.midds-array {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 15px;
+    border-left: 1px dashed #333;
+    margin-left: 10px;
+}
+
+.midds-array-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.midds-index {
+    color: #666;
+    min-width: 20px;
+    font-size: 11px;
+}
+
+.midds-index::before {
+    content: '[';
+}
+
+.midds-index::after {
+    content: ']';
+}
+
+.midds-object {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border: 1px solid #222;
+}
+
+.midds-prop {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.prop-key {
+    color: #888;
+    min-width: 80px;
+}
+
+.prop-key::after {
+    content: ':';
+}
+
+.prop-value {
+    color: #FAFAFA;
+}
+
+.role-badge {
+    background: rgba(0, 255, 136, 0.15);
+    color: #00ff88;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+.ipi-code {
+    color: #888;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.bool-value {
+    color: #ff9f43;
+}
+
+.type-value {
+    color: #a29bfe;
+}
+

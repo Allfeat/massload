@@ -1,0 +1,449 @@
+/* ===== CHARTE ALLFEAT DARK MODE ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0A0A0A;
+  color: #FAFAFA;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: #0A0A0A;
+  border-bottom: 1px solid #262626;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #FAFAFA;
+  text-decoration: none;
+}
+
+.badge {
+  background: rgba(255,255,255,0.05);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #D6D8DC;
+  border: 1px solid #262626;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  padding: 10px 20px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: #1BA794;
+  color: #FAFAFA;
+}
+
+.btn-primary:hover {
+  background: #17957e;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #0A0A0A;
+  color: #FAFAFA;
+  border: 1px solid #262626;
+}
+
+.btn-secondary:hover {
+  background: #1A1A1A;
+  border-color: #333333;
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 40px;
+}
+
+/* ===== HERO SECTION ===== */
+.hero {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+h1 {
+  font-size: 48px;
+  color: #1BA794;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #D6D8DC;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ===== UPLOAD SECTION ===== */
+.upload-section {
+  background: rgba(255,255,255,0.03);
+  border: 2px dashed #262626;
+  border-radius: 12px;
+  padding: 60px 40px;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.upload-section:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: #1BA794;
+}
+
+.upload-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.upload-text {
+  font-size: 20px;
+  color: #FAFAFA;
+  margin-bottom: 10px;
+}
+
+.upload-hint {
+  font-size: 14px;
+  color: #999999;
+}
+
+/* ===== PREVIEW SECTION ===== */
+.preview-section {
+  display: none;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid #262626;
+  border-radius: 12px;
+  padding: 30px;
+  margin-top: 30px;
+}
+
+.preview-section.show {
+  display: block;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #262626;
+}
+
+.preview-title {
+  font-size: 24px;
+  color: #1BA794;
+}
+
+.preview-list {
+  margin: 20px 0;
+}
+
+.preview-item {
+  padding: 15px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid #262626;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.preview-item-title {
+  font-weight: 600;
+  color: #FAFAFA;
+  margin-bottom: 5px;
+}
+
+.preview-item-details {
+  font-size: 14px;
+  color: #999999;
+}
+
+.preview-footer {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #262626;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-cost {
+  font-size: 16px;
+  color: #D6D8DC;
+}
+
+/* ===== PROGRESS SECTION ===== */
+.progress-section {
+  display: none;
+  margin-top: 30px;
+}
+
+.progress-section.show {
+  display: block;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #262626;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1BA794 0%, #17957e 100%);
+  transition: width 0.3s;
+}
+
+.logs {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid #262626;
+  border-radius: 8px;
+  padding: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+}
+
+.log-entry {
+  padding: 5px 0;
+  color: #D6D8DC;
+}
+
+.log-entry.success {
+  color: #10B981;
+}
+
+.log-entry.error {
+  color: #EF4444;
+}
+
+.log-entry.info {
+  color: #3B82F6;
+}
+
+.log-entry.warning {
+  color: #F59E0B;
+}
+
+.log-entry.debug {
+  color: #8B5CF6;
+  opacity: 0.7;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  border-top: 1px solid #262626;
+  padding: 30px 40px;
+  text-align: center;
+  color: #999999;
+  font-size: 14px;
+}
+
+.footer-links {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.footer-link {
+  color: #D6D8DC;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: #1BA794;
+}
+
+.rust-badge {
+  color: #1BA794;
+  font-weight: 600;
+}
+
+/* ===== WALLET STATUS ===== */
+.wallet-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #262626;
+  border-radius: 9999px;
+  font-size: 13px;
+}
+
+.wallet-status.connected {
+  border-color: #1BA794;
+  background: rgba(27,167,148,0.1);
+}
+
+.wallet-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #EF4444;
+}
+
+.wallet-dot.connected {
+  background: #10B981;
+}
+
+/* ===== UTILS ===== */
+.hidden {
+  display: none !important;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+
+/* ===== LOGS PANEL ===== */
+.logs-panel {
+  background: #111111;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  margin: 20px 0;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.logs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #1A1A1A;
+  border-bottom: 1px solid #333333;
+}
+
+.logs-title {
+  font-weight: 600;
+  color: #FAFAFA;
+}
+
+.logs-clear {
+  background: transparent;
+  border: 1px solid #444;
+  color: #888;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logs-clear:hover {
+  border-color: #666;
+  color: #fff;
+}
+
+.logs-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.log-entry {
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin: 2px 0;
+  animation: log-fade-in 0.2s ease-out;
+}
+
+@keyframes log-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.log-info {
+  color: #8B8B8B;
+}
+
+.log-success {
+  color: #4ADE80;
+}
+
+.log-warning {
+  color: #FCD34D;
+  background: rgba(252, 211, 77, 0.1);
+}
+
+.log-error {
+  color: #F87171;
+  background: rgba(248, 113, 113, 0.1);
+}
+
+/* Scrollbar styling for logs */
+.logs-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.logs-content::-webkit-scrollbar-track {
+  background: #1A1A1A;
+}
+
+.logs-content::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+.logs-content::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}

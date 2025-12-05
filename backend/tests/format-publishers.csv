@@ -1,0 +1,7 @@
+Work_ID,Title,ISWC,Creator_Name,Creator_IPI,Creator_Role,Publisher_Name,Publisher_IPI,Year
+WP001,Published Work,T7000000001,Main Artist,700000001,Composer,Big Publisher,700000020,2024
+WP001,Published Work,T7000000001,Co-Writer,700000002,Author,Big Publisher,700000020,2024
+WP001,Published Work,T7000000001,,,,,Small Publisher,700000021,2024
+WP002,Indie Release,T7000000002,Indie Artist,700000003,Composer,Self Published,700000022,2024
+
+

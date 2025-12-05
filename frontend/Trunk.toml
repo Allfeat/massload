@@ -1,0 +1,18 @@
+[[hooks]]
+stage = "build"
+command = "echo"
+command_arguments = ["🦀 Building Mass Load Rust Frontend..."]
+
+[build]
+target = "index.html"
+dist = "dist"
+public_url = "/"
+
+[watch]
+ignore = ["./dist"]
+
+[serve]
+address = "127.0.0.1"
+port = 8080
+open = false
+

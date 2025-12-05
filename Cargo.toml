@@ -1,0 +1,18 @@
+[workspace]
+resolver = "2"
+members = [
+    "backend",
+    "frontend",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.75"
+authors = ["Allfeat <hello@allfeat.com>"]
+license = "GPL-3.0"
+repository = "https://github.com/allfeat/massload"
+homepage = "https://allfeat.org"
+description = "Mass upload musical works to Allfeat blockchain"
+keywords = ["allfeat", "blockchain", "music", "midds", "csv"]
+

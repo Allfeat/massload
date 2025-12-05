@@ -1,0 +1,440 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "transformation-matrix",
+  "title": "Transformation Matrix",
+  "description": "Schema defining how to transform CSV columns into MIDDS flat format. The AI must return a JSON object matching this schema exactly.",
+  
+  "type": "object",
+  "required": ["version", "transforms"],
+  "additionalProperties": false,
+  
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Version of the matrix format. Always use '1.0'.",
+      "const": "1.0"
+    },
+    
+    "description": {
+      "type": "string",
+      "description": "Brief human-readable description of the source data format.",
+      "maxLength": 256
+    },
+    
+    "source_format": {
+      "type": ["object", "null"],
+      "description": "Optional metadata about the source CSV format.",
+      "properties": {
+        "delimiter": {
+          "type": "string",
+          "description": "CSV delimiter character.",
+          "maxLength": 1
+        },
+        "encoding": {
+          "type": "string",
+          "description": "Character encoding (utf-8, iso-8859-1, etc.)."
+        },
+        "header_rows": {
+          "type": "integer",
+          "description": "Number of header rows.",
+          "default": 1
+        }
+      }
+    },
+    
+    "transforms": {
+      "type": "object",
+      "description": "Map of MIDDS field names to their transformation rules. Keys must be valid MIDDS flat field names.",
+      "propertyNames": {
+        "enum": [
+          "iswc", "title", "creationYear", "instrumental", "language",
+          "bpm", "key", "workType", "creatorIpi", "creatorIsni", "creatorRole",
+          "opus", "catalogNumber", "numberOfVoices"
+        ]
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/FieldTransform"
+      }
+    },
+    
+    "expand": {
+      "description": "Optional: Row expansion rules. Use when one CSV row should produce multiple flat records (e.g., combined role 'C+A' or separate Composer/Author columns).",
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Expand based on a role field containing combined values like 'C+A'.",
+          "additionalProperties": false,
+          "required": ["type", "source", "mapping"],
+          "properties": {
+            "type": { "const": "split_role" },
+            "source": {
+              "type": "string",
+              "description": "Column containing the combined role (e.g., 'Role')."
+            },
+            "separator": {
+              "type": "string",
+              "description": "Separator between roles. Default: '+'.",
+              "default": "+"
+            },
+            "mapping": {
+              "type": "object",
+              "description": "Map split values to MIDDS roles.",
+              "additionalProperties": { "type": "string" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Expand based on multiple column sets (e.g., Composer_IPI + Author_IPI).",
+          "additionalProperties": false,
+          "required": ["type", "variants"],
+          "properties": {
+            "type": { "const": "multiple_columns" },
+            "variants": {
+              "type": "array",
+              "description": "Each variant creates a separate record if its condition is met.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "condition_column": {
+                    "type": "string",
+                    "description": "Only create record if this column is not empty."
+                  },
+                  "overrides": {
+                    "type": "object",
+                    "description": "Override transforms for this variant.",
+                    "additionalProperties": {
+                      "$ref": "#/definitions/FieldTransform"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        { "type": "null" }
+      ]
+    }
+  },
+  
+  "definitions": {
+    "FieldTransform": {
+      "type": "object",
+      "description": "Transformation rule for a single MIDDS field.",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": ["string", "null"],
+          "description": "Name of a single CSV column to read from. Mutually exclusive with 'sources' and 'constant'."
+        },
+        
+        "sources": {
+          "type": "array",
+          "description": "Multiple CSV columns to concatenate. Use for combining fields like 'Title Prefix' + 'Title Main'. Mutually exclusive with 'source' and 'constant'.",
+          "items": { "type": "string" }
+        },
+        
+        "concat_separator": {
+          "type": "string",
+          "description": "Separator when concatenating multiple sources. Default: ' ' (space).",
+          "default": " "
+        },
+        
+        "constant": {
+          "description": "A constant value to use instead of reading from CSV. Mutually exclusive with 'source' and 'sources'."
+        },
+        
+        "operations": {
+          "type": "array",
+          "description": "Ordered list of operations to apply to transform the value. Operations are applied in sequence.",
+          "default": [],
+          "items": {
+            "$ref": "#/definitions/Operation"
+          }
+        },
+        
+        "default": {
+          "description": "Default value to use if source column is empty or missing."
+        },
+        
+        "required": {
+          "type": "boolean",
+          "description": "If true, rows missing this field will be skipped. Default: false.",
+          "default": false
+        }
+      }
+    },
+    
+    "Operation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Remove leading and trailing whitespace.",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "trim" }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Convert text to UPPERCASE.",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "uppercase" }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Convert text to lowercase.",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "lowercase" }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Replace text matching a regex pattern.",
+          "additionalProperties": false,
+          "required": ["type", "pattern"],
+          "properties": {
+            "type": { "const": "replace" },
+            "pattern": {
+              "type": "string",
+              "description": "Regular expression pattern to match."
+            },
+            "value": {
+              "type": "string",
+              "description": "Replacement string. Default: empty string.",
+              "default": ""
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Pad string at the start to reach target length.",
+          "additionalProperties": false,
+          "required": ["type", "length"],
+          "properties": {
+            "type": { "const": "pad_start" },
+            "length": {
+              "type": "integer",
+              "description": "Target length."
+            },
+            "char": {
+              "type": "string",
+              "description": "Character to pad with. Default: '0'.",
+              "default": "0",
+              "maxLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Pad string at the end to reach target length.",
+          "additionalProperties": false,
+          "required": ["type", "length"],
+          "properties": {
+            "type": { "const": "pad_end" },
+            "length": {
+              "type": "integer",
+              "description": "Target length."
+            },
+            "char": {
+              "type": "string",
+              "description": "Character to pad with. Default: '0'.",
+              "default": "0",
+              "maxLength": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Extract a 4-digit year from a date string. Returns an integer.",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "extract_year" }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Add a prefix if not already present.",
+          "additionalProperties": false,
+          "required": ["type", "value"],
+          "properties": {
+            "type": { "const": "ensure_prefix" },
+            "value": {
+              "type": "string",
+              "description": "Prefix to ensure."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Add a suffix if not already present.",
+          "additionalProperties": false,
+          "required": ["type", "value"],
+          "properties": {
+            "type": { "const": "ensure_suffix" },
+            "value": {
+              "type": "string",
+              "description": "Suffix to ensure."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Map values using a lookup table. Use for role codes, language codes, workType, etc. IMPORTANT: Values not in the mapping will be DROPPED (field becomes empty/null). Use default_unmapped if you want a fallback value.",
+          "additionalProperties": false,
+          "required": ["type", "mapping"],
+          "properties": {
+            "type": { "const": "map" },
+            "mapping": {
+              "type": "object",
+              "description": "Key-value pairs: source value → target value. Values NOT in this mapping will be DROPPED unless default_unmapped is set.",
+              "additionalProperties": { "type": "string" }
+            },
+            "case_insensitive": {
+              "type": "boolean",
+              "description": "If true, matching ignores case. Default: false.",
+              "default": false
+            },
+            "default_unmapped": {
+              "type": ["string", "null"],
+              "description": "Value to use when no mapping match is found. If null/omitted, unmatched values become empty and the field is dropped."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Split string into an array.",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "split" },
+            "separator": {
+              "type": "string",
+              "description": "Separator character. Default: ','.",
+              "default": ","
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Convert to boolean. Checks if value matches any of the true_values.",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "to_boolean" },
+            "true_values": {
+              "type": "array",
+              "description": "Values that should be considered true. Default: ['true', '1', 'yes', 'oui', 'o', 'y'].",
+              "items": { "type": "string" },
+              "default": ["true", "1", "yes", "oui", "o", "y"]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Convert to integer. Removes non-digit characters (except leading minus).",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "to_number" }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Extract a substring.",
+          "additionalProperties": false,
+          "required": ["type", "start"],
+          "properties": {
+            "type": { "const": "substring" },
+            "start": {
+              "type": "integer",
+              "description": "Start index (0-based)."
+            },
+            "length": {
+              "type": "integer",
+              "description": "Number of characters. If omitted, takes until end."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Keep only alphanumeric characters (a-z, A-Z, 0-9).",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "alphanumeric" }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Keep only digits (0-9). Useful for cleaning IPI codes, phone numbers, etc.",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "digits_only" }
+          }
+        }
+      ]
+    }
+  },
+  
+  "examples": [
+    {
+      "version": "1.0",
+      "description": "SACEM export format",
+      "transforms": {
+        "iswc": {
+          "source": "ISWC",
+          "operations": [
+            {"type": "trim"},
+            {"type": "replace", "pattern": "[-. ]", "value": ""},
+            {"type": "ensure_prefix", "value": "T"}
+          ],
+          "required": true
+        },
+        "title": {
+          "source": "Titre de l'oeuvre",
+          "operations": [{"type": "trim"}],
+          "required": true
+        },
+        "creatorIpi": {
+          "source": "Code IPI",
+          "operations": [
+            {"type": "digits_only"},
+            {"type": "to_number"}
+          ],
+          "required": true
+        },
+        "creatorRole": {
+          "source": "Role",
+          "operations": [
+            {"type": "trim"},
+            {"type": "map", "mapping": {"CA": "Composer", "C": "Composer", "A": "Author", "AR": "Arranger", "AD": "Adapter", "E": "Publisher"}, "case_insensitive": true}
+          ],
+          "default": "Composer",
+          "required": true
+        },
+        "creationYear": {
+          "source": "Date de depot",
+          "operations": [{"type": "extract_year"}]
+        },
+        "instrumental": {
+          "source": "Genre de l'oeuvre",
+          "operations": [
+            {"type": "map", "mapping": {"Instrumental": "true", "Chant": "false"}, "case_insensitive": true},
+            {"type": "to_boolean", "true_values": ["true"]}
+          ],
+          "default": false
+        }
+      }
+    }
+  ]
+}
+

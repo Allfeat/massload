@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "midds-musical-work-flat",
+  "title": "MIDDS v2 Musical Work - Flat",
+  "description": "Flat schema for a single CSV row. One row = one creator. Group by ISWC to get the full MusicalWork.",
+  
+  "type": "object",
+  "required": ["iswc", "title", "creatorIpi", "creatorRole"],
+  
+  "properties": {
+    "iswc": {
+      "type": "string",
+      "description": "International Standard Musical Work Code. Format: T + 10 digits.",
+      "pattern": "^T[0-9]{10}$",
+      "minLength": 11,
+      "maxLength": 11
+    },
+    
+    "title": {
+      "type": "string",
+      "description": "Title of the musical work.",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    
+    "creationYear": {
+      "type": ["integer", "null"],
+      "description": "Year the work was created (4-digit year).",
+      "minimum": 1000,
+      "maximum": 9999
+    },
+    
+    "instrumental": {
+      "type": ["boolean", "null"],
+      "description": "TRUE if instrumental (no lyrics), FALSE otherwise."
+    },
+    
+    "language": {
+      "type": ["string", "null"],
+      "description": "Language of the lyrics.",
+      "enum": [
+        null, "English", "French", "Spanish", "German", "Italian", "Portuguese",
+        "Russian", "Chinese", "Japanese", "Korean", "Arabic", "Hindi",
+        "Dutch", "Swedish", "Norwegian", "Finnish", "Polish", "Turkish",
+        "Hebrew", "Greek", "Latin", "Esperanto"
+      ]
+    },
+    
+    "bpm": {
+      "type": ["integer", "null"],
+      "description": "Tempo in beats per minute.",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    
+    "key": {
+      "type": ["string", "null"],
+      "description": "Musical key. 'm' = minor, 's' = sharp, 'b' = flat.",
+      "enum": [
+        null,
+        "A", "Am", "As", "Asm", "Ab", "Abm",
+        "B", "Bm", "Bs", "Bsm", "Bb", "Bbm",
+        "C", "Cm", "Cs", "Csm", "Cb", "Cbm",
+        "D", "Dm", "Ds", "Dsm", "Db", "Dbm",
+        "E", "Em", "Es", "Esm", "Eb", "Ebm",
+        "F", "Fm", "Fs", "Fsm", "Fb", "Fbm",
+        "G", "Gm", "Gs", "Gsm", "Gb", "Gbm"
+      ]
+    },
+    
+    "workType": {
+      "type": ["string", "null"],
+      "description": "Type of work. For flat rows, only 'Original' is used directly.",
+      "enum": [null, "Original"]
+    },
+    
+    "creatorIpi": {
+      "type": "integer",
+      "description": "IPI code (Interested Party Information) of the creator. 9-11 digits.",
+      "minimum": 0,
+      "maximum": 99999999999
+    },
+    
+    "creatorIsni": {
+      "type": ["string", "null"],
+      "description": "ISNI code (International Standard Name Identifier). 16 characters.",
+      "pattern": "^[0-9X]{16}$",
+      "minLength": 16,
+      "maxLength": 16
+    },
+    
+    "creatorRole": {
+      "type": "string",
+      "description": "Role of this creator in the work.",
+      "enum": ["Author", "Composer", "Arranger", "Adapter", "Publisher"]
+    },
+    
+    "opus": {
+      "type": ["string", "null"],
+      "description": "Opus number for classical works. Ex: 'Op. 27 No. 2'.",
+      "maxLength": 256
+    },
+    
+    "catalogNumber": {
+      "type": ["string", "null"],
+      "description": "Catalog number for classical works. Ex: 'K. 551', 'BWV 1006'.",
+      "maxLength": 256
+    },
+    
+    "numberOfVoices": {
+      "type": ["integer", "null"],
+      "description": "Number of vocal parts for classical works.",
+      "minimum": 1
+    }
+  },
+  
+  "examples": [
+    {
+      "iswc": "T1234567890",
+      "title": "My Song",
+      "creationYear": 2024,
+      "instrumental": false,
+      "language": "English",
+      "creatorIpi": 123456789,
+      "creatorRole": "Composer"
+    },
+    {
+      "iswc": "T1234567890",
+      "title": "My Song",
+      "creationYear": 2024,
+      "instrumental": false,
+      "language": "English",
+      "creatorIpi": 123456789,
+      "creatorRole": "Author"
+    },
+    {
+      "iswc": "T1234567890",
+      "title": "My Song",
+      "creationYear": 2024,
+      "instrumental": false,
+      "language": "English",
+      "creatorIpi": 987654321,
+      "creatorRole": "Publisher"
+    },
+    {
+      "iswc": "T0001234567",
+      "title": "Moonlight Sonata",
+      "creationYear": 1801,
+      "instrumental": true,
+      "key": "Csm",
+      "creatorIpi": 111222333,
+      "creatorIsni": "000000012146438X",
+      "creatorRole": "Composer",
+      "opus": "Op. 27 No. 2"
+    }
+  ],
+  
+  "x-grouping": {
+    "description": "To convert flat rows to grouped format, group by 'iswc' and aggregate creators into an array.",
+    "groupBy": "iswc",
+    "aggregate": {
+      "creators": {
+        "from": ["creatorIpi", "creatorIsni", "creatorRole"],
+        "to": {
+          "id": "PartyId from creatorIpi/creatorIsni",
+          "role": "creatorRole"
+        }
+      },
+      "classicalInfo": {
+        "from": ["opus", "catalogNumber", "numberOfVoices"],
+        "condition": "if any field is not null"
+      }
+    }
+  }
+}
+

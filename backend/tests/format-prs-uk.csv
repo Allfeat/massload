@@ -1,0 +1,7 @@
+    WorkCode,WorkTitle,ISWC,WriterSurname,WriterForename,IPINameNumber,CAENumber,WriterRole,PublisherName,PublisherIPI,ControlledShare
+    GB001,London Symphony,T-701-001-001-0,Thompson,James,700100001,00700100001,COMPOSER,EMI Music Publishing,700100010,50.00
+    GB001,London Symphony,T-701-001-001-0,Wilson,Charlotte,700100002,00700100002,LYRICIST,EMI Music Publishing,700100010,50.00
+    GB002,Celtic Dreams,T-701-001-002-0,Evans,Robert,700100003,00700100003,COMPOSER,Kobalt Music,700100011,100.00
+    GB003,Manchester Melody,T-701-001-003-0,Davies,Emily,700100004,00700100004,COMPOSER,BMG Rights,700100012,60.00
+    GB003,Manchester Melody,T-701-001-003-0,Jones,Oliver,700100005,00700100005,LYRICIST,BMG Rights,700100012,40.00
+

@@ -1,0 +1,7 @@
+Work ID,Title,ISWC,Writer Last Name,Writer First Name,IPI Base Number,CAE Number,Role Code,Publisher Name,Publisher IPI,Share Percentage
+US001,American Dream,T-801-001-001-0,Smith,John,800100001,00800100001,C,Universal Music Publishing,800100010,50.00
+US001,American Dream,T-801-001-001-0,Johnson,Emma,800100002,00800100002,A,Universal Music Publishing,800100010,50.00
+US002,Broadway Lights,T-801-001-002-0,Williams,David,800100003,00800100003,CA,Sony ATV Music,800100011,100.00
+US003,Nashville Star,T-801-001-003-0,Brown,Sarah,800100004,00800100004,C,Warner Chappell,800100012,75.00
+US003,Nashville Star,T-801-001-003-0,Davis,Michael,800100005,00800100005,A,Warner Chappell,800100012,25.00
+

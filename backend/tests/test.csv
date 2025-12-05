@@ -1,0 +1,9 @@
+ISWC,Title,BPM,Key,Creator IPI,Creator Role,Instrumental
+T1234567890,Test Song Alpha,120,C Major,111111111,Composer,false
+T1234567890,Test Song Alpha,120,C Major,222222222,Author,false
+T2345678901,Electronic Beat,140,A Minor,333333333,Composer,true
+T3456789012,Ballad Dreams,80,G Major,444444444,Composer,false
+T3456789012,Ballad Dreams,80,G Major,555555555,Author,false
+T4567890123,Jazz Fusion,95,F Major,666666666,Composer,false
+T5678901234,Rock Anthem,150,E Minor,777777777,Composer,false
+T5678901234,Rock Anthem,150,E Minor,888888888,Author,false

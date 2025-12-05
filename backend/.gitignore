@@ -1,0 +1,25 @@
+# Build artifacts
+/target/
+Cargo.lock
+
+# Local matrix cache (user-specific)
+.massload/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test outputs
+*.test.json
+/tmp/

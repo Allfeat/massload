@@ -1,0 +1,43 @@
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+
+# Node
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+*.wasm
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Cache
+.massload/
+.cache/
+
+# Temp files
+*.tmp
+*.temp
+BUILD_SUCCESS.md
+STATUS.md
+*.tgz

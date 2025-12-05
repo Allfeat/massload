@@ -1,0 +1,45 @@
+[package]
+name = "massload-backend"
+version.workspace = true
+edition.workspace = true
+description = "AI-powered CSV to MIDDS transformation tool for bulk music metadata import"
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+keywords = ["music", "metadata", "csv", "transformation", "midds"]
+categories = ["command-line-utilities", "encoding", "parsing"]
+authors.workspace = true
+
+[[bin]]
+name = "massload"
+path = "src/main.rs"
+
+[lib]
+name = "massload"
+path = "src/lib.rs"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+jsonschema = "0.37"
+regex = "1.10"
+csv = "1.3"
+thiserror = "1.0"
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "fs"] }
+axum = { version = "0.8", features = ["multipart"] }
+tower-http = { version = "0.6", features = ["cors", "fs"] }
+dotenvy = "0.15"
+chardet = "0.2"
+encoding_rs = "0.8"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.11", features = ["v4", "serde"] }
+once_cell = "1.21.3"
+tokio-stream = { version = "0.1.17", features = ["sync"] }
+futures = "0.3.31"
+
+# Note: Blockchain submission is handled by frontend via @allfeat/client SDK
+
+[dev-dependencies]
+tempfile = "3.20"

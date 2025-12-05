@@ -1,0 +1,46 @@
+[package]
+name = "massload-frontend"
+version.workspace = true
+edition.workspace = true
+description = "Leptos WebAssembly frontend for Mass Load"
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "massload-frontend"
+path = "src/main.rs"
+
+[lib]
+name = "frontend_rust"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+leptos = { version = "0.6", features = ["csr"] }
+leptos_meta = { version = "0.6", features = ["csr"] }
+leptos_router = { version = "0.6", features = ["csr"] }
+leptos_dom = { version = "0.6", features = ["csr"] }
+leptos_macro = { version = "0.6", features = ["csr"] }
+leptos_reactive = { version = "0.6", features = ["csr"] }
+wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = ["File", "FileList", "FormData", "Window", "Blob", "HtmlInputElement", "EventTarget", "Event", "Document"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+gloo-net = "0.6"
+gloo-utils = "0.2"
+gloo-timers = { version = "0.3", features = ["futures"] }
+console_log = "1.0"
+log = "0.4"
+console_error_panic_hook = "0.1"
+getrandom = { version = "0.2", features = ["js"] }
+rand = "0.8"
+chrono = { version = "0.4.42", features = ["wasm-bindgen"] }
+hex = "0.4"
+
+serde-wasm-bindgen = "0.6"
+
+# Note: blockchain transactions use @allfeat/client SDK via JavaScript

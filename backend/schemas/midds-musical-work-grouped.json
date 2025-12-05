@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "midds-musical-work-grouped",
+  "title": "MIDDS v2 Musical Work - SDK Format",
+  "description": "JSON Schema matching @allfeat/client SDK (dedot) format for Melodie runtime.",
+  
+  "type": "object",
+  "required": ["iswc", "title", "creators", "participants"],
+  
+  "properties": {
+    "iswc": {
+      "type": "string",
+      "pattern": "^T[0-9]{10}$",
+      "minLength": 11,
+      "maxLength": 11
+    },
+    
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    
+    "creationYear": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 9999
+    },
+    
+    "instrumental": {
+      "type": "boolean"
+    },
+    
+    "language": {
+      "type": "string"
+    },
+    
+    "bpm": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    
+    "key": {
+      "type": "string"
+    },
+    
+    "workType": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string" },
+        "value": {}
+      }
+    },
+    
+    "creators": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "required": ["id", "role"],
+        "properties": {
+          "id": {
+            "type": "object",
+            "required": ["type", "value"],
+            "properties": {
+              "type": { 
+                "type": "string",
+                "enum": ["Ipi", "Isni", "Both"]
+              },
+              "value": {}
+            }
+          },
+          "role": {
+            "type": "string",
+            "enum": ["Author", "Composer", "Arranger", "Adapter", "Publisher"]
+          }
+        }
+      }
+    },
+    
+    "participants": {
+      "type": "array",
+      "description": "Participants (performers/interpreters) - required by Melodie runtime. Empty for now.",
+      "items": {
+        "type": "object",
+        "description": "Future: Same format as creators (id with PartyId, role with ParticipantRole)"
+      },
+      "default": []
+    },
+    
+    "classicalInfo": {
+      "type": "object",
+      "properties": {
+        "opus": { "type": "string" },
+        "catalogNumber": { "type": "string" },
+        "numberOfVoices": { "type": "integer" }
+      }
+    }
+  },
+  
+  "examples": [
+    {
+      "iswc": "T1234567890",
+      "title": "My Song",
+      "creationYear": 2024,
+      "creators": [
+        { "id": { "type": "Ipi", "value": 123456789 }, "role": "Composer" }
+      ],
+      "participants": []
+    }
+  ]
+}
