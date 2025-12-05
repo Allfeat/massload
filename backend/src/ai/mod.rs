@@ -58,6 +58,7 @@ pub struct AiClient {
 #[derive(Debug, Deserialize)]
 struct AnthropicResponse {
     content: Vec<ContentBlock>,
+    stop_reason: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -91,7 +92,7 @@ impl AiClient {
         Self {
             api_key,
             model: "claude-sonnet-4-20250514".to_string(),
-            max_tokens: 1024,
+            max_tokens: 2048,
         }
     }
 
@@ -221,6 +222,14 @@ impl AiClient {
         let response: AnthropicResponse =
             serde_json::from_str(&body).map_err(|e| AiError::InvalidJson(e.to_string()))?;
 
+        // Log stop reason for debugging
+        if let Some(ref stop_reason) = response.stop_reason {
+            println!("      Stop reason: {}", stop_reason);
+            if stop_reason == "max_tokens" {
+                println!("      ⚠️  Response was truncated! Increase max_tokens.");
+            }
+        }
+
         // Extract text from response
         let text = response
             .content
@@ -235,6 +244,12 @@ impl AiClient {
         }
 
         println!("      ✓ Received {} bytes", text.len());
+        
+        // Debug: print full response for troubleshooting
+        if std::env::var("DEBUG_AI_RESPONSE").is_ok() {
+            println!("      Full response:\n{}", text);
+        }
+        
         Ok(text)
     }
 }
