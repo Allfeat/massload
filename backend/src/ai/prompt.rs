@@ -123,6 +123,9 @@ Return ONLY the JSON object matching the transformation matrix schema. No explan
 }
 
 
+/// Maximum unique values to show per column (controls token usage)
+const MAX_UNIQUE_VALUES_PER_COLUMN: usize = 30;
+
 /// Extract unique values per column for AI analysis
 fn extract_unique_values(rows: &[Value]) -> String {
     use std::collections::{HashMap, HashSet};
@@ -134,7 +137,6 @@ fn extract_unique_values(rows: &[Value]) -> String {
             for (key, value) in obj {
                 let entry = column_values.entry(key.clone()).or_default();
                 if let Some(s) = value.as_str() {
-                    // No limit - collect ALL unique values
                     entry.insert(s.to_string());
                 }
             }
@@ -145,33 +147,20 @@ fn extract_unique_values(rows: &[Value]) -> String {
     let mut columns: Vec<_> = column_values.iter().collect();
     columns.sort_by_key(|(k, _)| k.as_str());
     
-    // Columns likely to need full mapping (show ALL values)
-    let mapping_columns = ["role", "genre", "type", "instrumental", "language", "société"];
-    
     for (col, values) in columns {
         let mut values_vec: Vec<&str> = values.iter().map(|s| s.as_str()).collect();
         values_vec.sort();
         
-        let col_lower = col.to_lowercase();
-        let is_mapping_column = mapping_columns.iter().any(|&m| col_lower.contains(m));
-        
-        let display = if is_mapping_column || values_vec.len() <= 30 {
-            // Show ALL unique values for mapping columns or low cardinality
-            if values_vec.len() > 50 {
-                format!(
-                    "{} ({} unique values)",
-                    values_vec.join(", "),
-                    values_vec.len()
-                )
-            } else {
-                values_vec.join(", ")
-            }
+        let total = values_vec.len();
+        let display = if total <= MAX_UNIQUE_VALUES_PER_COLUMN {
+            values_vec.join(", ")
         } else {
-            // High cardinality column (like names, titles) - show sample
+            // Show first 30 values + count
             format!(
-                "{}, ... ({} unique - high cardinality, sample shown)",
-                values_vec[..15.min(values_vec.len())].join(", "),
-                values_vec.len()
+                "{}, ... (+{} more, {} total)",
+                values_vec[..MAX_UNIQUE_VALUES_PER_COLUMN].join(", "),
+                total - MAX_UNIQUE_VALUES_PER_COLUMN,
+                total
             )
         };
         
