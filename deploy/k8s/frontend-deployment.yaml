@@ -24,6 +24,17 @@ spec:
           ports:
             - containerPort: 80
               protocol: TCP
+          env:
+            - name: BACKEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: massload-config
+                  key: BACKEND_URL
+            - name: BLOCKCHAIN_RPC
+              valueFrom:
+                configMapKeyRef:
+                  name: massload-config
+                  key: BLOCKCHAIN_RPC
           resources:
             requests:
               memory: "32Mi"

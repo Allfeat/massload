@@ -1,6 +1,6 @@
 # MassLoad Frontend - Leptos/WASM
-# Build from workspace root: docker build -f frontend/Dockerfile --build-arg BACKEND_URL=https://api.example.com -t massload-frontend .
-# Run: docker run -p 8080:80 massload-frontend
+# Build from workspace root: docker build -f frontend/Dockerfile -t massload-frontend .
+# Run: docker run -e BACKEND_URL=https://api.example.com -p 8080:80 massload-frontend
 
 FROM rust:1.83-slim-bookworm AS builder
 
@@ -24,14 +24,7 @@ COPY frontend ./frontend
 COPY backend/Cargo.toml ./backend/Cargo.toml
 RUN mkdir -p backend/src && echo "fn main() {}" > backend/src/main.rs && echo "pub fn lib() {}" > backend/src/lib.rs
 
-# Build-time configuration (can be overridden with --build-arg)
-ARG BACKEND_URL=http://localhost:3000
-ARG BLOCKCHAIN_RPC=wss://node-dev.allfeat.io
-
-ENV BACKEND_URL=${BACKEND_URL}
-ENV BLOCKCHAIN_RPC=${BLOCKCHAIN_RPC}
-
-# Build WASM
+# Build WASM (config is loaded at runtime, not compile-time)
 WORKDIR /app/frontend
 RUN trunk build --release
 
@@ -40,6 +33,10 @@ FROM nginx:alpine
 
 # Copy built files
 COPY --from=builder /app/frontend/dist /usr/share/nginx/html
+
+# Copy entrypoint script for runtime config generation
+COPY frontend/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Custom nginx config for SPA routing
 RUN echo 'server { \
@@ -53,10 +50,16 @@ RUN echo 'server { \
         expires 1y; \
         add_header Cache-Control "public, immutable"; \
     } \
+    # Disable caching for config.js (runtime generated) \
+    location = /config.js { \
+        expires -1; \
+        add_header Cache-Control "no-store, no-cache, must-revalidate"; \
+    } \
     gzip on; \
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/wasm; \
 }' > /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# Use custom entrypoint to generate config.js at startup
+ENTRYPOINT ["/docker-entrypoint.sh"]

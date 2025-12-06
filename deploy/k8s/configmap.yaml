@@ -6,7 +6,9 @@ metadata:
   labels:
     app.kubernetes.io/name: massload
 data:
+  # Backend config
   RUST_LOG: "info"
+  # Frontend runtime config
+  BACKEND_URL: "http://massload-backend:3000"
   BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
-  # BACKEND_URL is baked into frontend at build time via Docker ARG
 

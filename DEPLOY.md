@@ -24,11 +24,8 @@
 # Backend
 docker build -f backend/Dockerfile -t massload-backend .
 
-# Frontend (with custom backend URL)
-docker build -f frontend/Dockerfile \
-  --build-arg BACKEND_URL=https://api.massload.allfeat.io \
-  --build-arg BLOCKCHAIN_RPC=wss://node.allfeat.io \
-  -t massload-frontend .
+# Frontend (single image for all environments)
+docker build -f frontend/Dockerfile -t massload-frontend .
 ```
 
 ### Run Locally
@@ -40,7 +37,12 @@ docker-compose up --build
 
 # Or manually
 docker run -d -p 3000:3000 -e ANTHROPIC_API_KEY="sk-ant-..." massload-backend
-docker run -d -p 8080:80 massload-frontend
+
+# Frontend with custom backend URL (runtime config)
+docker run -d -p 8080:80 \
+  -e BACKEND_URL=http://localhost:3000 \
+  -e BLOCKCHAIN_RPC=wss://node-dev.allfeat.io \
+  massload-frontend
 ```
 
 ### Push to Registry
@@ -98,8 +100,8 @@ kubectl apply -f deploy/k8s/ingress.yaml
 |----------|----------|-------------|
 | `ANTHROPIC_API_KEY` | Secret | Claude API key (required) |
 | `RUST_LOG` | ConfigMap | Log level (info, debug, trace) |
-| `BLOCKCHAIN_RPC` | ConfigMap | Allfeat node WebSocket URL |
-| `BACKEND_URL` | Docker build ARG | Backend API URL (baked into frontend) |
+| `BACKEND_URL` | ConfigMap/Env | Backend API URL (runtime config) |
+| `BLOCKCHAIN_RPC` | ConfigMap/Env | Allfeat node WebSocket URL (runtime config) |
 
 ### Update Deployment
 
@@ -136,14 +138,14 @@ kubectl port-forward svc/massload-frontend 8080:80 -n massload
 | `ANTHROPIC_API_KEY` | Yes | - | Claude API key |
 | `RUST_LOG` | No | `info` | Log verbosity |
 
-### Frontend (Build-time)
+### Frontend (Runtime)
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `BACKEND_URL` | Yes | `http://localhost:3000` | Backend API endpoint |
-| `BLOCKCHAIN_RPC` | Yes | `wss://node-dev.allfeat.io` | Allfeat node WS |
+| `BACKEND_URL` | No | `http://localhost:3000` | Backend API endpoint |
+| `BLOCKCHAIN_RPC` | No | `wss://node-dev.allfeat.io` | Allfeat node WS |
 
-⚠️ Frontend variables are **compile-time** - they're baked into the WASM binary during Docker build.
+✅ Frontend variables are **runtime** - configured via environment variables when starting the container. The same Docker image works for all environments (dev, staging, prod).
 
 ## CI/CD (GitHub Actions)
 
@@ -186,7 +188,5 @@ jobs:
           file: frontend/Dockerfile
           push: true
           tags: ghcr.io/allfeat/massload-frontend:${{ github.sha }}
-          build-args: |
-            BACKEND_URL=https://api.massload.allfeat.io
 ```
 

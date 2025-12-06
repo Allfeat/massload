@@ -6,6 +6,18 @@
     <title>Mass Load Rust - Allfeat</title>
     <link data-trunk rel="css" href="style/main.css">
     <link data-trunk rel="css" href="style/accordion.css">
+    <!-- Runtime config - MUST load before WASM -->
+    <script src="/config.js"></script>
+    <!-- Fallback config for local development (if config.js doesn't exist) -->
+    <script>
+        if (!window.MASSLOAD_CONFIG) {
+            console.log("[MassLoad] No runtime config found, using defaults");
+            window.MASSLOAD_CONFIG = {
+                BACKEND_URL: "http://localhost:3000",
+                BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
+            };
+        }
+    </script>
     <link data-trunk rel="rust" data-wasm-opt="z" data-target-name="frontend_rust"/>
 </head>
 <body>

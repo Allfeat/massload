@@ -8,7 +8,7 @@ use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::{EventSource, MessageEvent};
 
-use crate::{LogEntry, LogLevel, BACKEND_URL, MAX_LOG_ENTRIES};
+use crate::{LogEntry, LogLevel, backend_url, MAX_LOG_ENTRIES};
 
 /// Request animation frame helper for smooth scrolling
 fn request_animation_frame(f: impl FnOnce() + 'static) {
@@ -41,7 +41,7 @@ fn parse_sse_log(json: &str) -> Option<LogEntry> {
 /// Start SSE connection to receive real-time logs
 /// Should be called ONCE at app startup
 pub fn init_sse_logs(set_logs: WriteSignal<Vec<LogEntry>>) {
-    let sse_url = format!("{}/api/logs", BACKEND_URL);
+    let sse_url = format!("{}/api/logs", backend_url());
     
     let event_source = match EventSource::new(&sse_url) {
         Ok(es) => es,

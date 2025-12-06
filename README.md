@@ -188,12 +188,14 @@ massload operations         # Show DSL operations
 | `ANTHROPIC_API_KEY` | Claude API key | Yes |
 | `RUST_LOG` | Log level | No |
 
-### Frontend Constants
+### Frontend Environment (Runtime)
 
-| Constant | Default | Description |
+| Variable | Default | Description |
 |----------|---------|-------------|
 | `BACKEND_URL` | `http://localhost:3000` | Backend API |
 | `BLOCKCHAIN_RPC` | `wss://node-dev.allfeat.io` | Melodie node |
+
+> 💡 Frontend config is **runtime** - pass via `docker run -e` or K8s ConfigMap.
 
 ## Contributing
 

@@ -1,0 +1,7 @@
+// Runtime configuration - Generated at container startup
+// DO NOT EDIT - This file is generated from environment variables
+window.MASSLOAD_CONFIG = {
+    BACKEND_URL: "${BACKEND_URL}",
+    BLOCKCHAIN_RPC: "${BLOCKCHAIN_RPC}"
+};
+

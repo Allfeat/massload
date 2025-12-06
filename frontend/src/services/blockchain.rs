@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
-use crate::config::BLOCKCHAIN_RPC;
+use crate::config::blockchain_rpc;
 
 /// Result of a transaction submission.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -38,7 +38,7 @@ impl BlockchainService {
     /// Create a new service.
     pub fn new() -> Self {
         Self { 
-            rpc_url: BLOCKCHAIN_RPC.to_string() 
+            rpc_url: blockchain_rpc()
         }
     }
     
@@ -136,7 +136,7 @@ pub struct WalletBalance {
 
 /// Get wallet balance from blockchain
 pub async fn get_wallet_balance(wallet_address: &str) -> Result<WalletBalance, String> {
-    let promise = get_balance_js(BLOCKCHAIN_RPC, wallet_address);
+    let promise = get_balance_js(&blockchain_rpc(), wallet_address);
     
     let js_result = JsFuture::from(promise)
         .await
