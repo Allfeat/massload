@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: massload-config
+  namespace: massload
+  labels:
+    app.kubernetes.io/name: massload
+data:
+  RUST_LOG: "info"
+  BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
+  # BACKEND_URL is baked into frontend at build time via Docker ARG
+

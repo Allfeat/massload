@@ -1,5 +1,5 @@
 # MassLoad Backend - Rust Microservice
-# Build: docker build -t massload-backend .
+# Build from workspace root: docker build -f backend/Dockerfile -t massload-backend .
 # Run: docker run -p 3000:3000 -e ANTHROPIC_API_KEY=xxx massload-backend
 
 FROM rust:1.83-slim-bookworm AS builder
@@ -12,12 +12,15 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy manifests
+# Copy workspace files
 COPY Cargo.toml Cargo.lock ./
-COPY src ./src
-COPY schemas ./schemas
+COPY backend ./backend
+# Copy frontend Cargo.toml (workspace member, not built)
+COPY frontend/Cargo.toml ./frontend/Cargo.toml
+RUN mkdir -p frontend/src && echo "fn main() {}" > frontend/src/main.rs
 
 # Build release
+WORKDIR /app/backend
 RUN cargo build --release
 
 # Runtime image
@@ -29,13 +32,11 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     ca-certificates \
     libssl3 \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy binary
 COPY --from=builder /app/target/release/massload /app/massload
-
-# Copy schemas (embedded at compile time, but good to have)
-COPY schemas ./schemas
 
 # Create cache directory
 RUN mkdir -p /app/.massload
@@ -52,4 +53,3 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
 
 # Run
 CMD ["/app/massload", "serve", "--port", "3000"]
-

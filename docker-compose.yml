@@ -1,13 +1,11 @@
 # MassLoad - Docker Compose
 # Usage: docker-compose up --build
 
-version: '3.8'
-
 services:
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     ports:
       - "3000:3000"
     environment:
@@ -22,10 +20,10 @@ services:
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
       args:
-        BACKEND_URL: http://backend:3000
+        BACKEND_URL: http://localhost:3000
         BLOCKCHAIN_RPC: wss://node-dev.allfeat.io
     ports:
       - "8080:80"
@@ -33,7 +31,3 @@ services:
       backend:
         condition: service_healthy
     restart: unless-stopped
-
-# For production, you'll want to use separate URLs:
-# docker-compose build --build-arg BACKEND_URL=https://api.massload.allfeat.io frontend
-

@@ -1,0 +1,44 @@
+# Ingress configuration - Adjust host/domain as needed
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: massload-ingress
+  namespace: massload
+  labels:
+    app.kubernetes.io/name: massload
+  annotations:
+    # Uncomment for cert-manager TLS
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  ingressClassName: nginx
+  rules:
+    # Frontend - main domain
+    - host: massload.allfeat.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: massload-frontend
+                port:
+                  number: 80
+    # Backend API - subdomain or path
+    - host: api.massload.allfeat.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: massload-backend
+                port:
+                  number: 3000
+  # Uncomment for TLS
+  # tls:
+  #   - hosts:
+  #       - massload.allfeat.io
+  #       - api.massload.allfeat.io
+  #     secretName: massload-tls
+

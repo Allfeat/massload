@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: massload
+  labels:
+    app.kubernetes.io/name: massload
+    app.kubernetes.io/part-of: allfeat
+

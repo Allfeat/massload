@@ -1,0 +1,10 @@
+target/
+dist/
+.git/
+.gitignore
+*.md
+.env
+.env.*
+backend/tests/
+backend/.massload/
+node_modules/

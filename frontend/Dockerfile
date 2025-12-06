@@ -1,5 +1,5 @@
 # MassLoad Frontend - Leptos/WASM
-# Build: docker build --build-arg BACKEND_URL=https://api.massload.io -t massload-frontend .
+# Build from workspace root: docker build -f frontend/Dockerfile --build-arg BACKEND_URL=https://api.example.com -t massload-frontend .
 # Run: docker run -p 8080:80 massload-frontend
 
 FROM rust:1.83-slim-bookworm AS builder
@@ -17,13 +17,12 @@ RUN apt-get update && apt-get install -y \
 RUN rustup target add wasm32-unknown-unknown
 RUN cargo install trunk --locked
 
-# Copy project files
+# Copy workspace files
 COPY Cargo.toml Cargo.lock ./
-COPY Trunk.toml ./
-COPY index.html ./
-COPY src ./src
-COPY style ./style
-COPY package.json ./
+COPY frontend ./frontend
+# Copy backend Cargo.toml (workspace member, not built)
+COPY backend/Cargo.toml ./backend/Cargo.toml
+RUN mkdir -p backend/src && echo "fn main() {}" > backend/src/main.rs && echo "pub fn lib() {}" > backend/src/lib.rs
 
 # Build-time configuration (can be overridden with --build-arg)
 ARG BACKEND_URL=http://localhost:3000
@@ -33,13 +32,14 @@ ENV BACKEND_URL=${BACKEND_URL}
 ENV BLOCKCHAIN_RPC=${BLOCKCHAIN_RPC}
 
 # Build WASM
+WORKDIR /app/frontend
 RUN trunk build --release
 
 # Runtime image - nginx to serve static files
 FROM nginx:alpine
 
 # Copy built files
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 
 # Custom nginx config for SPA routing
 RUN echo 'server { \
@@ -60,4 +60,3 @@ RUN echo 'server { \
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
-
