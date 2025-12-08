@@ -1,13 +1,18 @@
 # MassLoad Frontend - Leptos/WASM
-# Build from workspace root: docker build -f frontend/Dockerfile -t massload-frontend .
-# Run: docker run -e BACKEND_URL=https://api.example.com -p 8080:80 massload-frontend
+# ⚠️  IMPORTANT: Build from WORKSPACE ROOT, not from frontend/
+#
+# Correct usage:
+#   docker build -f frontend/Dockerfile -t massload-frontend .
+#
+# Run:
+#   docker run -e BACKEND_URL=https://api.example.com -p 8080:80 massload-frontend
 
 FROM rust:1.83-slim-bookworm AS builder
 
 WORKDIR /app
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     libssl-dev \
     curl \
@@ -20,11 +25,12 @@ RUN cargo install trunk --locked
 # Copy workspace files
 COPY Cargo.toml Cargo.lock ./
 COPY frontend ./frontend
+
 # Copy backend Cargo.toml (workspace member, not built)
 COPY backend/Cargo.toml ./backend/Cargo.toml
-RUN mkdir -p backend/src && echo "fn main() {}" > backend/src/main.rs && echo "pub fn lib() {}" > backend/src/lib.rs
+RUN mkdir -p backend/src && echo "fn main() {}" > backend/src/main.rs && echo "" > backend/src/lib.rs
 
-# Build WASM (config is loaded at runtime, not compile-time)
+# Build WASM
 WORKDIR /app/frontend
 RUN trunk build --release
 
@@ -50,7 +56,6 @@ RUN echo 'server { \
         expires 1y; \
         add_header Cache-Control "public, immutable"; \
     } \
-    # Disable caching for config.js (runtime generated) \
     location = /config.js { \
         expires -1; \
         add_header Cache-Control "no-store, no-cache, must-revalidate"; \
