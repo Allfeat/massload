@@ -52,15 +52,23 @@ body {
 /* ===== HEADER ===== */
 header {
   background: var(--bg-primary);
-  border-bottom: 1px solid var(--color-primary);
-  padding: 16px 40px;
+  border-bottom: 1px solid var(--border-color);
+  padding: 20px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
+  height: 80px;
   transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Add padding to body to account for fixed header */
+body {
+  padding-top: 80px;
 }
 
 .header-left {
@@ -89,82 +97,83 @@ header {
 }
 
 .badge {
-  background: var(--bg-card);
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 14px;
+  color: var(--text-muted);
+  min-width: 100px;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
-/* Theme Toggle - matches register.allfeat.org style */
+/* Theme Toggle - exact match to register.allfeat.org */
 .theme-toggle {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
+  gap: 8px;
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-.theme-toggle:hover {
-  border-color: var(--border-color-hover);
 }
 
 .theme-icon {
-  font-size: 14px;
-  padding: 4px;
-  border-radius: 50%;
-  transition: all 0.2s;
-  line-height: 1;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.theme-icon.active {
-  background: var(--color-primary);
+.theme-icon svg {
+  width: 18px;
+  height: 18px;
 }
 
-/* Sun icon yellow when active (light mode) */
-.theme-icon:first-child.active {
-  background: #F59E0B;
-}
-
-/* Moon icon teal when active (dark mode) */
-.theme-icon:last-child.active {
-  background: var(--color-primary);
+/* Moon icon blue when dark mode active */
+.theme-icon.moon-active {
+  color: #60A5FA;
 }
 
 .theme-switch {
-  width: 32px;
-  height: 18px;
+  width: 44px;
+  height: 24px;
   background: var(--border-color);
-  border-radius: 9px;
+  border-radius: 12px;
   position: relative;
   transition: background 0.3s;
+  border: 2px solid transparent;
+}
+
+/* Switch turns primary when dark mode (checked) */
+.theme-switch.checked {
+  background: var(--color-primary);
 }
 
 .theme-switch::after {
   content: '';
   position: absolute;
-  width: 14px;
-  height: 14px;
-  background: var(--text-primary);
+  width: 20px;
+  height: 20px;
+  background: var(--bg-primary);
   border-radius: 50%;
   top: 2px;
   left: 2px;
   transition: transform 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.theme-switch.checked::after {
+  transform: translateX(20px);
 }
 
 [data-theme="light"] .theme-switch::after {
-  transform: translateX(14px);
+  transform: translateX(20px);
+}
+
+[data-theme="light"] .theme-switch {
+  background: var(--border-color);
 }
 
 /* ===== BUTTONS ===== */
@@ -464,6 +473,45 @@ h1 {
 .logs-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 .logs-content::-webkit-scrollbar-thumb:hover { background: var(--border-color-hover); }
 
+/* ===== WALLET STATUS - exact match to register.allfeat.org ===== */
+.wallet-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #FFFFFF;
+  color: #000000;
+  border: none;
+  border-radius: 9999px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  min-height: 44px;
+}
+
+.wallet-status:hover {
+  background: rgba(27, 167, 148, 0.3);
+  color: var(--color-primary);
+}
+
+.wallet-status.connected {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.wallet-icon {
+  display: flex;
+  align-items: center;
+}
+
+.wallet-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
 /* ===== FOOTER ===== */
 footer {
   background: var(--footer-bg);
@@ -506,29 +554,33 @@ footer {
   font-weight: 600;
 }
 
-/* ===== WALLET STATUS ===== */
+/* ===== WALLET STATUS - exact match to register.allfeat.org ===== */
 .wallet-status {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 24px;
-  background: transparent;
-  border: 1px solid var(--text-primary);
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #FFFFFF;
+  color: #000000;
+  border: none;
   border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  min-height: 44px;
 }
 
 .wallet-status:hover {
-  border-color: var(--color-primary);
-  background: var(--color-primary-light);
+  background: rgba(27, 167, 148, 0.3);
+  color: var(--color-primary);
 }
 
 .wallet-status.connected {
-  border-color: var(--color-primary);
-  background: var(--color-primary-light);
+  background: var(--color-primary);
+  color: #FFFFFF;
 }
 
 .wallet-dot {
@@ -543,8 +595,9 @@ footer {
 }
 
 .wallet-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  margin-left: -4px;
 }
 
 /* ===== UTILS ===== */
