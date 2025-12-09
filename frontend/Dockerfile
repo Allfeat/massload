@@ -34,19 +34,22 @@ RUN mkdir -p backend/src && echo "fn main() {}" > backend/src/main.rs && echo ""
 WORKDIR /app/frontend
 RUN trunk build --release
 
-# Runtime image - nginx to serve static files
-FROM nginx:alpine
+# Runtime image - nginx-unprivileged for K8s compatibility
+FROM nginxinc/nginx-unprivileged:alpine
 
 # Copy built files
 COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 
 # Copy entrypoint script for runtime config generation
 COPY frontend/docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+USER root
+RUN chmod +x /docker-entrypoint.sh && \
+    chown nginx:nginx /usr/share/nginx/html
+USER nginx
 
-# Custom nginx config for SPA routing
+# Custom nginx config for SPA routing (port 8080 for unprivileged)
 RUN echo 'server { \
-    listen 80; \
+    listen 8080; \
     root /usr/share/nginx/html; \
     index index.html; \
     location / { \
@@ -64,7 +67,7 @@ RUN echo 'server { \
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/wasm; \
 }' > /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 8080
 
 # Use custom entrypoint to generate config.js at startup
 ENTRYPOINT ["/docker-entrypoint.sh"]
