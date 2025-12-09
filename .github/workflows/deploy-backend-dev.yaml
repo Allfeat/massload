@@ -75,10 +75,10 @@ jobs:
 
       - name: Update Image Tag in Dev Overlay
         env:
-          NEW_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
           OVERLAY_PATH: kubernetes/apps/massload-backend/overlays/dev
         run: |
           cd infrastructure/$OVERLAY_PATH
+          NEW_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}"
           echo "Updating image to: $NEW_IMAGE"
           kustomize edit set image IMAGE_PLACEHOLDER=$NEW_IMAGE
 

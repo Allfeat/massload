@@ -75,10 +75,10 @@ jobs:
 
       - name: Update Image Tag in Dev Overlay
         env:
-          NEW_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
           OVERLAY_PATH: kubernetes/apps/massload-frontend/overlays/dev
         run: |
           cd infrastructure/$OVERLAY_PATH
+          NEW_IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}"
           echo "Updating image to: $NEW_IMAGE"
           kustomize edit set image IMAGE_PLACEHOLDER=$NEW_IMAGE
 
@@ -96,16 +96,16 @@ jobs:
             sed -i 's|BACKEND_URL:.*|BACKEND_URL: "https://massload-dev.allfeat.org"|' configmap.yaml
           else
             echo "📝 Creating configmap.yaml patch"
-            cat > configmap.yaml << 'EOF'
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: massload-config
-          data:
-            BACKEND_URL: "https://massload-dev.allfeat.org"
-            BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
-            RUST_LOG: "info"
-          EOF
+            cat > configmap.yaml <<'EOF'
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: massload-config
+data:
+  BACKEND_URL: "https://massload-dev.allfeat.org"
+  BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
+  RUST_LOG: "info"
+EOF
             
             # Add to kustomization resources if not present
             if ! grep -q "configmap.yaml" kustomization.yaml 2>/dev/null; then
