@@ -82,6 +82,40 @@ jobs:
           echo "Updating image to: $NEW_IMAGE"
           kustomize edit set image IMAGE_PLACEHOLDER=$NEW_IMAGE
 
+      - name: Fix ConfigMap BACKEND_URL (Mixed Content Fix)
+        env:
+          OVERLAY_PATH: kubernetes/apps/massload-frontend/overlays/dev
+        run: |
+          cd infrastructure/$OVERLAY_PATH
+          
+          echo "🔧 Fixing BACKEND_URL in ConfigMap..."
+          
+          # Check if configmap patch exists
+          if [ -f configmap.yaml ]; then
+            echo "📝 Updating existing configmap.yaml"
+            sed -i 's|BACKEND_URL:.*|BACKEND_URL: "https://massload-dev.allfeat.org"|' configmap.yaml
+          else
+            echo "📝 Creating configmap.yaml patch"
+            cat > configmap.yaml << 'EOF'
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: massload-config
+          data:
+            BACKEND_URL: "https://massload-dev.allfeat.org"
+            BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
+            RUST_LOG: "info"
+          EOF
+            
+            # Add to kustomization resources if not present
+            if ! grep -q "configmap.yaml" kustomization.yaml 2>/dev/null; then
+              echo "  - configmap.yaml" >> kustomization.yaml
+            fi
+          fi
+          
+          echo "✅ ConfigMap fixed with public HTTPS URL"
+          cat configmap.yaml
+
       - name: Commit and Push Changes
         run: |
           cd infrastructure
@@ -90,7 +124,7 @@ jobs:
           
           if [[ -n $(git status -s) ]]; then
             git add .
-            git commit -m "ci(dev): deploy version ${{ github.sha }} to dev"
+            git commit -m "ci(dev): deploy frontend ${{ github.sha }} + fix BACKEND_URL"
             git push origin master
           else
             echo "No changes to commit"
