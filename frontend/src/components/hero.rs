@@ -6,10 +6,10 @@ use leptos::*;
 pub fn Hero() -> impl IntoView {
     view! {
         <div class="hero">
-            <h1>"Mass Load - Import CSV"</h1>
+            <h1>"Mass Load"</h1>
             <p class="subtitle">
-                "Pour les organismes de gestion (SACEM, ASCAP, GEMA, etc.). "
-                "Importez un fichier CSV pour enregistrer plusieurs œuvres musicales en batch."
+                "Enregistrement en masse d'œuvres musicales sur la blockchain Allfeat. "
+                "Importez votre fichier CSV pour certifier vos métadonnées de manière décentralisée."
             </p>
         </div>
     }
