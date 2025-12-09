@@ -8,7 +8,8 @@ metadata:
 data:
   # Backend config
   RUST_LOG: "info"
-  # Frontend runtime config (override in overlays for each environment)
-  BACKEND_URL: "https://api.massload.allfeat.io"
-  BLOCKCHAIN_RPC: "wss://node.allfeat.io"
+  # Frontend runtime config
+  # ⚠️ Use public HTTPS URL for backend (not internal K8s service)
+  BACKEND_URL: "https://api.massload-dev.allfeat.org"
+  BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
 
