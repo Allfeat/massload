@@ -44,8 +44,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy binary
 COPY --from=builder /app/target/release/massload /app/massload
 
-# Create non-root user
-RUN useradd -r -s /bin/false massload
+# Security: non-root user (same pattern as allfeat/faucet)
+RUN useradd -r -s /bin/false massload \
+    && chown -R massload:massload /app
+
 USER massload
 
 # Environment
