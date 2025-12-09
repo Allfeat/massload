@@ -10,6 +10,7 @@ data:
   RUST_LOG: "info"
   # Frontend runtime config
   # ⚠️ Use public HTTPS URL for backend (not internal K8s service)
-  BACKEND_URL: "https://api.massload-dev.allfeat.org"
+  # Backend is exposed on the same domain with path-based routing
+  BACKEND_URL: "https://massload-dev.allfeat.org"
   BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
 
