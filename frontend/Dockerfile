@@ -71,3 +71,4 @@ EXPOSE 8080
 
 # Use custom entrypoint to generate config.js at startup
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
