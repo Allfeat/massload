@@ -96,6 +96,31 @@ impl PolkadotWallet {
 
         Ok(accounts)
     }
+
+    /// Connect to a specific wallet extension
+    pub async fn connect_specific(wallet_key: &str) -> Result<WalletAccount, String> {
+        log::info!("🔌 Connecting to {}...", wallet_key);
+
+        // Call the JS function
+        let promise = connect_specific_wallet(wallet_key);
+        let result = JsFuture::from(promise)
+            .await
+            .map_err(|e| format!("Failed to connect to {}: {:?}", wallet_key, e))?;
+
+        // Parse the result
+        let address = js_sys::Reflect::get(&result, &JsValue::from_str("address"))
+            .map_err(|e| format!("Failed to get address: {:?}", e))?
+            .as_string()
+            .ok_or_else(|| "Address is not a string".to_string())?;
+
+        let name = js_sys::Reflect::get(&result, &JsValue::from_str("name"))
+            .ok()
+            .and_then(|v| v.as_string());
+
+        log::info!("✅ Connected to {}: {}", wallet_key, address);
+
+        Ok(WalletAccount { address, name })
+    }
 }
 
 /// Import des fonctions JavaScript depuis wallet.js
@@ -103,6 +128,9 @@ impl PolkadotWallet {
 extern "C" {
     #[wasm_bindgen(js_name = "connectWallet")]
     fn connect_wallet() -> js_sys::Promise;
+    
+    #[wasm_bindgen(js_name = "connectSpecificWallet")]
+    fn connect_specific_wallet(wallet_key: &str) -> js_sys::Promise;
     
     #[wasm_bindgen(js_name = "getAccounts")]
     fn get_accounts() -> js_sys::Promise;

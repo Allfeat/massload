@@ -1,15 +1,17 @@
 //! Hero section component
 
 use leptos::*;
+use crate::i18n::{use_language, Translations};
 
 #[component]
 pub fn Hero() -> impl IntoView {
+    let lang = use_language();
+
     view! {
         <div class="hero">
-            <h1>"Mass Load"</h1>
+            <h1>{move || Translations::title(lang.get())}</h1>
             <p class="subtitle">
-                "Enregistrement en masse d'œuvres musicales sur la blockchain Allfeat. "
-                "Importez votre fichier CSV pour certifier vos métadonnées de manière décentralisée."
+                {move || Translations::subtitle(lang.get())}
             </p>
         </div>
     }

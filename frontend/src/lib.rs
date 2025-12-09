@@ -35,6 +35,7 @@ use wasm_bindgen::prelude::*;
 // =============================================================================
 
 pub mod config;
+pub mod i18n;
 pub mod types;
 pub mod components;
 pub mod services;
@@ -87,6 +88,9 @@ pub fn main() {
 
 #[component]
 pub fn App() -> impl IntoView {
+    // Initialize language context
+    i18n::provide_language_context();
+    
     view! {
         <Router>
             <main>

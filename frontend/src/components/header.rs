@@ -4,15 +4,12 @@
 use leptos::*;
 use crate::services::wallet::PolkadotWallet;
 use crate::services::blockchain::get_wallet_balance;
+use crate::i18n::{Language, Translations, use_language, use_set_language};
+use crate::components::wallet_modal::{WalletModal, WalletType};
 
-/// Allfeat logo SVG (light version - for dark backgrounds)
-fn logo_light() -> &'static str {
-    r##"<svg viewBox="0 0 512 124.5" xmlns="http://www.w3.org/2000/svg"><g fill="#fffbeb"><path d="m294.26,124.5c-25.88,0-44.12-17.2-44.12-45.16s18.06-45.16,43.25-45.16,40.99,16.15,40.99,45.16v5.38h-63.05v.17c0,14.24,9.03,23.62,22.93,23.62,10.77,0,17.02-5.56,18.93-12.51h19.98c-3.3,16.85-17.72,28.49-38.91,28.49Zm-22.93-53.84h42.38c0-12.33-8.16-20.5-20.67-20.5s-20.67,7.64-21.71,20.5Z"/><path d="m371.66,124.5c-17.54,0-26.75-10.25-26.75-23.27,0-14.94,11.81-22.93,25.19-26.4l28.66-7.12v-1.56c0-11.64-6.08-15.98-15.98-15.98-10.6,0-16.5,5.21-16.85,15.81h-20.67c1.39-21.02,17.2-31.79,38.39-31.79,22.93,0,35.61,13.03,35.61,34.39v54.19h-20.15v-14.42c-5.73,10.25-14.42,16.15-27.44,16.15Zm-6.25-25.88c0,7.47,5.38,11.12,13.55,11.12,11.64,0,19.8-7.82,19.8-20.5v-7.99l-20.67,5.04c-8.69,2.08-12.68,6.08-12.68,12.33Z"/><path d="m460.55,123.7c-16.15,0-22.06-7.3-22.06-21.89v-47.59h-10.94v-17.37h10.94V15.83l20.5-3.3v24.32h16.33v17.37h-16.33v44.81c0,5.91,1.56,7.3,7.29,7.3h9.03v17.37h-14.76Z"/><path d="m211.97,22.23c0-13.72,6.43-22.23,21.54-22.23h13.9v16.85h-7.82c-5.38,0-7.12,1.56-7.12,7.3v12.51h14.94v17.37h-14.94v69.48h-20.5V54.02h-11.12v-17.37h11.12v-14.42Z"/><path d="m161.55,0h20.5v99.35c0,5.73,1.74,7.3,7.12,7.3h9.55v16.85h-15.63c-15.11,0-21.54-8.51-21.54-22.23V0Z"/><path d="m117.33,0h20.5v99.35c0,5.73,1.74,7.3,7.12,7.3h9.55v16.85h-15.63c-15.11,0-21.54-8.51-21.54-22.23V0Z"/><path d="m74.83,13.93l36.16,109.77h-21.54l-10.42-32.48H31.79l-10.25,32.48H0L36.33,13.91C39.07,5.6,46.83,0,55.57,0h0c8.75,0,16.52,5.62,19.26,13.93Zm-37.14,58.53h35.43l-16.81-53.16c-.27-.89-1.54-.89-1.81,0l-16.81,53.16Z"/><path d="m499.44,123.7c-6.94,0-12.56-5.62-12.56-12.56h0c0-6.94,5.62-12.56,12.56-12.56h0c6.94,0,12.56,5.62,12.56,12.56h0c0,6.94-5.62,12.56-12.56,12.56h0Z"/></g></svg>"##
-}
-
-/// Allfeat logo SVG (dark version - for light backgrounds)
-fn logo_dark() -> &'static str {
-    r##"<svg viewBox="0 0 512 124.5" xmlns="http://www.w3.org/2000/svg"><g fill="#151515"><path d="m294.26,124.5c-25.88,0-44.12-17.2-44.12-45.16s18.06-45.16,43.25-45.16,40.99,16.15,40.99,45.16v5.38h-63.05v.17c0,14.24,9.03,23.62,22.93,23.62,10.77,0,17.02-5.56,18.93-12.51h19.98c-3.3,16.85-17.72,28.49-38.91,28.49Zm-22.93-53.84h42.38c0-12.33-8.16-20.5-20.67-20.5s-20.67,7.64-21.71,20.5Z"/><path d="m371.66,124.5c-17.54,0-26.75-10.25-26.75-23.27,0-14.94,11.81-22.93,25.19-26.4l28.66-7.12v-1.56c0-11.64-6.08-15.98-15.98-15.98-10.6,0-16.5,5.21-16.85,15.81h-20.67c1.39-21.02,17.2-31.79,38.39-31.79,22.93,0,35.61,13.03,35.61,34.39v54.19h-20.15v-14.42c-5.73,10.25-14.42,16.15-27.44,16.15Zm-6.25-25.88c0,7.47,5.38,11.12,13.55,11.12,11.64,0,19.8-7.82,19.8-20.5v-7.99l-20.67,5.04c-8.69,2.08-12.68,6.08-12.68,12.33Z"/><path d="m460.55,123.7c-16.15,0-22.06-7.3-22.06-21.89v-47.59h-10.94v-17.37h10.94V15.83l20.5-3.3v24.32h16.33v17.37h-16.33v44.81c0,5.91,1.56,7.3,7.29,7.3h9.03v17.37h-14.76Z"/><path d="m211.97,22.23c0-13.72,6.43-22.23,21.54-22.23h13.9v16.85h-7.82c-5.38,0-7.12,1.56-7.12,7.3v12.51h14.94v17.37h-14.94v69.48h-20.5V54.02h-11.12v-17.37h11.12v-14.42Z"/><path d="m161.55,0h20.5v99.35c0,5.73,1.74,7.3,7.12,7.3h9.55v16.85h-15.63c-15.11,0-21.54-8.51-21.54-22.23V0Z"/><path d="m117.33,0h20.5v99.35c0,5.73,1.74,7.3,7.12,7.3h9.55v16.85h-15.63c-15.11,0-21.54-8.51-21.54-22.23V0Z"/><path d="m74.83,13.93l36.16,109.77h-21.54l-10.42-32.48H31.79l-10.25,32.48H0L36.33,13.91C39.07,5.6,46.83,0,55.57,0h0c8.75,0,16.52,5.62,19.26,13.93Zm-37.14,58.53h35.43l-16.81-53.16c-.27-.89-1.54-.89-1.81,0l-16.81,53.16Z"/><path d="m499.44,123.7c-6.94,0-12.56-5.62-12.56-12.56h0c0-6.94,5.62-12.56,12.56-12.56h0c6.94,0,12.56,5.62,12.56,12.56h0c0,6.94-5.62,12.56-12.56,12.56h0Z"/></g></svg>"##
+/// Globe icon SVG for language selector
+fn globe_icon() -> &'static str {
+    r##"<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>"##
 }
 
 /// Sun icon SVG (from radix-ui, same as register.allfeat.org)
@@ -25,9 +22,15 @@ fn moon_icon() -> &'static str {
     r##"<svg width="18" height="18" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.89998 0.499976C2.89998 0.279062 2.72089 0.0999756 2.49998 0.0999756C2.27906 0.0999756 2.09998 0.279062 2.09998 0.499976V1.09998H1.49998C1.27906 1.09998 1.09998 1.27906 1.09998 1.49998C1.09998 1.72089 1.27906 1.89998 1.49998 1.89998H2.09998V2.49998C2.09998 2.72089 2.27906 2.89998 2.49998 2.89998C2.72089 2.89998 2.89998 2.72089 2.89998 2.49998V1.89998H3.49998C3.72089 1.89998 3.89998 1.72089 3.89998 1.49998C3.89998 1.27906 3.72089 1.09998 3.49998 1.09998H2.89998V0.499976ZM5.89998 3.49998C5.89998 3.27906 5.72089 3.09998 5.49998 3.09998C5.27906 3.09998 5.09998 3.27906 5.09998 3.49998V4.09998H4.49998C4.27906 4.09998 4.09998 4.27906 4.09998 4.49998C4.09998 4.72089 4.27906 4.89998 4.49998 4.89998H5.09998V5.49998C5.09998 5.72089 5.27906 5.89998 5.49998 5.89998C5.72089 5.89998 5.89998 5.72089 5.89998 5.49998V4.89998H6.49998C6.72089 4.89998 6.89998 4.72089 6.89998 4.49998C6.89998 4.27906 6.72089 4.09998 6.49998 4.09998H5.89998V3.49998ZM1.89998 6.49998C1.89998 6.27906 1.72089 6.09998 1.49998 6.09998C1.27906 6.09998 1.09998 6.27906 1.09998 6.49998V7.09998H0.499976C0.279062 7.09998 0.0999756 7.27906 0.0999756 7.49998C0.0999756 7.72089 0.279062 7.89998 0.499976 7.89998H1.09998V8.49998C1.09998 8.72089 1.27906 8.89997 1.49998 8.89997C1.72089 8.89997 1.89998 8.72089 1.89998 8.49998V7.89998H2.49998C2.72089 7.89998 2.89998 7.72089 2.89998 7.49998C2.89998 7.27906 2.72089 7.09998 2.49998 7.09998H1.89998V6.49998ZM8.54406 0.98184L8.24618 0.941586C8.03275 0.917676 7.90692 1.1655 8.02936 1.34194C8.17013 1.54479 8.29981 1.75592 8.41754 1.97445C8.91878 2.90485 9.20322 3.96932 9.20322 5.10022C9.20322 8.37201 6.82247 11.0878 3.69887 11.6097C3.45736 11.65 3.20988 11.6772 2.96008 11.6906C2.74563 11.702 2.62729 11.9535 2.77721 12.1072C2.84551 12.1773 2.91535 12.2458 2.98667 12.3128L3.05883 12.3795L3.31883 12.6045L3.50684 12.7532L3.62796 12.8433L3.81491 12.9742L3.99079 13.089C4.11175 13.1651 4.23536 13.2375 4.36157 13.3059L4.62496 13.4412L4.88553 13.5607L5.18837 13.6828L5.43169 13.7686C5.56564 13.8128 5.70149 13.8529 5.83857 13.8885C5.94262 13.9155 6.04767 13.9401 6.15405 13.9622C6.27993 13.9883 6.40713 14.0109 6.53544 14.0298L6.85241 14.0685L7.11934 14.0892C7.24637 14.0965 7.37436 14.1002 7.50322 14.1002C11.1483 14.1002 14.1032 11.1453 14.1032 7.50023C14.1032 7.25044 14.0893 7.00389 14.0623 6.76131L14.0255 6.48407C13.991 6.26083 13.9453 6.04129 13.8891 5.82642C13.8213 5.56709 13.7382 5.31398 13.6409 5.06881L13.5279 4.80132L13.4507 4.63542L13.3766 4.48666C13.2178 4.17773 13.0353 3.88295 12.8312 3.60423L12.6782 3.40352L12.4793 3.16432L12.3157 2.98361L12.1961 2.85951L12.0355 2.70246L11.8134 2.50184L11.4925 2.24191L11.2483 2.06498L10.9562 1.87446L10.6346 1.68894L10.3073 1.52378L10.1938 1.47176L9.95488 1.3706L9.67791 1.2669L9.42566 1.1846L9.10075 1.09489L8.83599 1.03486L8.54406 0.98184ZM10.4032 5.30023C10.4032 4.27588 10.2002 3.29829 9.83244 2.40604C11.7623 3.28995 13.1032 5.23862 13.1032 7.50023C13.1032 10.593 10.596 13.1002 7.50322 13.1002C6.63646 13.1002 5.81597 12.9036 5.08355 12.5522C6.5419 12.0941 7.81081 11.2082 8.74322 10.0416C8.87963 10.2284 9.10028 10.3497 9.34928 10.3497C9.76349 10.3497 10.0993 10.0139 10.0993 9.59971C10.0993 9.24256 9.84965 8.94373 9.51535 8.86816C9.57741 8.75165 9.63653 8.63334 9.6926 8.51332C9.88358 8.63163 10.1088 8.69993 10.35 8.69993C11.0403 8.69993 11.6 8.14028 11.6 7.44993C11.6 6.75976 11.0406 6.20024 10.3505 6.19993C10.3853 5.90487 10.4032 5.60464 10.4032 5.30023Z" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"></path></svg>"##
 }
 
+/// Light theme logo path (dark text, for light backgrounds)
+const LOGO_DARK_PATH: &str = "/public/logo-dark.png";
+
+/// Dark theme logo path (light text, for dark backgrounds)
+const LOGO_LIGHT_PATH: &str = "/public/logo-light.png";
+
 /// Wallet icon SVG (lucide wallet, same as register.allfeat.org)
 fn wallet_icon() -> &'static str {
-    r##"<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg>"##
+    r##"<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg>"##
 }
 
 #[component]
@@ -37,10 +40,18 @@ pub fn Header(
     set_wallet_connected: WriteSignal<bool>,
     set_wallet_address: WriteSignal<Option<String>>,
 ) -> impl IntoView {
+    // Get language context
+    let lang = use_language();
+    let set_lang = use_set_language();
+    
     // Balance state
     let (balance, set_balance) = create_signal(None::<String>);
     // Theme state (true = dark, false = light)
     let (is_dark, set_is_dark) = create_signal(true);
+    // Language dropdown state
+    let (lang_dropdown_open, set_lang_dropdown_open) = create_signal(false);
+    // Wallet modal state
+    let (wallet_modal_open, set_wallet_modal_open) = create_signal(false);
     
     // Toggle theme
     let toggle_theme = move |_| {
@@ -58,44 +69,78 @@ pub fn Header(
         }
     };
     
-    // Handler pour connexion wallet
+    // Toggle language dropdown
+    let toggle_lang_dropdown = move |_| {
+        set_lang_dropdown_open.update(|open| *open = !*open);
+    };
+    
+    // Select language
+    let select_language = move |new_lang: Language| {
+        set_lang.set(new_lang);
+        set_lang_dropdown_open.set(false);
+    };
+    
+    // Handler pour ouvrir la modal de wallet
     let on_wallet_click = move |_| {
         if !wallet_connected.get() {
-            log::info!("🔑 Attempting to connect wallet...");
-            
-            spawn_local(async move {
-                match PolkadotWallet::connect().await {
-                    Ok(account) => {
-                        log::info!("✅ Wallet connected: {}", account.address);
-                        set_wallet_connected.set(true);
-                        set_wallet_address.set(Some(account.address.clone()));
-                        
-                        // Fetch balance
-                        match get_wallet_balance(&account.address).await {
-                            Ok(bal) => {
-                                log::info!("💰 Balance: {} MEL", bal.formatted);
-                                set_balance.set(Some(bal.formatted));
-                            }
-                            Err(e) => {
-                                log::warn!("Could not fetch balance: {}", e);
-                                set_balance.set(Some("?".to_string()));
-                            }
-                        }
-                    }
-                    Err(e) => {
-                        log::error!("❌ Wallet connection failed: {}", e);
-                    }
-                }
-            });
+            set_wallet_modal_open.set(true);
         }
     };
 
+    // Handler pour la sélection d'un wallet
+    let on_wallet_select = Callback::new(move |wallet_type: WalletType| {
+        set_wallet_modal_open.set(false);
+        
+        let wallet_key = match wallet_type {
+            WalletType::SubWallet => "subwallet-js",
+            WalletType::Talisman => "talisman",
+            WalletType::PolkadotJs => "polkadot-js",
+        };
+        
+        log::info!("🔑 Attempting to connect {}...", wallet_key);
+        
+        spawn_local(async move {
+            match PolkadotWallet::connect_specific(wallet_key).await {
+                Ok(account) => {
+                    log::info!("✅ Wallet connected: {}", account.address);
+                    set_wallet_connected.set(true);
+                    set_wallet_address.set(Some(account.address.clone()));
+                    
+                    // Fetch balance
+                    match get_wallet_balance(&account.address).await {
+                        Ok(bal) => {
+                            log::info!("💰 Balance: {} MEL", bal.formatted);
+                            set_balance.set(Some(bal.formatted));
+                        }
+                        Err(e) => {
+                            log::warn!("Could not fetch balance: {}", e);
+                            set_balance.set(Some("?".to_string()));
+                        }
+                    }
+                }
+                Err(e) => {
+                    log::error!("❌ Wallet connection failed: {}", e);
+                }
+            }
+        });
+    });
+
+    // Handler pour fermer la modal
+    let on_wallet_modal_close = Callback::new(move |_| {
+        set_wallet_modal_open.set(false);
+    });
+
     view! {
+        <>
         <header>
             <div class="header-left">
-                <a href="/" class="logo" inner_html=move || {
-                    if is_dark.get() { logo_light() } else { logo_dark() }
-                }></a>
+                <a href="/" class="logo">
+                    <img 
+                        src=move || if is_dark.get() { LOGO_LIGHT_PATH } else { LOGO_DARK_PATH }
+                        alt="Allfeat Logo"
+                        class="logo-img"
+                    />
+                </a>
             </div>
             <div class="header-right">
                 // MEL balance badge
@@ -109,13 +154,47 @@ pub fn Header(
                     }}
                 </span>
                 
-                // Theme toggle (exact copy of register.allfeat.org)
+                // Language selector with dropdown
+                <div class="lang-selector-container">
+                    <button 
+                        class="lang-selector"
+                        on:click=toggle_lang_dropdown
+                    >
+                        <span class="lang-icon" inner_html=globe_icon()></span>
+                        <span class="lang-flag">{move || lang.get().flag()}</span>
+                        <span class="lang-text">{move || lang.get().name()}</span>
+                    </button>
+                    
+                    // Dropdown menu
+                    <Show when=move || lang_dropdown_open.get()>
+                        <div class="lang-dropdown">
+                            {Language::all().iter().map(|&l| {
+                                view! {
+                                    <button 
+                                        class="lang-option"
+                                        class:active=move || lang.get() == l
+                                        on:click=move |_| select_language(l)
+                                    >
+                                        <span class="lang-flag">{l.flag()}</span>
+                                        <span>{l.name()}</span>
+                                    </button>
+                                }
+                            }).collect_view()}
+                        </div>
+                    </Show>
+                </div>
+                
+                // Theme toggle
                 <div class="theme-toggle" on:click=toggle_theme>
-                    <span class="theme-icon" inner_html=sun_icon()></span>
+                    <span 
+                        class="theme-icon" 
+                        class:icon-active=move || !is_dark.get()
+                        inner_html=sun_icon()
+                    ></span>
                     <div class="theme-switch" class:checked=move || is_dark.get()></div>
                     <span 
                         class="theme-icon" 
-                        class:moon-active=move || is_dark.get()
+                        class:icon-active=move || is_dark.get()
                         inner_html=moon_icon()
                     ></span>
                 </div>
@@ -131,11 +210,19 @@ pub fn Header(
                         {move || if let Some(addr) = wallet_address.get() {
                             format!("{}...{}", &addr[0..6.min(addr.len())], &addr[addr.len().saturating_sub(4)..])
                         } else {
-                            "Connecter wallet".to_string()
+                            Translations::connect_wallet(lang.get()).to_string()
                         }}
                     </span>
                 </div>
             </div>
         </header>
+
+        // Wallet selection modal
+        <WalletModal
+            show=Signal::derive(move || wallet_modal_open.get())
+            on_select=on_wallet_select
+            on_close=on_wallet_modal_close
+        />
+        </>
     }
 }

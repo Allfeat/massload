@@ -22,6 +22,7 @@ mod preview_detail;
 mod progress;
 mod footer;
 mod logs;
+mod wallet_modal;
 
 pub use header::*;
 pub use hero::*;
@@ -31,4 +32,5 @@ pub use preview_detail::*;
 pub use progress::*;
 pub use footer::*;
 pub use logs::*;
+pub use wallet_modal::*;
 

@@ -44,7 +44,8 @@ COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 COPY frontend/docker-entrypoint.sh /docker-entrypoint.sh
 USER root
 RUN chmod +x /docker-entrypoint.sh && \
-    chown nginx:nginx /usr/share/nginx/html
+    chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html/public
 USER nginx
 
 # Custom nginx config for SPA routing (port 8080 for unprivileged)

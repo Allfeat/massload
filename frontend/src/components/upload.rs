@@ -7,6 +7,7 @@ use web_sys::{Event, HtmlInputElement};
 use wasm_bindgen::JsCast;
 use crate::{PreviewItem, LogEntry, LogLevel, backend_url};
 use crate::services::upload_csv;
+use crate::i18n::{use_language, Translations};
 
 #[component]
 pub fn UploadSection(
@@ -17,6 +18,7 @@ pub fn UploadSection(
 ) -> impl IntoView {
     let (is_uploading, set_is_uploading) = create_signal(false);
     let (error, set_error) = create_signal(None::<String>);
+    let lang = use_language();
 
     // Handler pour le changement de fichier
     let on_file_change = move |ev: Event| {
@@ -144,7 +146,7 @@ pub fn UploadSection(
                 {move || if is_uploading.get() {
                     "⏳ Uploading and processing..."
                 } else {
-                    "Glissez un fichier CSV ici"
+                    Translations::drag_csv_here(lang.get())
                 }}
             </div>
             
@@ -152,11 +154,11 @@ pub fn UploadSection(
                 when=move || !is_uploading.get()
                 fallback=|| view! { }
             >
-                <div class="upload-hint">"ou cliquez pour sélectionner"</div>
+                <div class="upload-hint">{move || Translations::or_click_to_select(lang.get())}</div>
                 <div class="upload-hint mt-20">
-                    "Formats supportés : SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE"
+                    {move || Translations::supported_formats(lang.get())}
                     <br/>
-                    "Transformation automatique par IA"
+                    {move || Translations::auto_transform_ai(lang.get())}
                 </div>
             </Show>
             
@@ -182,7 +184,7 @@ pub fn UploadSection(
                 fallback=|| view! { }
             >
                 <label for="fileInput" class="upload-button">
-                    "Choisir un fichier CSV"
+                    {move || Translations::choose_csv_file(lang.get())}
                 </label>
             </Show>
         </div>
