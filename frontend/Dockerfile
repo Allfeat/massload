@@ -40,15 +40,8 @@ FROM nginxinc/nginx-unprivileged:alpine
 # Copy built files
 COPY --from=builder /app/frontend/dist /usr/share/nginx/html
 
-# Copy entrypoint script for runtime config generation
-COPY frontend/docker-entrypoint.sh /docker-entrypoint.sh
-USER root
-RUN chmod +x /docker-entrypoint.sh && \
-    chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html/public
-USER nginx
-
 # Custom nginx config for SPA routing (port 8080 for unprivileged)
+USER root
 RUN echo 'server { \
     listen 8080; \
     root /usr/share/nginx/html; \
@@ -66,10 +59,17 @@ RUN echo 'server { \
     } \
     gzip on; \
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/wasm; \
-}' > /etc/nginx/conf.d/default.conf
+}' > /etc/nginx/conf.d/default.conf && \
+    chown -R nginx:nginx /usr/share/nginx/html
+USER nginx
+
+# Copy custom wrapper script that generates config.js before starting nginx
+COPY --chown=nginx:nginx frontend/docker-entrypoint.sh /usr/local/bin/massload-entrypoint.sh
+RUN chmod +x /usr/local/bin/massload-entrypoint.sh
 
 EXPOSE 8080
 
-# Use custom entrypoint to generate config.js at startup
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# Use custom entrypoint to generate config.js, then start nginx
+ENTRYPOINT ["/usr/local/bin/massload-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
 

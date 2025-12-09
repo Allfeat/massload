@@ -1,5 +1,7 @@
 #!/bin/sh
-# Docker entrypoint - generates config.js from environment variables
+# MassLoad Frontend Entrypoint
+# Generates runtime config.js from environment variables
+# Compatible with nginx-unprivileged (non-root container)
 
 set -e
 
@@ -8,7 +10,7 @@ BACKEND_URL="${BACKEND_URL:-http://localhost:3000}"
 BLOCKCHAIN_RPC="${BLOCKCHAIN_RPC:-wss://node-dev.allfeat.io}"
 
 # Generate config.js from template
-echo "Generating runtime config..."
+echo "[MassLoad] Generating runtime config..."
 echo "  BACKEND_URL: $BACKEND_URL"
 echo "  BLOCKCHAIN_RPC: $BLOCKCHAIN_RPC"
 
@@ -22,8 +24,9 @@ window.MASSLOAD_CONFIG = {
 console.log("[MassLoad] Runtime config loaded:", window.MASSLOAD_CONFIG);
 EOF
 
-echo "Config generated at /usr/share/nginx/html/config.js"
+echo "[MassLoad] Config generated at /usr/share/nginx/html/config.js"
+echo "[MassLoad] Starting nginx..."
 
-# Start nginx
-exec nginx -g "daemon off;"
+# Execute the command passed as arguments (typically: nginx -g "daemon off;")
+exec "$@"
 
