@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue?style=flat-square)](LICENSE)
 [![Rust](https://img.shields.io/badge/rust-1.75+-orange?style=flat-square&logo=rust)](https://www.rust-lang.org/)
 
-[Features](#features) • [Quick Start](#quick-start) • [Architecture](#architecture) • [Microservice](#microservice) • [Contributing](#contributing)
+[Features](#features) • [Quick Start](#quick-start) • [Architecture](#architecture) • [Docker](#docker) • [Contributing](#contributing)
 
 </div>
 
@@ -19,39 +19,42 @@
 Massload transforms CSV files from music industry sources (SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE) into MIDDS format and registers them on the Allfeat blockchain using the `@allfeat/client` SDK.
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│    CSV File     │────▶│   Microservice  │────▶│    Frontend     │────▶│    Melodie      │
-│  (any format)   │     │   (Transform)   │     │  (Sign & Send)  │     │   Blockchain    │
-└─────────────────┘     └─────────────────┘     └─────────────────┘     └─────────────────┘
+┌─────────────────┐     ┌───────────────────────────────────┐     ┌─────────────────┐
+│    CSV File     │────▶│   Massload Unified Server         │────▶│    Melodie      │
+│  (any format)   │     │   (Axum + Leptos CSR)             │     │   Blockchain    │
+│                 │     │ • AI Transform   • Web UI         │     │                 │
+└─────────────────┘     └───────────────────────────────────┘     └─────────────────┘
 ```
 
-## Microservice Architecture
+## Architecture
 
-The **backend is a standalone microservice** that can be deployed independently and consumed by any client:
+**Unified Server** — Single deployable application combining backend and frontend:
 
 ```
-                    ┌─────────────────────────────────────────┐
-                    │        Massload Microservice            │
-                    │         (Stateless REST API)            │
-                    ├─────────────────────────────────────────┤
-                    │  POST /api/upload → MIDDS JSON          │
-                    │  GET  /api/logs   → SSE stream          │
-                    │  GET  /health     → Health check        │
-                    └─────────────────────────────────────────┘
-                                      │
-              ┌───────────────────────┼───────────────────────┐
-              ▼                       ▼                       ▼
-      ┌──────────────┐       ┌──────────────┐       ┌──────────────┐
-      │  Leptos UI   │       │  Other App   │       │   CLI Tool   │
-      │  (included)  │       │  (custom)    │       │   (curl)     │
-      └──────────────┘       └──────────────┘       └──────────────┘
+┌─────────────────────────────────────────────────────────┐
+│              Massload Unified Server                    │
+│                 (Single Container)                      │
+├─────────────────────────────────────────────────────────┤
+│  Backend (Axum)                                         │
+│  • POST /api/upload  → CSV → MIDDS JSON                │
+│  • GET  /api/logs    → SSE real-time logs              │
+│  • GET  /health      → Health check                    │
+│  • Serves static frontend assets                       │
+├─────────────────────────────────────────────────────────┤
+│  Frontend (Leptos CSR - WASM)                          │
+│  • Drag & drop CSV upload                              │
+│  • Preview & validation                                │
+│  • Wallet integration (@allfeat/client)                │
+│  • Sign & submit to blockchain                         │
+└─────────────────────────────────────────────────────────┘
 ```
 
-**Key microservice benefits:**
-- 🐳 **Container-ready** — Deploy as Docker container
-- 🔌 **API-first** — REST endpoints, no frontend coupling
+**Key benefits:**
+- 🐳 **Single Container** — One image for frontend + backend
+- 🔌 **API Available** — REST endpoints accessible independently
 - ⚡ **Stateless** — Horizontal scaling ready
 - 📊 **Observable** — SSE logs for real-time monitoring
+- 🚀 **Simple Deployment** — No orchestration needed
 
 ## Features
 
@@ -130,18 +133,11 @@ The app will open at `http://localhost:3000`.
 4. **Sign & Send** — Click to submit the batch transaction
 5. **Confirm** — Approve in your wallet extension
 
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [Backend README](backend/README.md) | API, CLI, transformation algorithm |
-| [Frontend README](frontend/README.md) | Components, SDK integration, wallet support |
-
-## Architecture
+## Project Structure
 
 ```
 massload/
-├── backend/                    # 🔧 Microservice (Rust)
+├── backend/                    # 🔧 Backend Logic (Axum)
 │   ├── src/
 │   │   ├── api/                # HTTP server + SSE logs
 │   │   ├── ai/                 # Claude AI integration
@@ -151,29 +147,42 @@ massload/
 │   │   └── cache/              # Template registry
 │   └── schemas/                # MIDDS JSON schemas
 │
-├── frontend/                   # 🖥️ Leptos WASM UI
+├── frontend/                   # 🖥️ Frontend UI (Leptos CSR)
 │   ├── src/
 │   │   ├── components/         # UI components
-│   │   ├── services/           # Backend + blockchain
+│   │   ├── services/           # Wallet + blockchain
 │   │   └── js/                 # @allfeat/client bindings
-│   └── style/                  # CSS
+│   ├── style/                  # CSS styles
+│   ├── public/                 # Static assets (favicon, etc.)
+│   └── index.html              # Entry point
 │
+├── Dockerfile                  # 🐳 Multi-stage Docker build
+├── docker-compose.yml          # Local testing
+├── build.sh                    # Build frontend + backend
+├── start.sh                    # Start unified server
+├── DOCKER.md                   # K8s integration guide
 └── Cargo.toml                  # Workspace
 ```
 
 ### Data Flow
 
 ```
-                              Backend                                Frontend
-┌──────────────────────────────────────────────────────┐   ┌─────────────────────────────┐
-│                                                      │   │                             │
-│  CSV → Parse → Template/AI → DSL → Validate → Group  │──▶│  Preview → Sign → Submit    │
-│                                                      │   │                             │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐              │   │  ┌─────────┐  ┌──────────┐  │
-│  │  Cache  │  │ Claude  │  │ Schema  │              │   │  │ Wallet  │  │   SDK    │  │
-│  └─────────┘  └─────────┘  └─────────┘              │   │  └─────────┘  └──────────┘  │
-│                                                      │   │                             │
-└──────────────────────────────────────────────────────┘   └─────────────────────────────┘
+                    Unified Server (Port 3000)
+┌──────────────────────────────────────────────────────────────────┐
+│                                                                  │
+│  Backend (Axum)                      Frontend (Leptos CSR/WASM)  │
+│  ┌────────────────────────────┐     ┌──────────────────────────┐│
+│  │ CSV → Parse → AI → DSL     │────▶│ Preview → Sign → Submit  ││
+│  │                            │     │                          ││
+│  │ ┌──────┐ ┌───────┐ ┌────┐ │     │ ┌──────┐ ┌────────────┐ ││
+│  │ │Cache │ │Claude │ │JSON│ │     │ │Wallet│ │@allfeat/SDK│ ││
+│  │ └──────┘ └───────┘ └────┘ │     │ └──────┘ └────────────┘ ││
+│  │                            │     │            ↓            ││
+│  └────────────────────────────┘     └──────────────────────────┘│
+│                                                  ↓               │
+└──────────────────────────────────────────────────────────────────┘
+                                                  ↓
+                                      Allfeat Blockchain (Melodie)
 ```
 
 ## API Reference
@@ -189,15 +198,37 @@ massload/
 ### CLI
 
 ```bash
-massload serve              # Start HTTP server
-massload transform <csv>    # Transform CSV file
+massload serve              # Start unified HTTP server
+massload transform <csv>    # Transform CSV file (CLI only)
 massload template list      # List cached templates
 massload operations         # Show DSL operations
 ```
 
+## Docker
+
+### Local Development
+
+```bash
+# Build and run with docker-compose
+docker-compose up
+
+# Or manually
+docker build -t massload:local .
+docker run -p 3000:3000 --env-file .env massload:local
+```
+
+### Production Deployment
+
+The project follows a **GitOps** workflow:
+- Docker images are built automatically on push to `develop`/`main`
+- Kubernetes manifests are managed in the `allfeat/infra-kube` repository
+- ArgoCD/Flux handles deployment to the cluster
+
+See [DOCKER.md](DOCKER.md) for detailed K8s integration guide.
+
 ## Configuration
 
-### Backend Environment
+### Environment Variables
 
 | Variable | Description | Required |
 |----------|-------------|----------|
