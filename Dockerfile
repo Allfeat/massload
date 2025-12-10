@@ -1,5 +1,5 @@
 # Highly optimized multi-stage build for Allfeat MassLoad
-FROM rust:1.83-slim AS builder
+FROM rust:1.89-slim AS builder
 
 # Install system dependencies in one layer
 RUN apt-get update && apt-get install -y \
@@ -10,9 +10,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Rust toolchain and tools in separate layer for caching
-RUN rustup target add wasm32-unknown-unknown && \
-    cargo install cargo-binstall && \
-    cargo binstall trunk -y
+RUN rustup target add wasm32-unknown-unknown
+RUN cargo install trunk --version 0.21.5
 
 WORKDIR /app
 
@@ -23,11 +22,12 @@ COPY frontend/Cargo.toml ./frontend/
 
 # Copy actual source code
 COPY backend/src/ ./backend/src/
+COPY backend/schemas/ ./backend/schemas/
 COPY frontend/src/ ./frontend/src/
 COPY frontend/index.html ./frontend/
 COPY frontend/style/ ./frontend/style/
 COPY frontend/public/ ./frontend/public/
-COPY frontend/package.json frontend/package-lock.json ./frontend/
+COPY frontend/package*.json ./frontend/
 
 # Build frontend
 WORKDIR /app/frontend
