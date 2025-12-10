@@ -1,45 +1,45 @@
-# 🐳 Docker - Notes pour Lois
+# 🐳 Docker & Kubernetes Integration
 
-## Image Docker
+## Docker Image
 
-Le Dockerfile suit le même pattern que `faucet` :
+The Dockerfile follows the same pattern as `faucet`:
 
 ```dockerfile
 # Multi-stage build:
 # 1. Builder: compile frontend (Trunk) + backend (Cargo)
-# 2. Runtime: Debian slim avec binaire + frontend/dist/
+# 2. Runtime: Debian slim with binary + frontend/dist/
 ```
 
-### Build local
+### Local Build
 
 ```bash
 docker build -t ghcr.io/allfeat/massload:local .
 ```
 
-### Test local
+### Local Testing
 
 ```bash
-# Avec docker-compose
+# With docker-compose
 docker-compose up
 
-# Ou directement
+# Or directly
 docker run -p 3000:3000 --env-file .env ghcr.io/allfeat/massload:local
 ```
 
-## Variables d'environnement
+## Environment Variables
 
-Voir `.env.example` pour la liste complète.
+See `.env.example` for the complete list.
 
-**Obligatoire :**
-- `ANTHROPIC_API_KEY` : Clé API Claude
+**Required:**
+- `ANTHROPIC_API_KEY` : Claude API key
 
-**Optionnel :**
-- `RUST_LOG=info` : Niveau de logs
-- `PORT=3000` : Port du serveur
+**Optional:**
+- `RUST_LOG=info` : Log level
+- `PORT=3000` : Server port
 
-## Pour infra-kube
+## For infra-kube Integration
 
-### Structure attendue
+### Expected Structure
 
 ```
 infra-kube/
@@ -59,7 +59,7 @@ infra-kube/
                     └── kustomization.yaml
 ```
 
-### Deployment hints
+### Deployment Configuration
 
 ```yaml
 # deployment.yaml
@@ -81,9 +81,9 @@ spec:
           value: "info"
 ```
 
-### ConfigMap pour frontend
+### ConfigMap for Frontend
 
-Le frontend attend un fichier `/config.js` optionnel :
+The frontend expects an optional `/config.js` file:
 
 ```yaml
 # configmap.yaml
@@ -94,12 +94,12 @@ metadata:
 data:
   config.js: |
     window.MASSLOAD_CONFIG = {
-      BACKEND_URL: "",  // Empty = même origine (serveur unifié)
+      BACKEND_URL: "",  // Empty = same origin (unified server)
       BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
     };
 ```
 
-Monter en volume dans le deployment :
+Mount as volume in deployment:
 ```yaml
 volumeMounts:
 - name: config-js
@@ -111,7 +111,7 @@ volumes:
     name: massload-config
 ```
 
-### Health check
+### Health Check
 
 ```yaml
 livenessProbe:
@@ -146,7 +146,7 @@ spec:
 ### Ingress
 
 ```yaml
-# Dans base/ ou overlay/
+# In base/ or overlay/
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -157,7 +157,7 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - massload-dev.allfeat.io  # ou massload.allfeat.io en prod
+    - massload-dev.allfeat.io  # or massload.allfeat.io in prod
     secretName: massload-tls
   rules:
   - host: massload-dev.allfeat.io
@@ -172,20 +172,19 @@ spec:
               number: 80
 ```
 
-## Workflows GitHub Actions
+## GitHub Actions Workflows
 
-Les workflows peuvent suivre le même pattern que `faucet` :
+Workflows can follow the same pattern as `faucet`:
 
-1. **deploy-dev.yml** : Push sur `develop` → Build image → Update infra-kube/dev
-2. **deploy-prod.yml** : Push sur `main` → Build image → Update infra-kube/prod
+1. **deploy-dev.yml** : Push to `develop` → Build image → Update infra-kube/dev
+2. **deploy-prod.yml** : Push to `main` → Build image → Update infra-kube/prod
 
-Voir `faucet/.github/workflows/` pour référence.
+See `faucet/.github/workflows/` for reference.
 
 ## Notes
 
-- **Port** : 3000 (comme faucet)
-- **Architecture** : Serveur unifié (backend sert le frontend CSR)
-- **User** : `massload` (non-root, comme faucet)
-- **Health** : `/health` endpoint
-- **Stateless** : Pas de volumes persistants nécessaires
-
+- **Port**: 3000 (same as faucet)
+- **Architecture**: Unified server (backend serves frontend CSR)
+- **User**: `massload` (non-root, like faucet)
+- **Health**: `/health` endpoint
+- **Stateless**: No persistent volumes required
