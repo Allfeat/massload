@@ -29,7 +29,7 @@ thiserror = "1.0"
 reqwest = { version = "0.12", features = ["json"] }
 tokio = { version = "1.0", features = ["rt-multi-thread", "macros", "fs"] }
 axum = { version = "0.8", features = ["multipart"] }
-tower-http = { version = "0.6", features = ["cors", "fs"] }
+tower-http = { version = "0.6", features = ["cors", "fs", "compression-gzip"] }
 dotenvy = "0.15"
 chardet = "0.2"
 encoding_rs = "0.8"

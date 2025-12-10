@@ -23,14 +23,22 @@ use serde_json::{json, Value};
 use std::{convert::Infallible, net::SocketAddr, time::Duration};
 use tokio_stream::StreamExt as _;
 use tokio_stream::wrappers::BroadcastStream;
-use tower_http::cors::CorsLayer;
+use tower_http::{
+    cors::CorsLayer,
+    services::ServeDir,
+};
 
 use super::types::{error_response, UploadResponse};
 use super::logs::LOG_BROADCASTER;
 use crate::transform::pipeline::{transform_bytes, TransformOptions};
 
-/// Start the HTTP server
+/// Start the HTTP server (like faucet: serves frontend + backend API)
 pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
+    println!("🚀 Starting Massload Unified Server (like faucet)");
+    println!("📁 Frontend: ../frontend/dist/ (CSR)");
+    println!("🔒 Backend: PRIVATE (integrated)");
+    println!();
+    
     // CORS permissif pour le développement
     let cors = CorsLayer::new()
         .allow_origin(tower_http::cors::Any)
@@ -39,17 +47,21 @@ pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
         .expose_headers([header::CONTENT_TYPE]);
 
     let app = Router::new()
-        .route("/", get(health))
+        // Backend API routes (PRIVATE)
         .route("/health", get(health))
         .route("/api/upload", post(upload_csv))
         .route("/api/logs", get(sse_logs))
+        
+        // Serve frontend static files (like faucet!)
+        .fallback_service(ServeDir::new("frontend/dist"))
+        
+        // Middleware
         .layer(cors);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
-    println!("🚀 Massload server running on http://localhost:{}", port);
-    println!("   POST /api/upload - Upload CSV file");
-    println!("   GET  /api/logs   - SSE log stream");
-    println!("   GET  /health     - Health check");
+    println!("✅ Server ready on http://localhost:{}", port);
+    println!("🌐 Frontend: http://localhost:{} (CSR)", port);
+    println!("🔐 Backend API: http://localhost:{}/api/* (PRIVATE)", port);
     println!();
     println!("📝 Blockchain submission via frontend SDK (@allfeat/client)");
 
