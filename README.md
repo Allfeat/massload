@@ -86,25 +86,41 @@ cargo build --release
 
 ### Configuration
 
-Create `backend/.env`:
+Copy and configure environment variables:
 
 ```bash
-ANTHROPIC_API_KEY=sk-ant-api03-...
+cp .env.example .env
+# Then edit .env with your real values
 ```
+
+Required variables in `.env`:
+- `ANTHROPIC_API_KEY` : Claude API key (required)
+- `RUST_LOG` : Log level (info, debug, warn, error)
 
 ### Running
 
-```bash
-# Terminal 1: Start backend
-cd backend
-cargo run --release -- serve
+**Option 1: Using scripts (recommended)**
 
-# Terminal 2: Start frontend
-cd frontend
-trunk serve --open
+```bash
+# Build everything
+./build.sh
+
+# Start the unified server
+./start.sh
 ```
 
-The app will open at `http://localhost:8080`.
+**Option 2: Manual**
+
+```bash
+# Build frontend
+cd frontend && trunk build --release && cd ..
+
+# Build and run backend
+cargo build --release --bin massload
+./target/release/massload serve --port 3000
+```
+
+The app will open at `http://localhost:3000`.
 
 ### Usage
 
