@@ -387,6 +387,7 @@ h1 {
 
 /* ===== UPLOAD SECTION ===== */
 .upload-section {
+  display: block;  /* Important: label should behave as block element */
   background: var(--bg-card);
   border: 2px dashed var(--border-color);
   border-radius: 16px;
