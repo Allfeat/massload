@@ -54,7 +54,7 @@ COPY --from=builder /app/frontend/dist ./frontend/dist
 COPY --from=builder /app/frontend/public ./frontend/public
 
 # Security: non-root user
-RUN useradd -r -s /bin/false massload \
+RUN useradd -r -u 1000 -s /bin/false massload \
     && chown -R massload:massload /app
 
 USER massload
