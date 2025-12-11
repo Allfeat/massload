@@ -11,16 +11,17 @@
     <link data-trunk rel="css" href="style/main.css">
     <link data-trunk rel="css" href="style/accordion.css">
     <link data-trunk rel="copy-dir" href="public/">
-    <!-- Runtime config - MUST load before WASM -->
+    <!-- Runtime config for external services (blockchain RPC) -->
     <script src="/config.js"></script>
-    <!-- Fallback config for local development (if config.js doesn't exist) -->
+    <!-- Fallback config for local development -->
     <script>
         if (!window.MASSLOAD_CONFIG) {
             console.log("[MassLoad] No runtime config found, using defaults");
             window.MASSLOAD_CONFIG = {
-                BACKEND_URL: "http://localhost:3000",
                 BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
             };
+        } else {
+            console.log("[MassLoad] Runtime config loaded:", window.MASSLOAD_CONFIG);
         }
     </script>
     <link data-trunk rel="rust" data-wasm-opt="z" data-target-name="frontend_rust"/>

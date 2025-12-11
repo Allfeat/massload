@@ -37,6 +37,14 @@ See `.env.example` for the complete list.
 - `RUST_LOG=info` : Log level
 - `PORT=3000` : Server port
 
+## Architecture Notes
+
+**Unified Server:**
+- The backend (Axum) serves the frontend (Leptos WASM) as static files
+- Frontend uses **relative paths** for API calls (`/api/upload`, `/api/logs`)
+- No `BACKEND_URL` configuration needed (unlike older microservice architectures)
+- Same pattern as `faucet` project
+
 ## For infra-kube Integration
 
 ### Expected Structure
@@ -81,9 +89,10 @@ spec:
           value: "info"
 ```
 
-### ConfigMap for Frontend
+### ConfigMap for Frontend (Optional)
 
-The frontend expects an optional `/config.js` file:
+The frontend uses **relative paths** for API calls (no `BACKEND_URL` needed).  
+Only external services like blockchain RPC need configuration:
 
 ```yaml
 # configmap.yaml
@@ -94,10 +103,11 @@ metadata:
 data:
   config.js: |
     window.MASSLOAD_CONFIG = {
-      BACKEND_URL: "",  // Empty = same origin (unified server)
       BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
     };
 ```
+
+**Note:** If you don't mount `config.js`, the frontend will use default values (devnet RPC).
 
 Mount as volume in deployment:
 ```yaml

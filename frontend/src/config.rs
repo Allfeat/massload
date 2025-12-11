@@ -3,12 +3,10 @@
 //! Configuration is loaded at RUNTIME from window.MASSLOAD_CONFIG (set by config.js).
 //! This allows the same Docker image to be used in different environments.
 //!
-//! # Docker runtime configuration
-//! ```bash
-//! docker run -e BACKEND_URL=https://api.example.com \
-//!            -e BLOCKCHAIN_RPC=wss://node.example.com \
-//!            -p 8080:80 massload-frontend
-//! ```
+//! # Unified Server Architecture
+//!
+//! The backend serves the frontend, so API calls use relative paths (no hostname).
+//! Only external services (like blockchain RPC) need absolute URLs.
 
 use wasm_bindgen::prelude::*;
 
@@ -25,19 +23,6 @@ fn get_config_value(key: &str) -> Option<String> {
     }
     let value = js_sys::Reflect::get(&config, &JsValue::from_str(key)).ok()?;
     value.as_string()
-}
-
-/// Get the backend API URL.
-/// 
-/// Reads from `window.MASSLOAD_CONFIG.BACKEND_URL` at runtime.
-/// Falls back to `http://localhost:3000` for local development.
-pub fn backend_url() -> String {
-    get_config_value("BACKEND_URL")
-        .filter(|s| !s.is_empty())
-        .unwrap_or_else(|| {
-            log::warn!("BACKEND_URL not set in config.js, using default");
-            "http://localhost:3000".to_string()
-        })
 }
 
 /// Get the blockchain RPC endpoint.
