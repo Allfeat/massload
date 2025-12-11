@@ -122,24 +122,13 @@ pub fn UploadSection(
         }
     };
 
-    // Handler pour cliquer sur la zone entière
-    let trigger_file_input = move |_| {
-        if let Some(window) = web_sys::window() {
-            if let Some(document) = window.document() {
-                if let Some(input) = document.get_element_by_id("fileInput") {
-                    if let Some(html_input) = input.dyn_ref::<HtmlInputElement>() {
-                        html_input.click();
-                    }
-                }
-            }
-        }
-    };
-
     view! {
-        <div 
+        // Convert entire upload section to a label for native clickability
+        // This avoids the "closure invoked recursively" error
+        <label 
             class="upload-section" 
             id="uploadZone"
-            on:click=trigger_file_input
+            for="fileInput"
         >
             <div class="upload-icon">"📤"</div>
             <div class="upload-text">
@@ -183,11 +172,11 @@ pub fn UploadSection(
                 when=move || !is_uploading.get()
                 fallback=|| view! { }
             >
-                <label for="fileInput" class="upload-button">
+                <div class="upload-button">
                     {move || Translations::choose_csv_file(lang.get())}
-                </label>
+                </div>
             </Show>
-        </div>
+        </label>
     }
 }
 
