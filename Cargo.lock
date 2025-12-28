@@ -64,6 +64,7 @@ dependencies = [
  "thiserror",
  "tokio",
  "tokio-stream",
+ "tower",
  "tower-http",
  "uuid",
 ]

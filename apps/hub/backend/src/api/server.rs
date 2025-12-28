@@ -14,7 +14,7 @@
 use axum::{
     extract::Multipart,
     http::{header, Method, StatusCode},
-    response::{Json, Sse, sse::Event},
+    response::{Html, Json, Sse, sse::Event},
     routing::{get, post},
     Router,
 };
@@ -60,14 +60,26 @@ pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
         .allow_headers([header::CONTENT_TYPE, header::ACCEPT])
         .expose_headers([header::CONTENT_TYPE]);
 
+    // Create SPA fallback handler - read index.html for all unmatched routes
+    let index_path = format!("{}/index.html", frontend_path);
+    let index_html: &'static str = Box::leak(
+        std::fs::read_to_string(&index_path)
+            .unwrap_or_else(|_| String::from("<!DOCTYPE html><html><body>Frontend not built</body></html>"))
+            .into_boxed_str()
+    );
+    
+    // SPA fallback service: try static files first, then serve index.html
+    let spa_fallback = ServeDir::new(&frontend_path)
+        .fallback(get(move || async move { Html(index_html) }));
+    
     let app = Router::new()
         // Backend API routes (PRIVATE)
         .route("/health", get(health))
         .route("/api/upload", post(upload_csv))
         .route("/api/logs", get(sse_logs))
         
-        // Serve frontend static files
-        .fallback_service(ServeDir::new(&frontend_path))
+        // Serve frontend static files with SPA fallback
+        .fallback_service(spa_fallback)
         
         // Middleware
         .layer(cors);

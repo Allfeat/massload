@@ -42,6 +42,7 @@ futures.workspace = true
 
 # Web
 axum.workspace = true
+tower = "0.5"
 tower-http.workspace = true
 
 # Config
