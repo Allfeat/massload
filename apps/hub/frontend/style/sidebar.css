@@ -1174,3 +1174,151 @@
     }
 }
 
+/* ===== SVG ICON STYLES FOR ALL PAGES ===== */
+
+/* Feature icons (Home page) */
+.feature-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(27, 167, 148, 0.1);
+    border-radius: 12px;
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.feature-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.feature-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.feature-arrow svg {
+    width: 20px;
+    height: 20px;
+}
+
+.feature-card:hover .feature-arrow {
+    color: var(--color-primary);
+}
+
+/* Resource icons */
+.resource-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+}
+
+.resource-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.resource-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+}
+
+.resource-arrow svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Step icons (How it works page) */
+.step-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(27, 167, 148, 0.1);
+    border-radius: 50%;
+    color: var(--color-primary);
+    margin: 16px 0;
+}
+
+.step-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+/* Placeholder icons (Explore page) */
+.placeholder-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.placeholder-icon svg {
+    width: 64px;
+    height: 64px;
+    opacity: 0.5;
+}
+
+/* Coming soon page icon (Protect page) */
+.coming-soon-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(27, 167, 148, 0.1);
+    border-radius: 50%;
+    color: var(--color-primary);
+    margin: 0 auto 24px auto;
+}
+
+.coming-soon-icon svg {
+    width: 40px;
+    height: 40px;
+}
+
+/* Search icon */
+.search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+
+.search-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Link arrow */
+.link-arrow {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+}
+
+.link-arrow svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Button icons */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 6px;
+}
+
+.btn-icon svg {
+    width: 16px;
+    height: 16px;
+}
+

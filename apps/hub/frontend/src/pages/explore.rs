@@ -4,6 +4,7 @@
 use leptos::*;
 
 use crate::i18n::t;
+use crate::components::icons::*;
 
 /// Explore page - Browse on-chain MIDDS
 #[component]
@@ -23,7 +24,7 @@ pub fn ExplorePage() -> impl IntoView {
             // Search and filters
             <div class="explore-controls">
                 <div class="search-box">
-                    <span class="search-icon">"🔍"</span>
+                    <span class="search-icon"><IconSearch/></span>
                     <input 
                         type="text"
                         placeholder=move || t("explore.search_placeholder")
@@ -84,7 +85,7 @@ pub fn ExplorePage() -> impl IntoView {
             // Results area (placeholder)
             <div class="explore-results">
                 <div class="results-placeholder">
-                    <span class="placeholder-icon">"🎵"</span>
+                    <span class="placeholder-icon"><IconMusic/></span>
                     <p>{t("explore.no_results")}</p>
                     <p class="hint">{t("explore.search_hint")}</p>
                 </div>

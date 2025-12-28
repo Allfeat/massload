@@ -3,6 +3,7 @@
 use leptos::*;
 
 use crate::i18n::t;
+use crate::components::icons::*;
 
 /// Protect page placeholder
 #[component]
@@ -10,7 +11,7 @@ pub fn ProtectPage() -> impl IntoView {
     view! {
         <div class="coming-soon-page">
             <div class="coming-soon-content">
-                <div class="coming-soon-icon">"🛡️"</div>
+                <div class="coming-soon-icon"><IconShield/></div>
                 <h1 class="coming-soon-title">{t("protect.title")}</h1>
                 <p class="coming-soon-description">{t("protect.coming_soon")}</p>
                 
@@ -25,7 +26,7 @@ pub fn ProtectPage() -> impl IntoView {
                 
                 <a href="https://protect.allfeat.org" target="_blank" class="coming-soon-link">
                     {t("protect.current_version")}
-                    <span class="link-arrow">"↗"</span>
+                    <span class="link-arrow"><IconExternalLink/></span>
                 </a>
             </div>
         </div>

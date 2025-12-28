@@ -4,6 +4,7 @@ use leptos::*;
 use leptos_router::*;
 
 use crate::i18n::t;
+use crate::components::icons::*;
 
 /// Home page with feature cards
 #[component]
@@ -18,32 +19,41 @@ pub fn HomePage() -> impl IntoView {
             
             // Feature cards
             <section class="feature-cards">
-                <FeatureCard 
-                    href="/massload"
-                    icon="📦"
-                    title=t("home.massload.title")
-                    description=t("home.massload.desc")
-                    badge="Live"
-                    badge_class="live"
-                />
+                <A href="/massload" class="feature-card">
+                    <div class="feature-icon"><IconPackage/></div>
+                    <div class="feature-content">
+                        <div class="feature-header">
+                            <h3 class="feature-title">{t("home.massload.title")}</h3>
+                            <span class="feature-badge live">"Live"</span>
+                        </div>
+                        <p class="feature-description">{t("home.massload.desc")}</p>
+                    </div>
+                    <div class="feature-arrow"><IconArrowRight/></div>
+                </A>
                 
-                <FeatureCard 
-                    href="/register"
-                    icon="✍️"
-                    title=t("home.register.title")
-                    description=t("home.register.desc")
-                    badge="Coming Soon"
-                    badge_class="soon"
-                />
+                <A href="/register" class="feature-card">
+                    <div class="feature-icon"><IconPenLine/></div>
+                    <div class="feature-content">
+                        <div class="feature-header">
+                            <h3 class="feature-title">{t("home.register.title")}</h3>
+                            <span class="feature-badge live">"Live"</span>
+                        </div>
+                        <p class="feature-description">{t("home.register.desc")}</p>
+                    </div>
+                    <div class="feature-arrow"><IconArrowRight/></div>
+                </A>
                 
-                <FeatureCard 
-                    href="/protect"
-                    icon="🛡️"
-                    title=t("home.protect.title")
-                    description=t("home.protect.desc")
-                    badge="Coming Soon"
-                    badge_class="soon"
-                />
+                <A href="/protect" class="feature-card">
+                    <div class="feature-icon"><IconShield/></div>
+                    <div class="feature-content">
+                        <div class="feature-header">
+                            <h3 class="feature-title">{t("home.protect.title")}</h3>
+                            <span class="feature-badge soon">"Coming Soon"</span>
+                        </div>
+                        <p class="feature-description">{t("home.protect.desc")}</p>
+                    </div>
+                    <div class="feature-arrow"><IconArrowRight/></div>
+                </A>
             </section>
             
             // Resources section
@@ -51,26 +61,26 @@ pub fn HomePage() -> impl IntoView {
                 <h2 class="section-title">{t("home.resources.title")}</h2>
                 
                 <div class="resources-grid">
-                    <ResourceLink 
-                        href="https://docs.allfeat.org/getting-started"
-                        icon="🚀"
-                        title=t("home.resources.getting_started")
-                    />
-                    <ResourceLink 
-                        href="https://docs.allfeat.org"
-                        icon="📚"
-                        title=t("home.resources.documentation")
-                    />
-                    <ResourceLink 
-                        href="https://t.me/Allfeat_fndn"
-                        icon="💬"
-                        title=t("home.resources.community")
-                    />
-                    <ResourceLink 
-                        href="https://github.com/allfeat"
-                        icon="🔧"
-                        title=t("home.resources.github")
-                    />
+                    <a href="https://docs.allfeat.org/getting-started" target="_blank" class="resource-link">
+                        <span class="resource-icon"><IconRocket/></span>
+                        <span class="resource-title">{t("home.resources.getting_started")}</span>
+                        <span class="resource-arrow"><IconExternalLink/></span>
+                    </a>
+                    <a href="https://docs.allfeat.org" target="_blank" class="resource-link">
+                        <span class="resource-icon"><IconBookOpen/></span>
+                        <span class="resource-title">{t("home.resources.documentation")}</span>
+                        <span class="resource-arrow"><IconExternalLink/></span>
+                    </a>
+                    <a href="https://t.me/Allfeat_fndn" target="_blank" class="resource-link">
+                        <span class="resource-icon"><IconMessageCircle/></span>
+                        <span class="resource-title">{t("home.resources.community")}</span>
+                        <span class="resource-arrow"><IconExternalLink/></span>
+                    </a>
+                    <a href="https://github.com/allfeat" target="_blank" class="resource-link">
+                        <span class="resource-icon"><IconGithub/></span>
+                        <span class="resource-title">{t("home.resources.github")}</span>
+                        <span class="resource-arrow"><IconExternalLink/></span>
+                    </a>
                 </div>
             </section>
             
@@ -93,44 +103,4 @@ pub fn HomePage() -> impl IntoView {
     }
 }
 
-/// Feature card component
-#[component]
-fn FeatureCard(
-    href: &'static str,
-    icon: &'static str,
-    title: String,
-    description: String,
-    badge: &'static str,
-    badge_class: &'static str,
-) -> impl IntoView {
-    view! {
-        <A href=href class="feature-card">
-            <div class="feature-icon">{icon}</div>
-            <div class="feature-content">
-                <div class="feature-header">
-                    <h3 class="feature-title">{title}</h3>
-                    <span class=format!("feature-badge {}", badge_class)>{badge}</span>
-                </div>
-                <p class="feature-description">{description}</p>
-            </div>
-            <div class="feature-arrow">"→"</div>
-        </A>
-    }
-}
-
-/// Resource link component
-#[component]
-fn ResourceLink(
-    href: &'static str,
-    icon: &'static str,
-    title: String,
-) -> impl IntoView {
-    view! {
-        <a href=href target="_blank" class="resource-link">
-            <span class="resource-icon">{icon}</span>
-            <span class="resource-title">{title}</span>
-            <span class="resource-arrow">"↗"</span>
-        </a>
-    }
-}
 
