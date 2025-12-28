@@ -1,0 +1,28 @@
+[package]
+name = "allfeat-ui"
+version.workspace = true
+edition.workspace = true
+description = "Shared UI components for Allfeat apps (Leptos CSR)"
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+keywords = ["allfeat", "leptos", "wasm", "ui", "components"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+allfeat-core = { path = "../core" }
+leptos.workspace = true
+leptos_router.workspace = true
+wasm-bindgen.workspace = true
+web-sys = { workspace = true, features = [
+    "Window", "Document", "Element", "HtmlElement",
+    "Storage", "Navigator"
+] }
+js-sys.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+log.workspace = true
+

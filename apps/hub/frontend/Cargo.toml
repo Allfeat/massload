@@ -1,0 +1,63 @@
+[package]
+name = "allfeat-hub-frontend"
+version.workspace = true
+edition.workspace = true
+description = "Allfeat Apps Hub - Frontend (Leptos CSR)"
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "allfeat-hub-frontend"
+path = "src/main.rs"
+
+[lib]
+name = "allfeat_hub_frontend"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Internal crates (for now, ui is placeholder)
+# allfeat-core.workspace = true
+# allfeat-ui.workspace = true
+
+# Leptos
+leptos.workspace = true
+leptos_meta.workspace = true
+leptos_router.workspace = true
+leptos_dom = { version = "0.6", features = ["csr"] }
+leptos_macro = { version = "0.6", features = ["csr"] }
+leptos_reactive = { version = "0.6", features = ["csr"] }
+
+# WASM
+wasm-bindgen.workspace = true
+wasm-bindgen-futures.workspace = true
+js-sys.workspace = true
+web-sys = { workspace = true, features = [
+    "File", "FileList", "FormData", "Window", "Blob",
+    "HtmlInputElement", "EventTarget", "Event", "Document"
+] }
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+serde-wasm-bindgen.workspace = true
+
+# HTTP
+gloo-net.workspace = true
+gloo-utils.workspace = true
+gloo-timers.workspace = true
+
+# Logging
+console_log.workspace = true
+log.workspace = true
+console_error_panic_hook.workspace = true
+
+# Utilities
+getrandom.workspace = true
+rand.workspace = true
+chrono = { workspace = true, features = ["wasm-bindgen"] }
+hex.workspace = true
+
+# Note: blockchain transactions use @allfeat/client SDK via JavaScript

@@ -1,0 +1,23 @@
+[package]
+name = "allfeat-core"
+version.workspace = true
+edition.workspace = true
+description = "Core models and validation for Allfeat ecosystem - MIDDS structures"
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+keywords = ["allfeat", "midds", "music", "metadata", "blockchain"]
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+chrono.workspace = true
+uuid.workspace = true
+jsonschema.workspace = true
+regex.workspace = true
+once_cell.workspace = true
+
+[dev-dependencies]
+

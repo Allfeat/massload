@@ -275,7 +275,8 @@ impl AiClient {
 
 /// Load the flat schema from embedded file
 fn load_flat_schema() -> Result<Value, AiError> {
-    let schema_str = include_str!("../../schemas/midds-musical-work-flat.json");
+    // Path relative to crates/services/src/ai/mod.rs -> schemas/
+    let schema_str = include_str!("../../../../schemas/midds-musical-work-flat.json");
     serde_json::from_str(schema_str).map_err(|e| AiError::ParseError(e.to_string()))
 }
 

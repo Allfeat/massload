@@ -26,13 +26,28 @@ use serde_json::Value;
 use std::path::Path;
 use thiserror::Error;
 
-use crate::parser::{parse_csv_file_auto, parse_bytes_auto, CsvError, ParseResult};
+use crate::parser::{parse_bytes_auto, parse_csv_file_auto, CsvError, ParseResult};
 use crate::transform::dsl::{execute, TransformationMatrix};
 use super::grouper::flat_to_grouped;
-use crate::api::logs::{log_info, log_success, log_warning, log_error};
 use crate::cache::MatrixRegistry;
-use crate::validation::{validate_musical_work_flat, validate_musical_work_grouped};
 use crate::ai::{AiClient, AiError};
+
+// Use allfeat-core for validation
+use allfeat_core::validation::{validate_musical_work_flat, validate_musical_work_grouped};
+
+// Simple logging macros (can be replaced with proper log infrastructure)
+fn log_info(msg: impl AsRef<str>) {
+    println!("[INFO] {}", msg.as_ref());
+}
+fn log_success(msg: impl AsRef<str>) {
+    println!("[OK] {}", msg.as_ref());
+}
+fn log_warning(msg: impl AsRef<str>) {
+    println!("[WARN] {}", msg.as_ref());
+}
+fn log_error(msg: impl AsRef<str>) {
+    eprintln!("[ERROR] {}", msg.as_ref());
+}
 
 /// Pipeline errors
 #[derive(Error, Debug)]

@@ -28,16 +28,30 @@ use tower_http::{
     services::ServeDir,
 };
 
-use super::types::{error_response, UploadResponse};
 use super::logs::LOG_BROADCASTER;
-use crate::transform::pipeline::{transform_bytes, TransformOptions};
+use super::types::{error_response, UploadResponse};
+use allfeat_services::{transform_bytes, TransformOptions};
 
 /// Start the HTTP server (like faucet: serves frontend + backend API)
 pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
-    println!("🚀 Starting Massload Unified Server (like faucet)");
-    println!("📁 Frontend: ../frontend/dist/ (CSR)");
+    println!("🚀 Starting Allfeat Apps Hub");
     println!("🔒 Backend: PRIVATE (integrated)");
     println!();
+    
+    // Determine frontend dist path - check multiple locations
+    let frontend_paths = [
+        "apps/hub/frontend/dist",  // When run from workspace root
+        "frontend/dist",            // Legacy path
+        "../frontend/dist",         // When run from backend dir
+    ];
+    
+    let frontend_path = frontend_paths
+        .iter()
+        .find(|p| std::path::Path::new(p).exists())
+        .map(|s| s.to_string())
+        .unwrap_or_else(|| "apps/hub/frontend/dist".to_string());
+    
+    println!("📁 Frontend: {} (CSR)", frontend_path);
     
     // CORS permissif pour le développement
     let cors = CorsLayer::new()
@@ -52,8 +66,8 @@ pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
         .route("/api/upload", post(upload_csv))
         .route("/api/logs", get(sse_logs))
         
-        // Serve frontend static files (like faucet!)
-        .fallback_service(ServeDir::new("frontend/dist"))
+        // Serve frontend static files
+        .fallback_service(ServeDir::new(&frontend_path))
         
         // Middleware
         .layer(cors);
@@ -71,11 +85,11 @@ pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-/// Health check endpoint
+/// Health check endpoint - returns service info
 async fn health() -> Json<Value> {
     Json(json!({
         "status": "ok",
-        "service": "massload",
+        "service": "allfeat-hub",
         "version": env!("CARGO_PKG_VERSION"),
         "endpoints": {
             "upload": "POST /api/upload",

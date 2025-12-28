@@ -1,0 +1,53 @@
+[package]
+name = "allfeat-hub-backend"
+version.workspace = true
+edition.workspace = true
+description = "Allfeat Apps Hub - Unified backend server"
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+keywords = ["allfeat", "music", "metadata", "midds", "blockchain"]
+categories = ["command-line-utilities", "web-programming"]
+authors.workspace = true
+
+[[bin]]
+name = "allfeat-hub"
+path = "src/main.rs"
+
+[lib]
+name = "allfeat_hub_backend"
+path = "src/lib.rs"
+
+[dependencies]
+# Internal crates
+allfeat-core.workspace = true
+allfeat-services.workspace = true
+
+# CLI
+clap = { version = "4.5", features = ["derive"] }
+
+# Core
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+chrono.workspace = true
+uuid.workspace = true
+regex.workspace = true
+once_cell.workspace = true
+
+# Async
+tokio.workspace = true
+tokio-stream.workspace = true
+futures.workspace = true
+
+# Web
+axum.workspace = true
+tower-http.workspace = true
+
+# Config
+dotenvy.workspace = true
+
+# Note: Blockchain submission is handled by frontend via @allfeat/client SDK
+
+[dev-dependencies]
+tempfile = "3.20"

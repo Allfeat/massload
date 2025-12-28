@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mass Load Rust - Allfeat</title>
+    <title>Allfeat Apps Hub</title>
     <!-- Google Fonts for CJK support (Korean, Japanese, Chinese) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,15 +15,17 @@
     <script src="/config.js"></script>
     <!-- Fallback config for local development (if config.js doesn't exist) -->
     <script>
-        if (!window.MASSLOAD_CONFIG) {
-            console.log("[MassLoad] No runtime config found, using defaults");
-            window.MASSLOAD_CONFIG = {
+        if (!window.ALLFEAT_CONFIG) {
+            console.log("[Allfeat] No runtime config found, using defaults");
+            window.ALLFEAT_CONFIG = {
                 BACKEND_URL: "http://localhost:3000",
                 BLOCKCHAIN_RPC: "wss://node-dev.allfeat.io"
             };
         }
+        // Backward compatibility
+        window.MASSLOAD_CONFIG = window.ALLFEAT_CONFIG;
     </script>
-    <link data-trunk rel="rust" data-wasm-opt="z" data-target-name="frontend_rust"/>
+    <link data-trunk rel="rust" data-wasm-opt="z" data-target-name="allfeat_hub_frontend"/>
 </head>
 <body>
     <!-- Leptos will mount here -->

@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use uuid::Uuid;
 
-use crate::transform::pipeline::PipelineResult;
+use allfeat_services::PipelineResult;
 
 /// Response sent to frontend after CSV upload and transformation.
 /// `musical_works` contains MIDDS format ready for blockchain.

@@ -19,14 +19,19 @@
 //! ```
 
 use clap::{Parser, Subcommand};
-use massload::{
-    flat_to_grouped, validate_musical_work_flat,
-    parse_csv_file_auto, MatrixRegistry,
-    transform_csv, transform_with_matrix, TransformOptions,
-};
 use serde_json::Value;
 use std::fs;
 use std::path::{Path, PathBuf};
+
+// Import from allfeat crates
+use allfeat_core::validate_musical_work_flat;
+use allfeat_services::{
+    example_matrix, flat_to_grouped, operations_description, parse_csv_file_auto,
+    transform_csv, transform_with_matrix, MatrixRegistry, TransformOptions,
+};
+
+// Import server from local lib
+use allfeat_hub_backend::server;
 
 #[derive(Parser)]
 #[command(name = "massload")]
@@ -380,19 +385,19 @@ fn cmd_group(input: &Path, output: Option<&Path>) -> Result<(), Box<dyn std::err
 }
 
 fn cmd_example_matrix() -> Result<(), Box<dyn std::error::Error>> {
-    let matrix = massload::example_matrix();
+    let matrix = example_matrix();
     let json = matrix.to_json()?;
     println!("{}", json);
     Ok(())
 }
 
 fn cmd_operations() -> Result<(), Box<dyn std::error::Error>> {
-    println!("{}", massload::operations_description());
+    println!("{}", operations_description());
     Ok(())
 }
 
 async fn cmd_serve(port: u16) -> Result<(), Box<dyn std::error::Error>> {
-    massload::server::start_server(port).await
+    server::start_server(port).await
 }
 
 fn write_output(content: &str, path: Option<&Path>) -> Result<(), Box<dyn std::error::Error>> {

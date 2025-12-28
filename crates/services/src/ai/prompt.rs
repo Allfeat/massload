@@ -5,7 +5,8 @@
 use serde_json::Value;
 
 /// The transformation matrix JSON schema (embedded at compile time)
-const MATRIX_SCHEMA: &str = include_str!("../../schemas/transformation-matrix-schema.json");
+/// Path relative to crates/services/src/ai/prompt.rs -> schemas/
+const MATRIX_SCHEMA: &str = include_str!("../../../../schemas/transformation-matrix-schema.json");
 
 /// Generate the system prompt for matrix generation
 pub fn system_prompt() -> String {

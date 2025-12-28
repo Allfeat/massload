@@ -32,6 +32,108 @@ dependencies = [
 ]
 
 [[package]]
+name = "allfeat-core"
+version = "0.2.0"
+dependencies = [
+ "chrono",
+ "jsonschema",
+ "once_cell",
+ "regex",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "uuid",
+]
+
+[[package]]
+name = "allfeat-hub-backend"
+version = "0.2.0"
+dependencies = [
+ "allfeat-core",
+ "allfeat-services",
+ "axum",
+ "chrono",
+ "clap",
+ "dotenvy",
+ "futures",
+ "once_cell",
+ "regex",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror",
+ "tokio",
+ "tokio-stream",
+ "tower-http",
+ "uuid",
+]
+
+[[package]]
+name = "allfeat-hub-frontend"
+version = "0.2.0"
+dependencies = [
+ "chrono",
+ "console_error_panic_hook",
+ "console_log",
+ "getrandom 0.2.16",
+ "gloo-net",
+ "gloo-timers",
+ "gloo-utils",
+ "hex",
+ "js-sys",
+ "leptos",
+ "leptos_dom",
+ "leptos_macro",
+ "leptos_meta",
+ "leptos_reactive",
+ "leptos_router",
+ "log",
+ "rand",
+ "serde",
+ "serde-wasm-bindgen",
+ "serde_json",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+]
+
+[[package]]
+name = "allfeat-services"
+version = "0.2.0"
+dependencies = [
+ "allfeat-core",
+ "chardet",
+ "chrono",
+ "csv",
+ "dotenvy",
+ "encoding_rs",
+ "once_cell",
+ "regex",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
+name = "allfeat-ui"
+version = "0.2.0"
+dependencies = [
+ "allfeat-core",
+ "js-sys",
+ "leptos",
+ "leptos_router",
+ "log",
+ "serde",
+ "serde_json",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
 name = "allocator-api2"
 version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1552,61 +1654,6 @@ dependencies = [
  "proc-macro-utils 0.8.0",
  "proc-macro2",
  "quote",
-]
-
-[[package]]
-name = "massload-backend"
-version = "0.1.0"
-dependencies = [
- "axum",
- "chardet",
- "chrono",
- "clap",
- "csv",
- "dotenvy",
- "encoding_rs",
- "futures",
- "jsonschema",
- "once_cell",
- "regex",
- "reqwest",
- "serde",
- "serde_json",
- "tempfile",
- "thiserror",
- "tokio",
- "tokio-stream",
- "tower-http",
- "uuid",
-]
-
-[[package]]
-name = "massload-frontend"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "console_error_panic_hook",
- "console_log",
- "getrandom 0.2.16",
- "gloo-net",
- "gloo-timers",
- "gloo-utils",
- "hex",
- "js-sys",
- "leptos",
- "leptos_dom",
- "leptos_macro",
- "leptos_meta",
- "leptos_reactive",
- "leptos_router",
- "log",
- "rand",
- "serde",
- "serde-wasm-bindgen",
- "serde_json",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "web-sys",
 ]
 
 [[package]]
