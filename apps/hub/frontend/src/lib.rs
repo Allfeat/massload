@@ -1,29 +1,30 @@
-//! Mass Load - Frontend Rust/Leptos Application
+//! Allfeat Apps Hub - Frontend Rust/Leptos Application
 //!
-//! A WebAssembly frontend for uploading CSV files and registering
-//! musical works on the Allfeat blockchain.
+//! A WebAssembly frontend for the Allfeat ecosystem apps:
+//! - Mass Load: Bulk CSV registration
+//! - Register: Single work registration (coming soon)
+//! - Protect: IP protection (coming soon)
 //!
-//! # Architecture
+//! # Architecture (Tanssi-style)
 //!
 //! ```text
-//! ┌─────────────────────────────────────────────────────────────┐
-//! │                        App                                   │
-//! ├─────────────────────────────────────────────────────────────┤
-//! │  Header (wallet connection)                                  │
-//! ├─────────────────────────────────────────────────────────────┤
-//! │  MainContent                                                 │
-//! │  ├── Hero (title, description)                              │
-//! │  ├── UploadSection or LogsPanel                             │
-//! │  └── PreviewSection (when works loaded)                     │
-//! ├─────────────────────────────────────────────────────────────┤
-//! │  Footer                                                      │
-//! └─────────────────────────────────────────────────────────────┘
+//! ┌──────────────────────────────────────────────────────────────┐
+//! │  Sidebar │              Main Content                         │
+//! │  ├─Home  │  ┌─────────────────────────────────────────────┐  │
+//! │  ├─Apps  │  │  Header (wallet connection)                 │  │
+//! │  │ ├─ML  │  ├─────────────────────────────────────────────┤  │
+//! │  │ ├─Reg │  │  Page Content (routed)                      │  │
+//! │  │ └─Pro │  │  - HomePage / MassloadPage / etc.           │  │
+//! │  └─Links │  ├─────────────────────────────────────────────┤  │
+//! │          │  │  Footer                                      │  │
+//! └──────────────────────────────────────────────────────────────┘
 //! ```
 //!
 //! # Modules
 //!
 //! - [`types`] - Common types (LogEntry, PreviewItem, etc.)
-//! - [`components`] - UI components (Header, Upload, Preview, etc.)
+//! - [`components`] - UI components (Sidebar, Header, etc.)
+//! - [`pages`] - Route pages (Home, Massload, Register, Protect)
 //! - [`services`] - Backend communication (upload, wallet, blockchain)
 
 use leptos::*;
@@ -38,6 +39,7 @@ pub mod config;
 pub mod i18n;
 pub mod types;
 pub mod components;
+pub mod pages;
 pub mod services;
 
 // =============================================================================
@@ -80,7 +82,7 @@ pub fn main() {
     // Setup console logging
     _ = console_log::init_with_level(log::Level::Debug);
     
-    log::info!("🦀 Mass Load Rust - Starting Leptos App");
+    log::info!("🚀 Allfeat Apps Hub - Starting");
     
     // Mount the application
     mount_to_body(|| view! { <App/> });
@@ -91,80 +93,45 @@ pub fn App() -> impl IntoView {
     // Initialize language context
     i18n::provide_language_context();
     
-    view! {
-        <Router>
-            <main>
-                <Routes>
-                    <Route path="/" view=MainContent/>
-                </Routes>
-            </main>
-        </Router>
-    }
-}
-
-#[component]
-fn MainContent() -> impl IntoView {
-    // Global state for the application
+    // Global wallet state (shared across all pages)
     let (wallet_connected, set_wallet_connected) = create_signal(false);
     let (wallet_address, set_wallet_address) = create_signal(None::<String>);
-    let (preview_data, set_preview_data) = create_signal(None::<Vec<PreviewItem>>);
-    let (musical_works_json, set_musical_works_json) = create_signal(None::<serde_json::Value>);
-    let (_is_processing, set_is_processing) = create_signal(false);
-    let (logs, set_logs) = create_signal(Vec::<LogEntry>::new());
     
-    // Initialize SSE connection ONCE at app startup
-    init_sse_logs(set_logs);
-
     view! {
-        <Header 
-            wallet_connected=wallet_connected 
-            wallet_address=wallet_address
-            set_wallet_connected=set_wallet_connected
-            set_wallet_address=set_wallet_address
-        />
-
-        <div class="container">
-            <Hero/>
-
-            // Show UploadBox when no logs, hide when logs exist
-            <Show
-                when=move || logs.get().is_empty()
-                fallback=|| view! { }
-            >
-                <UploadSection 
-                    set_preview_data=set_preview_data
-                    set_musical_works_json=set_musical_works_json
-                    set_is_processing=set_is_processing 
-                    set_logs=set_logs
-                />
-            </Show>
-            
-            // Show LogsPanel when logs exist
-            <Show
-                when=move || !logs.get().is_empty()
-                fallback=|| view! { }
-            >
-                <LogsPanel logs=logs set_logs=set_logs/>
-            </Show>
-
-            // Preview section (appears after processing)
-            <Show
-                when=move || preview_data.get().is_some()
-                fallback=|| view! { }
-            >
-                <PreviewSection 
-                    data=preview_data
-                    musical_works_json=musical_works_json
-                    wallet_connected=wallet_connected
-                    wallet_address=wallet_address
-                    set_logs=set_logs
-                    set_is_processing=set_is_processing
-                    set_preview_data=set_preview_data
-                    set_musical_works_json=set_musical_works_json
-                />
-            </Show>
-        </div>
-
-        <Footer/>
+        <Router>
+            <div class="app-layout">
+                // Left sidebar navigation
+                <components::Sidebar/>
+                
+                // Main content area
+                <div class="main-area">
+                    // Top header with wallet
+                    <Header 
+                        wallet_connected=wallet_connected 
+                        wallet_address=wallet_address
+                        set_wallet_connected=set_wallet_connected
+                        set_wallet_address=set_wallet_address
+                    />
+                    
+                    // Page content (routed)
+                    <main class="page-content">
+                        <Routes>
+                            <Route path="/" view=pages::HomePage/>
+                            <Route path="/massload" view=move || view! {
+                                <pages::MassloadPage 
+                                    wallet_connected=wallet_connected
+                                    wallet_address=wallet_address
+                                />
+                            }/>
+                            <Route path="/register" view=pages::RegisterPage/>
+                            <Route path="/protect" view=pages::ProtectPage/>
+                        </Routes>
+                    </main>
+                    
+                    // Footer
+                    <Footer/>
+                </div>
+            </div>
+        </Router>
     }
 }

@@ -1,19 +1,20 @@
-//! UI Components for the Mass Load application.
+//! UI Components for the Allfeat Apps Hub.
 //!
 //! This module contains all Leptos components organized by function:
 //!
 //! # Layout Components
-//! - [`Header`] - Navigation bar with wallet connection
-//! - [`Hero`] - Main title and description
+//! - [`Sidebar`] - Left navigation menu (Tanssi-style)
+//! - [`Header`] - Top bar with wallet connection
 //! - [`Footer`] - Page footer
 //!
-//! # Feature Components
+//! # Page Components
+//! - [`Hero`] - Main title and description
 //! - [`UploadSection`] - CSV file upload with drag & drop
 //! - [`PreviewSection`] - Transaction preview before submission
-//! - `PreviewDetail` - Detailed view of a single musical work
 //! - [`LogsPanel`] - Real-time processing logs (SSE)
 //! - [`ProgressSection`] - Transaction progress indicator
 
+mod sidebar;
 mod header;
 mod hero;
 mod upload;
@@ -24,6 +25,7 @@ mod footer;
 mod logs;
 mod wallet_modal;
 
+pub use sidebar::*;
 pub use header::*;
 pub use hero::*;
 pub use upload::*;
