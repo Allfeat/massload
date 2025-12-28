@@ -1,4 +1,5 @@
 //! Sidebar navigation component - Tanssi-style left menu
+//! Based on https://apps.tanssi.network/
 
 use leptos::*;
 use leptos_router::*;
@@ -23,11 +24,11 @@ pub fn Sidebar() -> impl IntoView {
     view! {
         <aside class="sidebar">
             <nav class="sidebar-nav">
-                // Main section
+                // Home
                 <div class="nav-section">
                     <A 
                         href="/" 
-                        class=move || if is_active("/") && !is_active("/massload") && !is_active("/register") && !is_active("/protect") { 
+                        class=move || if is_active("/") && !is_active("/explore") && !is_active("/register") && !is_active("/protect") && !is_active("/massload") && !is_active("/how-it-works") { 
                             "nav-item active" 
                         } else { 
                             "nav-item" 
@@ -38,51 +39,69 @@ pub fn Sidebar() -> impl IntoView {
                     </A>
                 </div>
                 
-                // Apps section
+                // Explore - View MIDDS on-chain
                 <div class="nav-section">
-                    <div class="nav-section-title">{t("nav.apps")}</div>
-                    
                     <A 
-                        href="/massload" 
-                        class=move || if is_active("/massload") { "nav-item active" } else { "nav-item" }
+                        href="/explore" 
+                        class=move || if is_active("/explore") { "nav-item active" } else { "nav-item" }
                     >
-                        <span class="nav-icon">"📦"</span>
-                        <span class="nav-label">{t("nav.massload")}</span>
-                        <span class="nav-badge live">"Live"</span>
+                        <span class="nav-icon">"🔍"</span>
+                        <span class="nav-label">{t("nav.explore")}</span>
                     </A>
-                    
+                </div>
+                
+                // Register - like register.allfeat.org
+                <div class="nav-section">
                     <A 
                         href="/register" 
                         class=move || if is_active("/register") { "nav-item active" } else { "nav-item" }
                     >
                         <span class="nav-icon">"✍️"</span>
                         <span class="nav-label">{t("nav.register")}</span>
-                        <span class="nav-badge soon">"Soon"</span>
                     </A>
-                    
+                </div>
+                
+                // Protect - Timestamp/ATS
+                <div class="nav-section">
                     <A 
                         href="/protect" 
                         class=move || if is_active("/protect") { "nav-item active" } else { "nav-item" }
                     >
                         <span class="nav-icon">"🛡️"</span>
                         <span class="nav-label">{t("nav.protect")}</span>
-                        <span class="nav-badge soon">"Soon"</span>
                     </A>
                 </div>
                 
-                // Explore section
+                // Mass Load - Bulk import (hidden but accessible)
                 <div class="nav-section">
-                    <div class="nav-section-title">{t("nav.explore")}</div>
-                    
+                    <A 
+                        href="/massload" 
+                        class=move || if is_active("/massload") { "nav-item active" } else { "nav-item" }
+                    >
+                        <span class="nav-icon">"📦"</span>
+                        <span class="nav-label">{t("nav.massload")}</span>
+                    </A>
+                </div>
+                
+                // Separator
+                <div class="nav-divider"></div>
+                
+                // How it works
+                <div class="nav-section">
+                    <A 
+                        href="/how-it-works" 
+                        class=move || if is_active("/how-it-works") { "nav-item active" } else { "nav-item" }
+                    >
+                        <span class="nav-icon">"📖"</span>
+                        <span class="nav-label">{t("nav.how_it_works")}</span>
+                    </A>
+                </div>
+                
+                // External links
+                <div class="nav-section">
                     <a href="https://docs.allfeat.org" target="_blank" class="nav-item external">
                         <span class="nav-icon">"📚"</span>
                         <span class="nav-label">{t("nav.docs")}</span>
-                        <span class="nav-external">"↗"</span>
-                    </a>
-                    
-                    <a href="https://allfeat.org" target="_blank" class="nav-item external">
-                        <span class="nav-icon">"🌐"</span>
-                        <span class="nav-label">{t("nav.website")}</span>
                         <span class="nav-external">"↗"</span>
                     </a>
                 </div>
@@ -97,4 +116,3 @@ pub fn Sidebar() -> impl IntoView {
         </aside>
     }
 }
-

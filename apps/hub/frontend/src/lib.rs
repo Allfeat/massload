@@ -118,15 +118,33 @@ pub fn App() -> impl IntoView {
                         // Page content (routed)
                         <main class="page-content">
                             <Routes>
+                                // Home
                                 <Route path="/" view=pages::HomePage/>
+                                
+                                // Explore - View MIDDS on-chain
+                                <Route path="/explore" view=pages::ExplorePage/>
+                                
+                                // Register hub and sub-routes
+                                <Route path="/register" view=pages::RegisterPage/>
+                                <Route path="/register/musical-work" view=pages::RegisterMusicalWorkPage/>
+                                <Route path="/register/recording" view=pages::RegisterRecordingPage/>
+                                <Route path="/register/release" view=pages::RegisterReleasePage/>
+                                <Route path="/register/artist" view=pages::RegisterArtistPage/>
+                                <Route path="/register/legal-entity" view=pages::RegisterLegalEntityPage/>
+                                
+                                // Protect
+                                <Route path="/protect" view=pages::ProtectPage/>
+                                
+                                // Mass Load
                                 <Route path="/massload" view=move || view! {
                                     <pages::MassloadPage 
                                         wallet_connected=wallet_connected
                                         wallet_address=wallet_address
                                     />
                                 }/>
-                                <Route path="/register" view=pages::RegisterPage/>
-                                <Route path="/protect" view=pages::ProtectPage/>
+                                
+                                // How it works
+                                <Route path="/how-it-works" view=pages::HowItWorksPage/>
                             </Routes>
                         </main>
                         

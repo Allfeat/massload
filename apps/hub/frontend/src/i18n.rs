@@ -297,6 +297,15 @@ pub fn translate(key: &str, lang: Language) -> String {
             Language::Korean => "웹사이트",
             Language::Greek => "Ιστοσελίδα",
         },
+        "nav.how_it_works" => match lang {
+            Language::English => "How it works",
+            Language::French => "Comment ça marche",
+            Language::Spanish => "Cómo funciona",
+            Language::German => "Wie es funktioniert",
+            Language::Japanese => "仕組み",
+            Language::Korean => "작동 방식",
+            Language::Greek => "Πώς λειτουργεί",
+        },
         
         // Home page
         "home.welcome" => match lang {
@@ -509,6 +518,376 @@ pub fn translate(key: &str, lang: Language) -> String {
             Language::English => "Use current version at protect.allfeat.org",
             Language::French => "Utiliser la version actuelle sur protect.allfeat.org",
             _ => "Use current version",
+        },
+        
+        // Explore page
+        "explore.title" => match lang {
+            Language::English => "Explore",
+            Language::French => "Explorer",
+            Language::Spanish => "Explorar",
+            Language::German => "Erkunden",
+            _ => "Explore",
+        },
+        "explore.subtitle" => match lang {
+            Language::English => "Browse registered works, recordings, and releases on the Allfeat blockchain.",
+            Language::French => "Parcourez les œuvres, enregistrements et sorties inscrites sur la blockchain Allfeat.",
+            _ => "Browse registered works on the blockchain.",
+        },
+        "explore.search_placeholder" => match lang {
+            Language::English => "Search by ISWC, ISRC, title, or artist...",
+            Language::French => "Rechercher par ISWC, ISRC, titre ou artiste...",
+            _ => "Search...",
+        },
+        "explore.filter_all" => match lang {
+            Language::English => "All",
+            Language::French => "Tout",
+            _ => "All",
+        },
+        "explore.filter_works" => match lang {
+            Language::English => "Works",
+            Language::French => "Œuvres",
+            _ => "Works",
+        },
+        "explore.filter_recordings" => match lang {
+            Language::English => "Recordings",
+            Language::French => "Enregistrements",
+            _ => "Recordings",
+        },
+        "explore.filter_releases" => match lang {
+            Language::English => "Releases",
+            Language::French => "Sorties",
+            _ => "Releases",
+        },
+        "explore.total_works" => match lang {
+            Language::English => "Musical Works",
+            Language::French => "Œuvres musicales",
+            _ => "Works",
+        },
+        "explore.total_recordings" => match lang {
+            Language::English => "Recordings",
+            Language::French => "Enregistrements",
+            _ => "Recordings",
+        },
+        "explore.total_releases" => match lang {
+            Language::English => "Releases",
+            Language::French => "Sorties",
+            _ => "Releases",
+        },
+        "explore.total_artists" => match lang {
+            Language::English => "Artists",
+            Language::French => "Artistes",
+            _ => "Artists",
+        },
+        "explore.no_results" => match lang {
+            Language::English => "No results found",
+            Language::French => "Aucun résultat trouvé",
+            _ => "No results",
+        },
+        "explore.search_hint" => match lang {
+            Language::English => "Try searching for an ISWC, ISRC, or artist name",
+            Language::French => "Essayez de rechercher un ISWC, ISRC ou nom d'artiste",
+            _ => "Try searching",
+        },
+        
+        // How it works page
+        "how.title" => match lang {
+            Language::English => "How it works",
+            Language::French => "Comment ça marche",
+            _ => "How it works",
+        },
+        "how.subtitle" => match lang {
+            Language::English => "Understand the Allfeat ecosystem and how to register your musical works.",
+            Language::French => "Comprenez l'écosystème Allfeat et comment enregistrer vos œuvres musicales.",
+            _ => "Understand the ecosystem.",
+        },
+        "how.step1_title" => match lang {
+            Language::English => "Register",
+            Language::French => "Enregistrer",
+            _ => "Register",
+        },
+        "how.step1_desc" => match lang {
+            Language::English => "Submit your musical work metadata in MIDDS format.",
+            Language::French => "Soumettez les métadonnées de votre œuvre au format MIDDS.",
+            _ => "Submit your metadata.",
+        },
+        "how.step2_title" => match lang {
+            Language::English => "Validate",
+            Language::French => "Valider",
+            _ => "Validate",
+        },
+        "how.step2_desc" => match lang {
+            Language::English => "Community trusters verify and certify the metadata.",
+            Language::French => "Les certificateurs de la communauté vérifient les métadonnées.",
+            _ => "Community validates.",
+        },
+        "how.step3_title" => match lang {
+            Language::English => "Certify",
+            Language::French => "Certifier",
+            _ => "Certify",
+        },
+        "how.step3_desc" => match lang {
+            Language::English => "Your work is permanently recorded on the blockchain.",
+            Language::French => "Votre œuvre est enregistrée de façon permanente sur la blockchain.",
+            _ => "Recorded on blockchain.",
+        },
+        "how.step4_title" => match lang {
+            Language::English => "Protect",
+            Language::French => "Protéger",
+            _ => "Protect",
+        },
+        "how.step4_desc" => match lang {
+            Language::English => "Your intellectual property is protected with immutable proof.",
+            Language::French => "Votre propriété intellectuelle est protégée avec une preuve immuable.",
+            _ => "IP protected.",
+        },
+        "how.concepts_title" => match lang {
+            Language::English => "Key Concepts",
+            Language::French => "Concepts clés",
+            _ => "Key Concepts",
+        },
+        "how.midds_desc" => match lang {
+            Language::English => "Music Industry Decentralized Data Structures - standardized metadata format.",
+            Language::French => "Music Industry Decentralized Data Structures - format de métadonnées standardisé.",
+            _ => "Standardized metadata format.",
+        },
+        "how.iswc_desc" => match lang {
+            Language::English => "International Standard Musical Work Code - unique identifier for compositions.",
+            Language::French => "International Standard Musical Work Code - identifiant unique pour les compositions.",
+            _ => "Unique work identifier.",
+        },
+        "how.isrc_desc" => match lang {
+            Language::English => "International Standard Recording Code - unique identifier for sound recordings.",
+            Language::French => "International Standard Recording Code - identifiant unique pour les enregistrements sonores.",
+            _ => "Unique recording identifier.",
+        },
+        "how.ipi_desc" => match lang {
+            Language::English => "Interested Parties Information - unique identifier for rights holders.",
+            Language::French => "Interested Parties Information - identifiant unique pour les ayants droit.",
+            _ => "Rights holder identifier.",
+        },
+        "how.cta_title" => match lang {
+            Language::English => "Ready to get started?",
+            Language::French => "Prêt à commencer ?",
+            _ => "Ready?",
+        },
+        "how.start_registering" => match lang {
+            Language::English => "Start Registering",
+            Language::French => "Commencer à enregistrer",
+            _ => "Start",
+        },
+        "how.read_docs" => match lang {
+            Language::English => "Read Documentation",
+            Language::French => "Lire la documentation",
+            _ => "Read Docs",
+        },
+        
+        // Register page - hub
+        "register.subtitle" => match lang {
+            Language::English => "Register your musical works, recordings, and releases on the blockchain.",
+            Language::French => "Enregistrez vos œuvres musicales, enregistrements et sorties sur la blockchain.",
+            _ => "Register on blockchain.",
+        },
+        "register.musical_work.title" => match lang {
+            Language::English => "Musical Work",
+            Language::French => "Œuvre musicale",
+            _ => "Musical Work",
+        },
+        "register.musical_work.desc" => match lang {
+            Language::English => "Register a composition with ISWC identifier and creator information.",
+            Language::French => "Enregistrez une composition avec identifiant ISWC et informations sur les créateurs.",
+            _ => "Register a composition.",
+        },
+        "register.musical_work.form_desc" => match lang {
+            Language::English => "Fill in the details of your musical work to register it on the blockchain.",
+            Language::French => "Remplissez les détails de votre œuvre musicale pour l'enregistrer sur la blockchain.",
+            _ => "Fill in work details.",
+        },
+        "register.recording.title" => match lang {
+            Language::English => "Recording",
+            Language::French => "Enregistrement",
+            _ => "Recording",
+        },
+        "register.recording.desc" => match lang {
+            Language::English => "Register a sound recording with ISRC identifier linked to a work.",
+            Language::French => "Enregistrez un enregistrement sonore avec identifiant ISRC lié à une œuvre.",
+            _ => "Register a recording.",
+        },
+        "register.recording.form_desc" => match lang {
+            Language::English => "Fill in the recording details to register it on the blockchain.",
+            Language::French => "Remplissez les détails de l'enregistrement pour l'inscrire sur la blockchain.",
+            _ => "Fill in recording details.",
+        },
+        "register.release.title" => match lang {
+            Language::English => "Release",
+            Language::French => "Sortie",
+            _ => "Release",
+        },
+        "register.release.desc" => match lang {
+            Language::English => "Register an album, EP, or single with UPC identifier.",
+            Language::French => "Enregistrez un album, EP ou single avec identifiant UPC.",
+            _ => "Register a release.",
+        },
+        "register.release.form_desc" => match lang {
+            Language::English => "Fill in the release details to register it on the blockchain.",
+            Language::French => "Remplissez les détails de la sortie pour l'inscrire sur la blockchain.",
+            _ => "Fill in release details.",
+        },
+        "register.artist.title" => match lang {
+            Language::English => "Artist",
+            Language::French => "Artiste",
+            _ => "Artist",
+        },
+        "register.artist.desc" => match lang {
+            Language::English => "Register an artist profile with IPI/ISNI identifiers.",
+            Language::French => "Enregistrez un profil d'artiste avec identifiants IPI/ISNI.",
+            _ => "Register an artist.",
+        },
+        "register.artist.coming_soon" => match lang {
+            Language::English => "Artist registration is coming soon.",
+            Language::French => "L'enregistrement d'artistes arrive bientôt.",
+            _ => "Coming soon.",
+        },
+        "register.legal_entity.title" => match lang {
+            Language::English => "Legal Entity",
+            Language::French => "Entité légale",
+            _ => "Legal Entity",
+        },
+        "register.legal_entity.desc" => match lang {
+            Language::English => "Register a label, publisher, or collection society.",
+            Language::French => "Enregistrez un label, éditeur ou société de gestion.",
+            _ => "Register an entity.",
+        },
+        "register.legal_entity.coming_soon" => match lang {
+            Language::English => "Legal entity registration is coming soon.",
+            Language::French => "L'enregistrement d'entités légales arrive bientôt.",
+            _ => "Coming soon.",
+        },
+        "register.mass_cta_title" => match lang {
+            Language::English => "Have many works to register?",
+            Language::French => "Beaucoup d'œuvres à enregistrer ?",
+            _ => "Many works?",
+        },
+        "register.mass_cta_desc" => match lang {
+            Language::English => "Use Mass Load for bulk registration from CSV files.",
+            Language::French => "Utilisez Mass Load pour l'enregistrement en masse depuis des fichiers CSV.",
+            _ => "Use bulk upload.",
+        },
+        "register.go_to_massload" => match lang {
+            Language::English => "Go to Mass Load",
+            Language::French => "Aller à Mass Load",
+            _ => "Mass Load",
+        },
+        "register.back" => match lang {
+            Language::English => "Back",
+            Language::French => "Retour",
+            _ => "Back",
+        },
+        
+        // Register form fields
+        "register.form.basic_info" => match lang {
+            Language::English => "Basic Information",
+            Language::French => "Informations de base",
+            _ => "Basic Info",
+        },
+        "register.form.title" => match lang {
+            Language::English => "Title",
+            Language::French => "Titre",
+            _ => "Title",
+        },
+        "register.form.title_placeholder" => match lang {
+            Language::English => "Enter work title",
+            Language::French => "Entrez le titre de l'œuvre",
+            _ => "Enter title",
+        },
+        "register.form.iswc" => match lang {
+            Language::English => "ISWC",
+            Language::French => "ISWC",
+            _ => "ISWC",
+        },
+        "register.form.iswc_hint" => match lang {
+            Language::English => "Optional - International Standard Musical Work Code",
+            Language::French => "Optionnel - International Standard Musical Work Code",
+            _ => "Optional",
+        },
+        "register.form.isrc" => match lang {
+            Language::English => "ISRC",
+            Language::French => "ISRC",
+            _ => "ISRC",
+        },
+        "register.form.linked_work" => match lang {
+            Language::English => "Linked Work (ISWC)",
+            Language::French => "Œuvre liée (ISWC)",
+            _ => "Linked Work",
+        },
+        "register.form.linked_work_hint" => match lang {
+            Language::English => "Optional - Link to a registered musical work",
+            Language::French => "Optionnel - Lien vers une œuvre musicale enregistrée",
+            _ => "Optional",
+        },
+        "register.form.duration" => match lang {
+            Language::English => "Duration",
+            Language::French => "Durée",
+            _ => "Duration",
+        },
+        "register.form.release_title" => match lang {
+            Language::English => "Release Title",
+            Language::French => "Titre de la sortie",
+            _ => "Release Title",
+        },
+        "register.form.release_date" => match lang {
+            Language::English => "Release Date",
+            Language::French => "Date de sortie",
+            _ => "Release Date",
+        },
+        "register.form.upc" => match lang {
+            Language::English => "UPC",
+            Language::French => "UPC",
+            _ => "UPC",
+        },
+        "register.form.creators" => match lang {
+            Language::English => "Creators",
+            Language::French => "Créateurs",
+            _ => "Creators",
+        },
+        "register.form.creators_desc" => match lang {
+            Language::English => "Add the creators and their roles in this work.",
+            Language::French => "Ajoutez les créateurs et leurs rôles dans cette œuvre.",
+            _ => "Add creators.",
+        },
+        "register.form.creator_name" => match lang {
+            Language::English => "Creator name",
+            Language::French => "Nom du créateur",
+            _ => "Name",
+        },
+        "register.form.role_composer" => match lang {
+            Language::English => "Composer",
+            Language::French => "Compositeur",
+            _ => "Composer",
+        },
+        "register.form.role_author" => match lang {
+            Language::English => "Author",
+            Language::French => "Auteur",
+            _ => "Author",
+        },
+        "register.form.role_arranger" => match lang {
+            Language::English => "Arranger",
+            Language::French => "Arrangeur",
+            _ => "Arranger",
+        },
+        "register.form.add_creator" => match lang {
+            Language::English => "Add creator",
+            Language::French => "Ajouter un créateur",
+            _ => "Add",
+        },
+        "register.form.submit" => match lang {
+            Language::English => "Register on Blockchain",
+            Language::French => "Enregistrer sur la Blockchain",
+            _ => "Register",
+        },
+        "register.form.wallet_required" => match lang {
+            Language::English => "Connect your wallet to submit",
+            Language::French => "Connectez votre wallet pour soumettre",
+            _ => "Connect wallet",
         },
         
         // Fallback
