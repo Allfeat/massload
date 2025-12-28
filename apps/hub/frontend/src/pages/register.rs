@@ -27,11 +27,11 @@ pub fn RegisterPage() -> impl IntoView {
                         <span class="group-title">{t("register.group_parties")}</span>
                     </div>
                     <div class="group-cards">
-                        <A href="/register/artist" class="midds-card coming-soon">
+                        <A href="/register-artist" class="midds-card coming-soon">
                             <span class="card-icon"><IconUser/></span>
                             <span class="card-label">{t("register.artist.title")}</span>
                         </A>
-                        <A href="/register/legal-entity" class="midds-card coming-soon">
+                        <A href="/register-legal-entity" class="midds-card coming-soon">
                             <span class="card-icon"><IconBuilding/></span>
                             <span class="card-label">{t("register.legal_entity.title")}</span>
                         </A>
@@ -46,15 +46,15 @@ pub fn RegisterPage() -> impl IntoView {
                         <span class="group-title">{t("register.group_products")}</span>
                     </div>
                     <div class="group-cards">
-                        <A href="/register/musical-work" class="midds-card">
+                        <A href="/register-musical-work" class="midds-card">
                             <span class="card-icon"><IconMusic/></span>
                             <span class="card-label">{t("register.musical_work.title")}</span>
                         </A>
-                        <A href="/register/recording" class="midds-card">
+                        <A href="/register-recording" class="midds-card">
                             <span class="card-icon"><IconMic/></span>
                             <span class="card-label">{t("register.recording.title")}</span>
                         </A>
-                        <A href="/register/release" class="midds-card">
+                        <A href="/register-release" class="midds-card">
                             <span class="card-icon"><IconDisc/></span>
                             <span class="card-label">{t("register.release.title")}</span>
                         </A>
@@ -85,61 +85,13 @@ pub fn RegisterPage() -> impl IntoView {
 /// Musical Work registration form
 #[component]
 pub fn RegisterMusicalWorkPage() -> impl IntoView {
+    use crate::components::musical_work_form_v2::MusicalWorkFormV2;
+    
     view! {
-        <div class="register-form-page">
-            <div class="form-header">
-                <A href="/register" class="back-link">"← " {t("register.back")}</A>
-                <h1>{t("register.musical_work.title")}</h1>
-                <p>{t("register.musical_work.form_desc")}</p>
-            </div>
-            
-            <div class="form-container">
-                <div class="form-section">
-                    <h3>{t("register.form.basic_info")}</h3>
-                    
-                    <div class="form-group">
-                        <label for="title">{t("register.form.title")} " *"</label>
-                        <input type="text" id="title" class="form-input" placeholder=t("register.form.title_placeholder") />
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="iswc">{t("register.form.iswc")}</label>
-                        <input type="text" id="iswc" class="form-input" placeholder="T-000.000.000-0" />
-                        <span class="form-hint">{t("register.form.iswc_hint")}</span>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h3>{t("register.form.creators")}</h3>
-                    <p class="section-desc">{t("register.form.creators_desc")}</p>
-                    
-                    <div class="creator-list">
-                        <div class="creator-item">
-                            <input type="text" class="form-input" placeholder=t("register.form.creator_name") />
-                            <select class="form-select">
-                                <option value="composer">{t("register.form.role_composer")}</option>
-                                <option value="author">{t("register.form.role_author")}</option>
-                                <option value="arranger">{t("register.form.role_arranger")}</option>
-                            </select>
-                            <input type="text" class="form-input" placeholder="IPI (optional)" />
-                        </div>
-                    </div>
-                    
-                    <button class="btn btn-outline add-creator">
-                        "+" {t("register.form.add_creator")}
-                    </button>
-                </div>
-                
-                <div class="form-actions">
-                    <button class="btn btn-primary" disabled>
-                        {t("register.form.submit")}
-                    </button>
-                    <span class="form-notice">{t("register.form.wallet_required")}</span>
-                </div>
-            </div>
-        </div>
+        <MusicalWorkFormV2 />
     }
 }
+
 
 /// Recording registration form  
 #[component]

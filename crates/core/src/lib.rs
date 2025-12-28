@@ -15,14 +15,21 @@
 
 pub mod error;
 pub mod models;
+
+#[cfg(feature = "validation")]
 pub mod validation;
 
 // Re-exports - Models
 pub use models::{
-    Creator, CreatorRole, GroupedWork, MusicalWorkType, PartyId,
+    Creator, CreatorRole, PartyId, MusicalWork, WorkType, ClassicalInfo,
 };
 
-// Re-exports - Validation
+// Legacy aliases for backward compatibility
+#[cfg(not(target_arch = "wasm32"))]
+pub use models::{CisacRole, GroupedWork, MusicalWorkType};
+
+// Re-exports - Validation (only with "validation" feature)
+#[cfg(feature = "validation")]
 pub use validation::{
     is_valid, is_valid_musical_work_flat, is_valid_musical_work_grouped, validate,
     validate_musical_work_flat, validate_musical_work_grouped,

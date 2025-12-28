@@ -1,0 +1,845 @@
+/* ============================================================================
+   MUSICAL WORK FORM V2 - TypeScript Aligned
+   Matches register.allfeat.org/fr/musical-work layout exactly
+   ========================================================================= */
+
+/* Single Card Wrapper (like TS) */
+.ts-form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-top: 32px;
+    max-width: 896px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ts-form-header {
+    padding: 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.ts-form-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.ts-form-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.ts-form-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.ts-card-header {
+    padding: 24px 24px 0 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.ts-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding-bottom: 24px;
+}
+
+.ts-card-content {
+    padding: 24px;
+}
+
+.ts-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Grid layouts (TS style) */
+.grid-cols-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.gap-4 {
+    gap: 16px;
+}
+
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.mt-8 { margin-top: 32px; }
+
+/* Form Items */
+.form-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-item-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 28px; /* Align with other fields */
+}
+
+/* Form fields */
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+.form-hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.form-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: normal;
+    padding-top: 24px;
+}
+
+/* Breadcrumb */
+.form-breadcrumb {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.breadcrumb-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.breadcrumb-link:hover {
+    opacity: 0.8;
+}
+
+.breadcrumb-current {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Validation errors */
+.form-errors {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.form-errors h4 {
+    color: #991b1b;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.form-errors ul {
+    list-style: disc;
+    padding-left: 20px;
+    color: #991b1b;
+    font-size: 0.875rem;
+}
+
+.form-success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 16px;
+    color: #166534;
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+
+/* Section Cards (Creators, Publishers, Classical) */
+.ts-section-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.ts-section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.ts-section-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+/* Submit section */
+.form-submit-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.wallet-warning {
+    padding: 12px 16px;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 6px;
+    color: #92400e;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.btn-submit {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+}
+
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Creator/Publisher Form & List */
+.creator-form {
+    margin-bottom: 16px;
+}
+
+/* Role selection badges (multi-select) */
+.role-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.role-badge {
+    padding: 6px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.role-badge:hover {
+    background: var(--bg-secondary);
+    border-color: var(--color-primary);
+}
+
+.role-badge-selected {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.role-badge-selected:hover {
+    opacity: 0.9;
+}
+
+.role-check {
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* Grouped creators list (one IPI/ISNI with multiple roles) */
+.creators-list {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+.list-header {
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.list-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+.list-count {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.list-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-card);
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+.item-content {
+    flex: 1;
+}
+
+.item-id {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-family: monospace;
+    margin-bottom: 6px;
+}
+
+.item-roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.role-tag {
+    padding: 4px 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: var(--text-primary);
+}
+
+/* Empty list state */
+.empty-list {
+    padding: 32px 16px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.empty-list p {
+    margin: 4px 0;
+    font-size: 0.875rem;
+}
+
+.empty-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Action buttons */
+.form-actions-center {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+    gap: 12px;
+}
+
+.btn-add {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-add:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+}
+
+.btn-add:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.creator-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.creator-id {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.creator-role {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.btn-remove {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-remove:hover {
+    background: #dc2626;
+}
+
+.empty-message {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .grid-cols-2,
+    .grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-item-checkbox {
+        padding-top: 0;
+    }
+}
+
+/* ============================================================================
+   ORIGINAL FORM STYLES (LEGACY - kept for backward compat)
+   ========================================================================= */
+
+.register-form-page {
+    max-width: 896px; /* 4xl like original */
+    margin: 0 auto;
+    padding: 32px 20px;
+}
+
+.form-header {
+    margin-bottom: 32px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    margin-bottom: 16px;
+    transition: opacity 0.2s;
+}
+
+.back-link:hover {
+    opacity: 0.8;
+}
+
+.form-header h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.form-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Form Cards (like shadcn Card) */
+.musical-work-form .form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.form-section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+/* Form Rows (grid layout like original) */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Form Groups */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+.form-hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.form-error {
+    font-size: 0.75rem;
+    color: #ef4444;
+    margin-top: 4px;
+}
+
+.form-errors {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.form-errors h4 {
+    color: #991b1b;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-errors ul {
+    list-style: disc;
+    padding-left: 20px;
+    color: #991b1b;
+}
+
+/* Checkbox (inline like original) */
+.form-checkbox-group {
+    flex-direction: row !important;
+    align-items: center;
+    gap: 8px !important;
+    padding: 12px 0;
+}
+
+.form-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.form-checkbox-label {
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    font-weight: normal;
+}
+
+/* Creators Section (card-in-card style) */
+.creator-row {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.creator-row .form-row {
+    margin-bottom: 0;
+    grid-template-columns: 1fr 1fr 1fr auto;
+}
+
+.creator-row .btn-danger {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: background 0.2s;
+    height: 38px;
+    align-self: flex-end;
+}
+
+.creator-row .btn-danger:hover {
+    background: #dc2626;
+}
+
+/* Buttons (shadcn style) */
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-dark);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-outline:hover {
+    background: var(--bg-secondary);
+    border-color: var(--color-primary);
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Form Notice (info box) */
+.form-notice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: #1e40af;
+}
+
+.notice-icon {
+    font-size: 1.25rem;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+.alert-success h3 {
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.alert-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.alert-error h3 {
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.hash-display {
+    margin: 12px 0;
+    padding: 12px;
+    background: white;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 0.875rem;
+    word-break: break-all;
+}
+
+/* Submitting Overlay */
+.submitting-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    color: white;
+    gap: 16px;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive (mobile) */
+@media (max-width: 768px) {
+    .register-form-page {
+        padding: 20px 16px;
+    }
+    
+    .form-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .creator-row .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+

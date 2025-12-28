@@ -35,14 +35,12 @@ dependencies = [
 name = "allfeat-core"
 version = "0.2.0"
 dependencies = [
- "chrono",
  "jsonschema",
  "once_cell",
  "regex",
  "serde",
  "serde_json",
  "thiserror",
- "uuid",
 ]
 
 [[package]]
@@ -73,6 +71,8 @@ dependencies = [
 name = "allfeat-hub-frontend"
 version = "0.2.0"
 dependencies = [
+ "allfeat-core",
+ "allfeat-ui",
  "chrono",
  "console_error_panic_hook",
  "console_log",
@@ -90,6 +90,7 @@ dependencies = [
  "leptos_router",
  "log",
  "rand",
+ "regex",
  "serde",
  "serde-wasm-bindgen",
  "serde_json",

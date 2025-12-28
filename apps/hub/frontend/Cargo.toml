@@ -18,9 +18,9 @@ path = "src/lib.rs"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-# Internal crates (for now, ui is placeholder)
-# allfeat-core.workspace = true
-# allfeat-ui.workspace = true
+# Internal crates
+allfeat-core = { path = "../../../crates/core", default-features = false }  # WASM-compatible models only
+allfeat-ui = { path = "../../../crates/ui" }  # Shared UI components
 
 # Leptos
 leptos.workspace = true
@@ -59,5 +59,6 @@ getrandom.workspace = true
 rand.workspace = true
 chrono = { workspace = true, features = ["wasm-bindgen"] }
 hex.workspace = true
+regex = "1.10"
 
 # Note: blockchain transactions use @allfeat/client SDK via JavaScript

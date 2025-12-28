@@ -1,37 +1,19 @@
 //! # Allfeat UI
 //!
-//! Shared UI components for Allfeat apps (Leptos CSR).
+//! Shared UI components for the Allfeat ecosystem.
 //!
-//! This crate provides reusable components for the Allfeat Apps Hub:
-//! - Header and navigation
-//! - Footer
-//! - Wallet connection modal
-//! - Form components
-//! - Theme system
-//! - Internationalization
+//! This crate provides reusable Leptos components that can be used across
+//! multiple Allfeat applications (Hub, Register, Protect, etc.).
 //!
-//! ## Usage
+//! ## Modules
 //!
-//! ```rust,ignore
-//! use allfeat_ui::components::{Header, Footer, WalletModal};
-//! ```
+//! - [`components`] - Reusable UI components (Header, Footer, Sidebar, Icons)
+//! - [`state`] - State management (Wallet, Notifications)
+//! - [`utils`] - UI utilities (i18n, theme, etc.)
 
-// Placeholder for shared components
-// These will be extracted from the frontend during the migration
+pub mod components;
+pub mod state;
+pub mod utils;
 
-pub mod components {
-    //! Shared UI components (to be populated)
-}
-
-pub mod hooks {
-    //! Reactive hooks (to be populated)
-}
-
-pub mod i18n {
-    //! Internationalization (to be populated)
-}
-
-pub mod theme {
-    //! Theme system (to be populated)
-}
-
+// Re-export commonly used items
+pub use components::*;

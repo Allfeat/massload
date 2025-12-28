@@ -130,10 +130,30 @@ export async function submitMusicalWorksBatch(rpcUrl, worksJson, walletAddress) 
         console.log('📦 Preparing works for SDK...');
         const sdkWorks = works.map(work => convertIpiToBigInt(work));
         
+        // Debug: log the first work structure
+        if (sdkWorks.length > 0) {
+            console.log('📋 First work structure:', JSON.stringify(sdkWorks[0], (key, value) =>
+                typeof value === 'bigint' ? value.toString() + 'n' : value
+            , 2));
+        }
+        
+        // Check if extrinsic exists
+        if (!client.tx.musicalWorks || !client.tx.musicalWorks.register) {
+            throw new Error('Extrinsic musicalWorks.register not found in runtime. Is the chain using the correct runtime version?');
+        }
+        
         // Build calls
-        const calls = sdkWorks.map(work => 
-            client.tx.musicalWorks.register(work).call
-        );
+        console.log('🔨 Building transaction calls...');
+        const calls = sdkWorks.map((work, index) => {
+            try {
+                const tx = client.tx.musicalWorks.register(work);
+                console.log(`  ✓ Call ${index + 1} built successfully`);
+                return tx.call;
+            } catch (err) {
+                console.error(`  ✗ Call ${index + 1} failed:`, err);
+                throw new Error(`Failed to build call for work ${index + 1}: ${err.message}`);
+            }
+        });
         console.log(`✅ ${calls.length} transactions prepared`);
 
         // Create batch

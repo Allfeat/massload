@@ -13,7 +13,7 @@ keywords = ["allfeat", "leptos", "wasm", "ui", "components"]
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-allfeat-core = { path = "../core" }
+allfeat-core = { path = "../core", default-features = false }
 leptos.workspace = true
 leptos_router.workspace = true
 wasm-bindgen.workspace = true

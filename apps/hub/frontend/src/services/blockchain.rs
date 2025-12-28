@@ -112,6 +112,61 @@ impl BlockchainService {
         })
     }
 
+    /// Submit a single musical work
+    pub async fn submit_single_work(
+        &self,
+        work_json: Value,
+        wallet_address: Option<String>,
+    ) -> Result<SubmissionResult, String> {
+        let address = wallet_address.ok_or("No wallet address provided")?;
+        
+        log::info!("📤 Submitting single work via @allfeat/client SDK...");
+
+        // Call JavaScript SDK directly
+        let work_str = serde_json::to_string(&work_json)
+            .map_err(|e| format!("Failed to serialize work: {}", e))?;
+
+        let promise = submit_single_work_js(&self.rpc_url, &work_str, &address);
+        
+        let js_result = JsFuture::from(promise)
+            .await
+            .map_err(|e| {
+                let error_msg = js_sys::Reflect::get(&e, &"message".into())
+                    .ok()
+                    .and_then(|v| v.as_string())
+                    .or_else(|| e.as_string())
+                    .unwrap_or_else(|| "Unknown JS error".to_string());
+                format!("SDK error: {}", error_msg)
+            })?;
+        
+        // Parse single result
+        let result: JsSubmitResult = serde_wasm_bindgen::from_value(js_result)
+            .map_err(|e| format!("Failed to parse SDK result: {}", e))?;
+        
+        let iswc = work_json.get("iswc")
+            .and_then(|v| v.as_str())
+            .unwrap_or("unknown")
+            .to_string();
+        
+        if result.success {
+            log::info!("✅ Work {} submitted successfully!", iswc);
+        } else {
+            log::error!("❌ Work {} failed: {:?}", iswc, result.error);
+        }
+        
+        Ok(SubmissionResult {
+            success: result.success,
+            tx_hash: result.hash.clone(),
+            block_hash: result.hash,
+            error: result.error.clone(),
+            work_results: vec![WorkResult {
+                iswc,
+                success: result.success,
+                error: result.error,
+            }],
+        })
+    }
+    
     /// Estimate cost for a batch of works.
     pub fn estimate_cost(&self, work_count: usize) -> String {
         let cost = work_count as f32 * 0.05;
@@ -160,6 +215,13 @@ extern "C" {
     fn submit_batch_js(
         rpc_url: &str,
         works_json: &str,
+        wallet_address: &str,
+    ) -> js_sys::Promise;
+    
+    #[wasm_bindgen(js_name = "submitMusicalWork")]
+    fn submit_single_work_js(
+        rpc_url: &str,
+        work_json: &str,
         wallet_address: &str,
     ) -> js_sys::Promise;
     

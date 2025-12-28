@@ -932,6 +932,91 @@ pub fn translate(key: &str, lang: Language) -> String {
             Language::French => "Connectez votre wallet pour soumettre",
             _ => "Connect wallet",
         },
+        "register.form.iswc" => match lang {
+            Language::English => "ISWC",
+            Language::French => "ISWC",
+            _ => "ISWC",
+        },
+        "register.form.title" => match lang {
+            Language::English => "Title",
+            Language::French => "Titre",
+            _ => "Title",
+        },
+        "register.form.creation_year" => match lang {
+            Language::English => "Creation Year",
+            Language::French => "Année de création",
+            _ => "Year",
+        },
+        "register.form.work_type" => match lang {
+            Language::English => "Work Type",
+            Language::French => "Type d'œuvre",
+            _ => "Type",
+        },
+        "register.form.work_type_original" => match lang {
+            Language::English => "Original",
+            Language::French => "Original",
+            _ => "Original",
+        },
+        "register.form.work_type_medley" => match lang {
+            Language::English => "Medley",
+            Language::French => "Medley",
+            _ => "Medley",
+        },
+        "register.form.work_type_mashup" => match lang {
+            Language::English => "Mashup",
+            Language::French => "Mashup",
+            _ => "Mashup",
+        },
+        "register.form.work_type_adaptation" => match lang {
+            Language::English => "Adaptation",
+            Language::French => "Adaptation",
+            _ => "Adaptation",
+        },
+        "register.form.instrumental" => match lang {
+            Language::English => "Instrumental",
+            Language::French => "Instrumental",
+            _ => "Instrumental",
+        },
+        "register.form.basic_info" => match lang {
+            Language::English => "Basic Information",
+            Language::French => "Informations de base",
+            _ => "Basic Info",
+        },
+        "register.form.creators" => match lang {
+            Language::English => "Creators",
+            Language::French => "Créateurs",
+            _ => "Creators",
+        },
+        "register.form.role" => match lang {
+            Language::English => "Role",
+            Language::French => "Rôle",
+            _ => "Role",
+        },
+        "register.form.musical_attributes" => match lang {
+            Language::English => "Musical Attributes",
+            Language::French => "Attributs musicaux",
+            _ => "Attributes",
+        },
+        "register.form.language" => match lang {
+            Language::English => "Language",
+            Language::French => "Langue",
+            _ => "Language",
+        },
+        "register.form.key" => match lang {
+            Language::English => "Musical Key",
+            Language::French => "Tonalité",
+            _ => "Key",
+        },
+        "register.form.classical_info" => match lang {
+            Language::English => "Classical Information (Optional)",
+            Language::French => "Informations classiques (Optionnel)",
+            _ => "Classical Info",
+        },
+        "register.form.publishers" => match lang {
+            Language::English => "Publishers",
+            Language::French => "Éditeurs",
+            _ => "Publishers",
+        },
         
         // Fallback
         _ => key,

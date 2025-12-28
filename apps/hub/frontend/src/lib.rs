@@ -41,6 +41,8 @@ pub mod types;
 pub mod components;
 pub mod pages;
 pub mod services;
+pub mod validation;
+pub mod midds;
 
 // =============================================================================
 // Re-exports
@@ -97,6 +99,10 @@ pub fn App() -> impl IntoView {
     let (wallet_connected, set_wallet_connected) = create_signal(false);
     let (wallet_address, set_wallet_address) = create_signal(None::<String>);
     
+    // Provide wallet signals to context so child components can use them
+    provide_context(wallet_connected);
+    provide_context(wallet_address);
+    
     view! {
         <Router>
             <div class="app-layout">
@@ -124,13 +130,13 @@ pub fn App() -> impl IntoView {
                                 // Explore - View MIDDS on-chain
                                 <Route path="/explore" view=pages::ExplorePage/>
                                 
-                                // Register hub and sub-routes
+                                // Register - direct to forms
                                 <Route path="/register" view=pages::RegisterPage/>
-                                <Route path="/register/musical-work" view=pages::RegisterMusicalWorkPage/>
-                                <Route path="/register/recording" view=pages::RegisterRecordingPage/>
-                                <Route path="/register/release" view=pages::RegisterReleasePage/>
-                                <Route path="/register/artist" view=pages::RegisterArtistPage/>
-                                <Route path="/register/legal-entity" view=pages::RegisterLegalEntityPage/>
+                                <Route path="/register-musical-work" view=pages::RegisterMusicalWorkPage/>
+                                <Route path="/register-recording" view=pages::RegisterRecordingPage/>
+                                <Route path="/register-release" view=pages::RegisterReleasePage/>
+                                <Route path="/register-artist" view=pages::RegisterArtistPage/>
+                                <Route path="/register-legal-entity" view=pages::RegisterLegalEntityPage/>
                                 
                                 // Protect
                                 <Route path="/protect" view=pages::ProtectPage/>

@@ -9,15 +9,19 @@ homepage.workspace = true
 authors.workspace = true
 keywords = ["allfeat", "midds", "music", "metadata", "blockchain"]
 
+[features]
+default = ["validation"]
+validation = ["jsonschema", "regex", "once_cell"]
+
 [dependencies]
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
-chrono.workspace = true
-uuid.workspace = true
-jsonschema.workspace = true
-regex.workspace = true
-once_cell.workspace = true
+
+# Optional dependencies (for backend validation only)
+jsonschema = { workspace = true, optional = true }
+regex = { workspace = true, optional = true }
+once_cell = { workspace = true, optional = true }
 
 [dev-dependencies]
 
