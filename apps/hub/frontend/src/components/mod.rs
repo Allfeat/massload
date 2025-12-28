@@ -24,6 +24,7 @@ mod progress;
 mod footer;
 mod logs;
 mod wallet_modal;
+pub mod icons;
 
 pub use sidebar::*;
 pub use header::*;
@@ -35,4 +36,5 @@ pub use progress::*;
 pub use footer::*;
 pub use logs::*;
 pub use wallet_modal::*;
+pub use icons::*;
 

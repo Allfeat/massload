@@ -5,6 +5,7 @@ use leptos::*;
 use leptos_router::*;
 
 use crate::i18n::t;
+use crate::components::icons::*;
 
 /// Register hub page with cards grouped like register.allfeat.org
 #[component]
@@ -22,16 +23,16 @@ pub fn RegisterPage() -> impl IntoView {
                 // Group 1: Party Identification
                 <div class="register-group">
                     <div class="group-header">
-                        <span class="group-icon">"👥"</span>
+                        <span class="group-icon"><IconUsers/></span>
                         <span class="group-title">{t("register.group_parties")}</span>
                     </div>
                     <div class="group-cards">
                         <A href="/register/artist" class="midds-card coming-soon">
-                            <span class="card-icon">"👤"</span>
+                            <span class="card-icon"><IconUser/></span>
                             <span class="card-label">{t("register.artist.title")}</span>
                         </A>
                         <A href="/register/legal-entity" class="midds-card coming-soon">
-                            <span class="card-icon">"🏢"</span>
+                            <span class="card-icon"><IconBuilding/></span>
                             <span class="card-label">{t("register.legal_entity.title")}</span>
                         </A>
                     </div>
@@ -41,20 +42,20 @@ pub fn RegisterPage() -> impl IntoView {
                 // Group 2: Product Identification
                 <div class="register-group">
                     <div class="group-header">
-                        <span class="group-icon">"🎵"</span>
+                        <span class="group-icon"><IconMusic/></span>
                         <span class="group-title">{t("register.group_products")}</span>
                     </div>
                     <div class="group-cards">
                         <A href="/register/musical-work" class="midds-card">
-                            <span class="card-icon">"🎼"</span>
+                            <span class="card-icon"><IconMusic/></span>
                             <span class="card-label">{t("register.musical_work.title")}</span>
                         </A>
                         <A href="/register/recording" class="midds-card">
-                            <span class="card-icon">"🎙️"</span>
+                            <span class="card-icon"><IconMic/></span>
                             <span class="card-label">{t("register.recording.title")}</span>
                         </A>
                         <A href="/register/release" class="midds-card">
-                            <span class="card-icon">"💿"</span>
+                            <span class="card-icon"><IconDisc/></span>
                             <span class="card-label">{t("register.release.title")}</span>
                         </A>
                     </div>
@@ -65,7 +66,7 @@ pub fn RegisterPage() -> impl IntoView {
             <div class="massload-section">
                 <div class="massload-card">
                     <div class="massload-content">
-                        <span class="massload-icon">"📦"</span>
+                        <span class="massload-icon"><IconPackage/></span>
                         <div class="massload-text">
                             <h3>{t("register.massload_title")}</h3>
                             <p>{t("register.massload_desc")}</p>
@@ -73,7 +74,7 @@ pub fn RegisterPage() -> impl IntoView {
                     </div>
                     <A href="/massload" class="massload-btn">
                         {t("register.go_to_massload")}
-                        <span>" →"</span>
+                        <IconArrowRight/>
                     </A>
                 </div>
             </div>

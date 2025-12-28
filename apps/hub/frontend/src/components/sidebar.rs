@@ -5,6 +5,7 @@ use leptos::*;
 use leptos_router::*;
 
 use crate::i18n::t;
+use super::icons::*;
 
 /// Sidebar navigation with Tanssi-style menu
 #[component]
@@ -34,7 +35,7 @@ pub fn Sidebar() -> impl IntoView {
                             "nav-item" 
                         }
                     >
-                        <span class="nav-icon">"🏠"</span>
+                        <span class="nav-icon"><IconHome/></span>
                         <span class="nav-label">{t("nav.home")}</span>
                     </A>
                 </div>
@@ -45,7 +46,7 @@ pub fn Sidebar() -> impl IntoView {
                         href="/explore" 
                         class=move || if is_active("/explore") { "nav-item active" } else { "nav-item" }
                     >
-                        <span class="nav-icon">"🔍"</span>
+                        <span class="nav-icon"><IconSearch/></span>
                         <span class="nav-label">{t("nav.explore")}</span>
                     </A>
                 </div>
@@ -56,7 +57,7 @@ pub fn Sidebar() -> impl IntoView {
                         href="/register" 
                         class=move || if is_active("/register") { "nav-item active" } else { "nav-item" }
                     >
-                        <span class="nav-icon">"✍️"</span>
+                        <span class="nav-icon"><IconPenLine/></span>
                         <span class="nav-label">{t("nav.register")}</span>
                     </A>
                 </div>
@@ -67,7 +68,7 @@ pub fn Sidebar() -> impl IntoView {
                         href="/protect" 
                         class=move || if is_active("/protect") { "nav-item active" } else { "nav-item" }
                     >
-                        <span class="nav-icon">"🛡️"</span>
+                        <span class="nav-icon"><IconShield/></span>
                         <span class="nav-label">{t("nav.protect")}</span>
                     </A>
                 </div>
@@ -78,7 +79,7 @@ pub fn Sidebar() -> impl IntoView {
                         href="/massload" 
                         class=move || if is_active("/massload") { "nav-item active" } else { "nav-item" }
                     >
-                        <span class="nav-icon">"📦"</span>
+                        <span class="nav-icon"><IconPackage/></span>
                         <span class="nav-label">{t("nav.massload")}</span>
                     </A>
                 </div>
@@ -92,7 +93,7 @@ pub fn Sidebar() -> impl IntoView {
                         href="/how-it-works" 
                         class=move || if is_active("/how-it-works") { "nav-item active" } else { "nav-item" }
                     >
-                        <span class="nav-icon">"📖"</span>
+                        <span class="nav-icon"><IconBookOpen/></span>
                         <span class="nav-label">{t("nav.how_it_works")}</span>
                     </A>
                 </div>
@@ -100,9 +101,9 @@ pub fn Sidebar() -> impl IntoView {
                 // External links
                 <div class="nav-section">
                     <a href="https://docs.allfeat.org" target="_blank" class="nav-item external">
-                        <span class="nav-icon">"📚"</span>
+                        <span class="nav-icon"><IconBookOpen/></span>
                         <span class="nav-label">{t("nav.docs")}</span>
-                        <span class="nav-external">"↗"</span>
+                        <span class="nav-external"><IconExternalLink/></span>
                     </a>
                 </div>
             </nav>

@@ -85,9 +85,26 @@
 }
 
 .nav-icon {
-    font-size: 1.1rem;
-    width: 24px;
-    text-align: center;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.nav-external {
+    width: 14px;
+    height: 14px;
+}
+
+.nav-external svg {
+    width: 14px;
+    height: 14px;
 }
 
 .nav-label {
@@ -663,8 +680,13 @@
     justify-content: center;
     background: rgba(27, 167, 148, 0.1);
     border-radius: 50%;
-    font-size: 2rem;
     margin-bottom: 16px;
+    color: var(--color-primary);
+}
+
+.group-icon svg {
+    width: 32px;
+    height: 32px;
 }
 
 .group-title {
@@ -720,8 +742,20 @@
 }
 
 .midds-card .card-icon {
-    font-size: 1.25rem;
-    transition: filter 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    transition: color 0.2s;
+}
+
+.midds-card .card-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.midds-card:hover .card-icon {
+    color: white;
 }
 
 .midds-card .card-label {
@@ -760,7 +794,15 @@
 }
 
 .massload-icon {
-    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+}
+
+.massload-icon svg {
+    width: 40px;
+    height: 40px;
 }
 
 .massload-text h3 {
@@ -778,7 +820,7 @@
 .massload-btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     padding: 14px 28px;
     background: var(--color-primary);
     color: white;
@@ -788,6 +830,11 @@
     font-size: 0.95rem;
     transition: all 0.2s ease;
     white-space: nowrap;
+}
+
+.massload-btn svg {
+    width: 18px;
+    height: 18px;
 }
 
 .massload-btn:hover {
