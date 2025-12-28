@@ -681,7 +681,50 @@ pub fn translate(key: &str, lang: Language) -> String {
             _ => "Read Docs",
         },
         
-        // Register page - hub
+        // Register page - hub (like register.allfeat.org)
+        "register.hero_title" => match lang {
+            Language::English => "Music Industry Decentralized Data Structures",
+            Language::French => "Music Industry Decentralized Data Structures",
+            _ => "Music Industry Decentralized Data Structures",
+        },
+        "register.hero_subtitle" => match lang {
+            Language::English => "Allfeat is the decentralized source of truth for the music industry, leveraging blockchain technology to secure and certify metadata.",
+            Language::French => "Allfeat est la source de vérité décentralisée pour l'industrie musicale, exploitant la technologie blockchain pour sécuriser et certifier les métadonnées.",
+            Language::Spanish => "Allfeat es la fuente de verdad descentralizada para la industria musical, aprovechando la tecnología blockchain para asegurar y certificar metadatos.",
+            Language::German => "Allfeat ist die dezentralisierte Wahrheitsquelle für die Musikindustrie und nutzt Blockchain-Technologie zur Sicherung und Zertifizierung von Metadaten.",
+            _ => "Decentralized source of truth for the music industry.",
+        },
+        "register.group_parties" => match lang {
+            Language::English => "Party Identification",
+            Language::French => "Identification des parties",
+            Language::Spanish => "Identificación de partes",
+            Language::German => "Parteienidentifikation",
+            _ => "Party Identification",
+        },
+        "register.group_products" => match lang {
+            Language::English => "Product Identification",
+            Language::French => "Identification des produits",
+            Language::Spanish => "Identificación de productos",
+            Language::German => "Produktidentifikation",
+            _ => "Product Identification",
+        },
+        "register.parties_note" => match lang {
+            Language::English => "Data privacy in compliance with applicable global regulations.",
+            Language::French => "Confidentialité des données conformément aux réglementations mondiales applicables.",
+            Language::Spanish => "Privacidad de datos conforme a las regulaciones globales aplicables.",
+            Language::German => "Datenschutz gemäß geltenden globalen Vorschriften.",
+            _ => "Privacy compliant.",
+        },
+        "register.massload_title" => match lang {
+            Language::English => "Mass Load",
+            Language::French => "Mass Load",
+            _ => "Mass Load",
+        },
+        "register.massload_desc" => match lang {
+            Language::English => "Bulk register hundreds of works from a CSV file with AI-powered transformation.",
+            Language::French => "Enregistrez des centaines d'œuvres depuis un fichier CSV avec transformation IA.",
+            _ => "Bulk registration from CSV.",
+        },
         "register.subtitle" => match lang {
             Language::English => "Register your musical works, recordings, and releases on the blockchain.",
             Language::French => "Enregistrez vos œuvres musicales, enregistrements et sorties sur la blockchain.",

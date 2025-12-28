@@ -6,82 +6,76 @@ use leptos_router::*;
 
 use crate::i18n::t;
 
-/// Register hub page with cards for each MIDDS type
+/// Register hub page with cards grouped like register.allfeat.org
 #[component]
 pub fn RegisterPage() -> impl IntoView {
     view! {
         <div class="register-page">
-            <div class="page-header">
-                <h1>{t("register.title")}</h1>
-                <p class="page-subtitle">{t("register.subtitle")}</p>
+            // Hero section
+            <div class="register-hero">
+                <h1>{t("register.hero_title")}</h1>
+                <p class="register-subtitle">{t("register.hero_subtitle")}</p>
             </div>
             
-            // Registration type cards
-            <div class="register-cards">
-                // Musical Work
-                <A href="/register/musical-work" class="register-card">
-                    <div class="card-icon">"🎵"</div>
-                    <div class="card-content">
-                        <h3>{t("register.musical_work.title")}</h3>
-                        <p>{t("register.musical_work.desc")}</p>
+            // Card groups container
+            <div class="register-groups">
+                // Group 1: Party Identification
+                <div class="register-group">
+                    <div class="group-header">
+                        <span class="group-icon">"👥"</span>
+                        <span class="group-title">{t("register.group_parties")}</span>
                     </div>
-                    <div class="card-arrow">"→"</div>
-                </A>
+                    <div class="group-cards">
+                        <A href="/register/artist" class="midds-card coming-soon">
+                            <span class="card-icon">"👤"</span>
+                            <span class="card-label">{t("register.artist.title")}</span>
+                        </A>
+                        <A href="/register/legal-entity" class="midds-card coming-soon">
+                            <span class="card-icon">"🏢"</span>
+                            <span class="card-label">{t("register.legal_entity.title")}</span>
+                        </A>
+                    </div>
+                    <p class="group-note">{t("register.parties_note")}</p>
+                </div>
                 
-                // Recording
-                <A href="/register/recording" class="register-card">
-                    <div class="card-icon">"🎙️"</div>
-                    <div class="card-content">
-                        <h3>{t("register.recording.title")}</h3>
-                        <p>{t("register.recording.desc")}</p>
+                // Group 2: Product Identification
+                <div class="register-group">
+                    <div class="group-header">
+                        <span class="group-icon">"🎵"</span>
+                        <span class="group-title">{t("register.group_products")}</span>
                     </div>
-                    <div class="card-arrow">"→"</div>
-                </A>
-                
-                // Release
-                <A href="/register/release" class="register-card">
-                    <div class="card-icon">"💿"</div>
-                    <div class="card-content">
-                        <h3>{t("register.release.title")}</h3>
-                        <p>{t("register.release.desc")}</p>
-                    </div>
-                    <div class="card-arrow">"→"</div>
-                </A>
-                
-                // Artist
-                <A href="/register/artist" class="register-card coming-soon">
-                    <div class="card-icon">"👤"</div>
-                    <div class="card-content">
-                        <h3>{t("register.artist.title")} <span class="badge soon">"Soon"</span></h3>
-                        <p>{t("register.artist.desc")}</p>
-                    </div>
-                    <div class="card-arrow">"→"</div>
-                </A>
-                
-                // Legal Entity
-                <A href="/register/legal-entity" class="register-card coming-soon">
-                    <div class="card-icon">"🏢"</div>
-                    <div class="card-content">
-                        <h3>{t("register.legal_entity.title")} <span class="badge soon">"Soon"</span></h3>
-                        <p>{t("register.legal_entity.desc")}</p>
-                    </div>
-                    <div class="card-arrow">"→"</div>
-                </A>
-            </div>
-            
-            // Mass registration CTA
-            <div class="mass-registration-cta">
-                <div class="cta-content">
-                    <span class="cta-icon">"📦"</span>
-                    <div>
-                        <h3>{t("register.mass_cta_title")}</h3>
-                        <p>{t("register.mass_cta_desc")}</p>
+                    <div class="group-cards">
+                        <A href="/register/musical-work" class="midds-card">
+                            <span class="card-icon">"🎼"</span>
+                            <span class="card-label">{t("register.musical_work.title")}</span>
+                        </A>
+                        <A href="/register/recording" class="midds-card">
+                            <span class="card-icon">"🎙️"</span>
+                            <span class="card-label">{t("register.recording.title")}</span>
+                        </A>
+                        <A href="/register/release" class="midds-card">
+                            <span class="card-icon">"💿"</span>
+                            <span class="card-label">{t("register.release.title")}</span>
+                        </A>
                     </div>
                 </div>
-                <A href="/massload" class="btn btn-secondary">
-                    {t("register.go_to_massload")}
-                    <span>" →"</span>
-                </A>
+            </div>
+            
+            // Mass Load section (below register cards)
+            <div class="massload-section">
+                <div class="massload-card">
+                    <div class="massload-content">
+                        <span class="massload-icon">"📦"</span>
+                        <div class="massload-text">
+                            <h3>{t("register.massload_title")}</h3>
+                            <p>{t("register.massload_desc")}</p>
+                        </div>
+                    </div>
+                    <A href="/massload" class="massload-btn">
+                        {t("register.go_to_massload")}
+                        <span>" →"</span>
+                    </A>
+                </div>
             </div>
         </div>
     }
