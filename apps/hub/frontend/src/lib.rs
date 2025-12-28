@@ -100,36 +100,39 @@ pub fn App() -> impl IntoView {
     view! {
         <Router>
             <div class="app-layout">
-                // Left sidebar navigation
-                <components::Sidebar/>
+                // Top header (full width, like massload)
+                <Header 
+                    wallet_connected=wallet_connected 
+                    wallet_address=wallet_address
+                    set_wallet_connected=set_wallet_connected
+                    set_wallet_address=set_wallet_address
+                />
                 
-                // Main content area
-                <div class="main-area">
-                    // Top header with wallet
-                    <Header 
-                        wallet_connected=wallet_connected 
-                        wallet_address=wallet_address
-                        set_wallet_connected=set_wallet_connected
-                        set_wallet_address=set_wallet_address
-                    />
+                // Content area with sidebar
+                <div class="content-with-sidebar">
+                    // Left sidebar navigation (below header)
+                    <components::Sidebar/>
                     
-                    // Page content (routed)
-                    <main class="page-content">
-                        <Routes>
-                            <Route path="/" view=pages::HomePage/>
-                            <Route path="/massload" view=move || view! {
-                                <pages::MassloadPage 
-                                    wallet_connected=wallet_connected
-                                    wallet_address=wallet_address
-                                />
-                            }/>
-                            <Route path="/register" view=pages::RegisterPage/>
-                            <Route path="/protect" view=pages::ProtectPage/>
-                        </Routes>
-                    </main>
-                    
-                    // Footer
-                    <Footer/>
+                    // Main content area
+                    <div class="main-area">
+                        // Page content (routed)
+                        <main class="page-content">
+                            <Routes>
+                                <Route path="/" view=pages::HomePage/>
+                                <Route path="/massload" view=move || view! {
+                                    <pages::MassloadPage 
+                                        wallet_connected=wallet_connected
+                                        wallet_address=wallet_address
+                                    />
+                                }/>
+                                <Route path="/register" view=pages::RegisterPage/>
+                                <Route path="/protect" view=pages::ProtectPage/>
+                            </Routes>
+                        </main>
+                        
+                        // Footer
+                        <Footer/>
+                    </div>
                 </div>
             </div>
         </Router>

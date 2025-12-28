@@ -22,13 +22,6 @@ pub fn Sidebar() -> impl IntoView {
 
     view! {
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <a href="/" class="sidebar-logo">
-                    <img src="/logo-light.png" alt="Allfeat" class="logo-img"/>
-                    <span class="logo-text">"Allfeat"</span>
-                </a>
-            </div>
-            
             <nav class="sidebar-nav">
                 // Main section
                 <div class="nav-section">
