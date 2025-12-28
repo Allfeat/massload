@@ -25,7 +25,6 @@ mod footer;
 mod logs;
 mod wallet_modal;
 pub mod icons;
-// mod musical_work_form; // Old version - replaced by v2
 pub mod musical_work_form_v2;
 
 pub use sidebar::*;
@@ -39,5 +38,4 @@ pub use footer::*;
 pub use logs::*;
 pub use wallet_modal::*;
 pub use icons::*;
-// pub use musical_work_form::*; // Old version - replaced by v2
 
