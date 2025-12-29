@@ -85,6 +85,15 @@ pub fn translate(key: &str, lang: Language) -> Option<&'static str> {
             Language::Korean => "작동 방식",
             Language::Greek => "Πώς λειτουργεί",
         }),
+        "nav.whitepaper" => Some(match lang {
+            Language::English => "White Paper",
+            Language::French => "White Paper",
+            Language::Spanish => "Libro Blanco",
+            Language::German => "Whitepaper",
+            Language::Japanese => "ホワイトペーパー",
+            Language::Korean => "백서",
+            Language::Greek => "Λευκό Χαρτί",
+        }),
         _ => None,
     }
 }
