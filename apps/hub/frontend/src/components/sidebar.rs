@@ -4,17 +4,13 @@
 use leptos::*;
 use leptos_router::*;
 
-use crate::i18n::{t, Language};
+use crate::i18n::t;
 use super::icons::*;
 
 /// Sidebar navigation with Tanssi-style menu
 #[component]
 pub fn Sidebar() -> impl IntoView {
     let location = use_location();
-    
-    // Get language context once
-    let lang_signal = use_context::<RwSignal<Language>>()
-        .expect("Language context not found");
     
     // Check if a path is active
     let is_active = move |path: &str| {
@@ -110,13 +106,7 @@ pub fn Sidebar() -> impl IntoView {
                         <span class="nav-external"><IconExternalLink/></span>
                     </a>
                     <a 
-                        href=move || {
-                            if lang_signal.get() == Language::French {
-                                "https://docsend.com/view/gnxbpzwsgnmx5j2s"
-                            } else {
-                                "https://docsend.com/view/2w37ijcv57qvvbjw"
-                            }
-                        }
+                        href="https://docsend.com/view/2w37ijcv57qvvbjw"
                         target="_blank" 
                         class="nav-item external"
                     >
