@@ -65,6 +65,9 @@ pub use types::{
     AppError, AppResult,
 };
 
+// Explorer types
+pub use services::explorer::{MusicalWorkData, CreatorData};
+
 // Components
 pub use components::*;
 

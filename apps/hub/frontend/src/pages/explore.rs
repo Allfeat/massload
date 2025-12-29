@@ -5,6 +5,7 @@ use leptos::*;
 
 use crate::i18n::t;
 use crate::components::icons::*;
+use crate::components::MiddsDisplay;
 use crate::services::explorer::{fetch_blockchain_metrics, fetch_all_musical_works};
 use crate::MusicalWorkData;
 
@@ -180,63 +181,7 @@ pub fn ExplorePage() -> impl IntoView {
                                                                             fallback=|| view! { }
                                                                         >
                                                                             <div class="preview-item-expanded">
-                                                                                <div class="midds-work">
-                                                                                    <div class="midds-header">
-                                                                                        <span class="midds-badge">"MIDDS"</span>
-                                                                                        <span class="midds-type">"MusicalWork"</span>
-                                                                                    </div>
-                                                                                    
-                                                                                    <div class="midds-field">
-                                                                                        <div class="midds-label">"title"</div>
-                                                                                        <div class="midds-value">{work.title.clone()}</div>
-                                                                                    </div>
-                                                                                    
-                                                                                    {work.iswc.clone().map(|iswc| view! {
-                                                                                        <div class="midds-field">
-                                                                                            <div class="midds-label">"iswc"</div>
-                                                                                            <div class="midds-value iswc-value">{iswc}</div>
-                                                                                        </div>
-                                                                                    })}
-                                                                                    
-                                                                                    <div class="midds-field">
-                                                                                        <div class="midds-label">"creators" <span class="midds-count">"(" {work.creators.len()} ")"</span></div>
-                                                                                        <div class="midds-array">
-                                                                                            {work.creators.iter().enumerate().map(|(i, creator)| {
-                                                                                                view! {
-                                                                                                    <div class="midds-array-item">
-                                                                                                        <span class="midds-index">{i}</span>
-                                                                                                        <div class="midds-object">
-                                                                                                            <div class="midds-prop">
-                                                                                                                <span class="prop-key">"name"</span>
-                                                                                                                <span class="prop-value">{creator.name.clone()}</span>
-                                                                                                            </div>
-                                                                                                            <div class="midds-prop">
-                                                                                                                <span class="prop-key">"roles"</span>
-                                                                                                                <span class="prop-value">
-                                                                                                                    {creator.roles.iter().map(|r| view! {
-                                                                                                                        <span class="role-badge">{r.clone()}</span>
-                                                                                                                    }).collect::<Vec<_>>()}
-                                                                                                                </span>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                }
-                                                                                            }).collect::<Vec<_>>()}
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    
-                                                                                    {work.creation_year.map(|year| view! {
-                                                                                        <div class="midds-field">
-                                                                                            <div class="midds-label">"creation_year"</div>
-                                                                                            <div class="midds-value">{year}</div>
-                                                                                        </div>
-                                                                                    })}
-                                                                                    
-                                                                                    <div class="midds-field">
-                                                                                        <div class="midds-label">"work_type"</div>
-                                                                                        <div class="midds-value type-value">{work.work_type.clone()}</div>
-                                                                                    </div>
-                                                                                </div>
+                                                                                <MiddsDisplay work=work.clone()/>
                                                                             </div>
                                                                         </Show>
                                                                     </div>
