@@ -459,23 +459,22 @@ export async function getAllRecordings(rpcUrl) {
                 const isrc = decodeBytes(value.isrc);
                 const musicalWorkId = String(value.musicalWorkId || id);
                 
-                // Format performers
-                const performers = (value.performers || []).map((performer, idx) => {
-                    const bigIntReplacer = (key, value) => typeof value === 'bigint' ? value.toString() : value;
-                    console.log(`  Performer ${idx}:`, JSON.stringify(performer, bigIntReplacer, 2));
+                // Format performers - NOTE: performers ARE PartyId objects directly, not { id: PartyId, role: string }
+                const performers = (value.performers || []).map(performer => {
                     let name = 'Unknown';
-                    if (performer.id) {
-                        if (performer.id.type === 'Ipi') {
-                            name = `IPI ${performer.id.value}`;
-                        } else if (performer.id.type === 'Isni') {
-                            name = `ISNI ${performer.id.value}`;
-                        } else if (performer.id.type === 'Both') {
-                            name = `IPI ${performer.id.value.ipi} / ISNI ${performer.id.value.isni}`;
+                    // Performer IS the PartyId directly (not performer.id)
+                    if (performer) {
+                        if (performer.type === 'Ipi') {
+                            name = `IPI ${performer.value}`;
+                        } else if (performer.type === 'Isni') {
+                            name = `ISNI ${performer.value}`;
+                        } else if (performer.type === 'Both') {
+                            name = `IPI ${performer.value.ipi} / ISNI ${performer.value.isni}`;
                         }
                     }
                     return {
                         name,
-                        id: performer.id || {}
+                        id: performer || {}  // The performer IS the ID
                     };
                 });
                 
