@@ -9,6 +9,7 @@ use wasm_bindgen::JsCast;
 use web_sys::{EventSource, MessageEvent};
 
 use crate::{LogEntry, LogLevel, backend_url, MAX_LOG_ENTRIES};
+use crate::i18n::t;
 
 /// Request animation frame helper for smooth scrolling
 fn request_animation_frame(f: impl FnOnce() + 'static) {
@@ -120,12 +121,12 @@ pub fn LogsPanel(
     view! {
         <div class="logs-panel">
             <div class="logs-header">
-                <span class="logs-title">"📋 Processing Logs"</span>
+                <span class="logs-title">"📋 " {t("common.logs")}</span>
                 <button 
                     class="logs-clear"
                     on:click=move |_| set_logs.set(vec![])
                 >
-                    "Clear"
+                    {t("common.clear")}
                 </button>
             </div>
             <div class="logs-content" node_ref=logs_container>

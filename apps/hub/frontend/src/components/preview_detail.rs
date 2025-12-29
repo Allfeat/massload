@@ -2,6 +2,7 @@
 
 use leptos::*;
 use serde_json::Value;
+use crate::i18n::t;
 
 /// Extract ID display (IPI, ISNI, or Both)
 /// Supports both formats:
@@ -139,8 +140,8 @@ pub fn WorkDetail(work: Value) -> impl IntoView {
         <div class="midds-work">
             // Header with MIDDS badge
             <div class="midds-header">
-                <span class="midds-badge">"MIDDS"</span>
-                <span class="midds-type">"MusicalWork"</span>
+                <span class="midds-badge">{t("common.midds")}</span>
+                <span class="midds-type">{t("common.musical_work")}</span>
             </div>
             
             // iswc

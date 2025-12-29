@@ -95,6 +95,9 @@ pub fn App() -> impl IntoView {
     // Initialize language context
     i18n::provide_language_context();
     
+    // Initialize theme context (from allfeat-ui)
+    allfeat_ui::provide_theme_context();
+    
     // Global wallet state (shared across all pages)
     let (wallet_connected, set_wallet_connected) = create_signal(false);
     let (wallet_address, set_wallet_address) = create_signal(None::<String>);

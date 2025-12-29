@@ -13,8 +13,8 @@ pub fn HomePage() -> impl IntoView {
         <div class="home-page">
             // Hero section
             <section class="home-hero">
-                <h1 class="home-title">{t("home.welcome")}</h1>
-                <p class="home-subtitle">{t("home.subtitle")}</p>
+                <h1 class="home-title">{move || t("home.welcome")}</h1>
+                <p class="home-subtitle">{move || t("home.subtitle")}</p>
             </section>
             
             // Feature cards
@@ -23,10 +23,10 @@ pub fn HomePage() -> impl IntoView {
                     <div class="feature-icon"><IconPackage/></div>
                     <div class="feature-content">
                         <div class="feature-header">
-                            <h3 class="feature-title">{t("home.massload.title")}</h3>
-                            <span class="feature-badge live">"Live"</span>
+                            <h3 class="feature-title">{move || t("home.massload.title")}</h3>
+                            <span class="feature-badge live">{move || t("common.live")}</span>
                         </div>
-                        <p class="feature-description">{t("home.massload.desc")}</p>
+                        <p class="feature-description">{move || t("home.massload.desc")}</p>
                     </div>
                     <div class="feature-arrow"><IconArrowRight/></div>
                 </A>
@@ -35,10 +35,10 @@ pub fn HomePage() -> impl IntoView {
                     <div class="feature-icon"><IconPenLine/></div>
                     <div class="feature-content">
                         <div class="feature-header">
-                            <h3 class="feature-title">{t("home.register.title")}</h3>
-                            <span class="feature-badge live">"Live"</span>
+                            <h3 class="feature-title">{move || t("home.register.title")}</h3>
+                            <span class="feature-badge live">{move || t("common.live")}</span>
                         </div>
-                        <p class="feature-description">{t("home.register.desc")}</p>
+                        <p class="feature-description">{move || t("home.register.desc")}</p>
                     </div>
                     <div class="feature-arrow"><IconArrowRight/></div>
                 </A>
@@ -47,10 +47,10 @@ pub fn HomePage() -> impl IntoView {
                     <div class="feature-icon"><IconShield/></div>
                     <div class="feature-content">
                         <div class="feature-header">
-                            <h3 class="feature-title">{t("home.protect.title")}</h3>
-                            <span class="feature-badge soon">"Coming Soon"</span>
+                            <h3 class="feature-title">{move || t("home.protect.title")}</h3>
+                            <span class="feature-badge soon">{move || t("common.coming_soon")}</span>
                         </div>
-                        <p class="feature-description">{t("home.protect.desc")}</p>
+                        <p class="feature-description">{move || t("home.protect.desc")}</p>
                     </div>
                     <div class="feature-arrow"><IconArrowRight/></div>
                 </A>
@@ -58,27 +58,27 @@ pub fn HomePage() -> impl IntoView {
             
             // Resources section
             <section class="resources-section">
-                <h2 class="section-title">{t("home.resources.title")}</h2>
+                <h2 class="section-title">{move || t("home.resources.title")}</h2>
                 
                 <div class="resources-grid">
                     <a href="https://docs.allfeat.org/getting-started" target="_blank" class="resource-link">
                         <span class="resource-icon"><IconRocket/></span>
-                        <span class="resource-title">{t("home.resources.getting_started")}</span>
+                        <span class="resource-title">{move || t("home.resources.getting_started")}</span>
                         <span class="resource-arrow"><IconExternalLink/></span>
                     </a>
                     <a href="https://docs.allfeat.org" target="_blank" class="resource-link">
                         <span class="resource-icon"><IconBookOpen/></span>
-                        <span class="resource-title">{t("home.resources.documentation")}</span>
+                        <span class="resource-title">{move || t("home.resources.documentation")}</span>
                         <span class="resource-arrow"><IconExternalLink/></span>
                     </a>
                     <a href="https://t.me/Allfeat_fndn" target="_blank" class="resource-link">
                         <span class="resource-icon"><IconMessageCircle/></span>
-                        <span class="resource-title">{t("home.resources.community")}</span>
+                        <span class="resource-title">{move || t("home.resources.community")}</span>
                         <span class="resource-arrow"><IconExternalLink/></span>
                     </a>
                     <a href="https://github.com/allfeat" target="_blank" class="resource-link">
                         <span class="resource-icon"><IconGithub/></span>
-                        <span class="resource-title">{t("home.resources.github")}</span>
+                        <span class="resource-title">{move || t("home.resources.github")}</span>
                         <span class="resource-arrow"><IconExternalLink/></span>
                     </a>
                 </div>
@@ -88,15 +88,15 @@ pub fn HomePage() -> impl IntoView {
             <section class="stats-section">
                 <div class="stat-card">
                     <div class="stat-value">"--"</div>
-                    <div class="stat-label">{t("home.stats.works")}</div>
+                    <div class="stat-label">{move || t("home.stats.works")}</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">"--"</div>
-                    <div class="stat-label">{t("home.stats.creators")}</div>
+                    <div class="stat-label">{move || t("home.stats.creators")}</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">"Melodie"</div>
-                    <div class="stat-label">{t("home.stats.network")}</div>
+                    <div class="stat-value">{move || t("network.melodie")}</div>
+                    <div class="stat-label">{move || t("home.stats.network")}</div>
                 </div>
             </section>
         </div>

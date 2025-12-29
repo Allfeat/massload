@@ -19,8 +19,19 @@ struct PublisherFormData {
     isni: String,
 }
 
-// Available creator roles
-const CREATOR_ROLES: &[&str] = &["Composer", "Lyricist", "Arranger", "Adapter"];
+// Available creator roles (aligned with TS version)
+const CREATOR_ROLES: &[&str] = &["Author", "Composer", "Arranger", "Adapter"];
+
+// Helper function to translate role names
+fn translate_role(role: &str) -> String {
+    match role {
+        "Author" => t("register.form.role_author"),
+        "Composer" => t("register.form.role_composer"),
+        "Arranger" => t("register.form.role_arranger"),
+        "Adapter" => t("register.form.role_adapter"),
+        _ => role.to_string(),
+    }
+}
 
 // Grouped creator for display (one IPI/ISNI can have multiple roles)
 #[derive(Clone, Debug)]
@@ -219,53 +230,48 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
         let mut all_participants = creators.get();
         all_participants.extend(publishers.get());
         
-        let work = MusicalWork {
-            iswc: iswc.get(),
-            title: title.get(),
-            creators: all_participants,
-            // Note: alternative_titles and genre are backend-only fields
-            // They are not available in WASM builds due to #[cfg(not(target_arch = "wasm32"))]
-            creation_year: if !creation_year.get().is_empty() {
-                creation_year.get().parse().ok()
-            } else {
-                None
-            },
-            instrumental: Some(instrumental.get()),
-            language: if !language.get().is_empty() {
-                Some(language.get())
-            } else {
-                None
-            },
-            bpm: if !bpm.get().is_empty() {
-                bpm.get().parse().ok()
-            } else {
-                None
-            },
-            key: if !key.get().is_empty() {
-                Some(key.get())
-            } else {
-                None
-            },
-            work_type: Some(match work_type.get().as_str() {
-                "Medley" => WorkType::Medley,
-                "Mashup" => WorkType::Mashup,
-                "Adaptation" => WorkType::Adaptation,
-                _ => WorkType::Original,
-            }),
-            classical_info: if !opus.get().is_empty() || !catalog_number.get().is_empty() || !number_of_voices.get().is_empty() {
-                Some(ClassicalInfo {
-                    opus: if !opus.get().is_empty() { Some(opus.get()) } else { None },
-                    catalog_number: if !catalog_number.get().is_empty() { Some(catalog_number.get()) } else { None },
-                    number_of_voices: if !number_of_voices.get().is_empty() {
-                        number_of_voices.get().parse().ok()
-                    } else {
-                        None
-                    },
-                })
-            } else {
-                None
-            },
-            participants: vec![],
+        // Use MusicalWork::new() to avoid conditional compilation issues with alternative_titles and genre
+        let mut work = MusicalWork::new(iswc.get(), title.get());
+        work.creators = all_participants;
+        work.creation_year = if !creation_year.get().is_empty() {
+            creation_year.get().parse().ok()
+        } else {
+            None
+        };
+        work.instrumental = Some(instrumental.get());
+        work.language = if !language.get().is_empty() {
+            Some(language.get())
+        } else {
+            None
+        };
+        work.bpm = if !bpm.get().is_empty() {
+            bpm.get().parse().ok()
+        } else {
+            None
+        };
+        work.key = if !key.get().is_empty() {
+            Some(key.get())
+        } else {
+            None
+        };
+        work.work_type = Some(match work_type.get().as_str() {
+            "Medley" => WorkType::Medley,
+            "Mashup" => WorkType::Mashup,
+            "Adaptation" => WorkType::Adaptation,
+            _ => WorkType::Original,
+        });
+        work.classical_info = if !opus.get().is_empty() || !catalog_number.get().is_empty() || !number_of_voices.get().is_empty() {
+            Some(ClassicalInfo {
+                opus: if !opus.get().is_empty() { Some(opus.get()) } else { None },
+                catalog_number: if !catalog_number.get().is_empty() { Some(catalog_number.get()) } else { None },
+                number_of_voices: if !number_of_voices.get().is_empty() {
+                    number_of_voices.get().parse().ok()
+                } else {
+                    None
+                },
+            })
+        } else {
+            None
         };
         
         // Frontend validation
@@ -289,7 +295,7 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                                 logging::log!("✅ Work submitted! Tx: {:?}", result.tx_hash);
                                 set_submission_success.set(true);
                             } else {
-                                let err_msg = result.error.unwrap_or_else(|| "Unknown error".to_string());
+                                let err_msg = result.error.unwrap_or_else(|| t("form.unknown_error"));
                                 logging::error!("❌ Submission failed: {}", err_msg);
                                 set_validation_errors.set(vec![err_msg]);
                             }
@@ -312,18 +318,13 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
     view! {
         <div class="register-form-page">
             <div class="form-breadcrumb">
-                <A href="/register" class="breadcrumb-link">{t("register.back")}</A>
-                " / "
-                <span class="breadcrumb-current">{t("register.musical_work.title")}</span>
+                <A href="/register" class="breadcrumb-link">{move || t("nav.midds_registration")}</A>
+                " > "
+                <span class="breadcrumb-current">{move || t("register.musical_work.title")}</span>
             </div>
             
             // Single Card wrapper (TypeScript style)
             <div class="ts-form-card">
-                <div class="ts-form-header">
-                    <h2 class="ts-form-title">{t("register.musical_work.title")}</h2>
-                    <p class="ts-form-subtitle">"Register a musical work on the Allfeat blockchain"</p>
-                </div>
-                
                 <form class="ts-form-body" on:submit=handle_submit>
                     // Validation errors (global)
                     {move || {
@@ -331,7 +332,7 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                         if !errors.is_empty() {
                             view! {
                                 <div class="form-errors">
-                                    <h4>"Validation Errors:"</h4>
+                                    <h4>{move || t("form.validation_errors")}</h4>
                                     <ul>
                                         {errors.into_iter().map(|err| view! {
                                             <li>{err}</li>
@@ -357,10 +358,15 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                         }
                     }}
                     
+                    // SECTION HEADER: Titre
+                    <div class="ts-section-header">
+                        <h3 class="ts-section-title">{move || t("register.form.section_title")}</h3>
+                    </div>
+                    
                     // ISWC + Title (2 columns)
                     <div class="grid-cols-2">
                         <div class="form-field">
-                            <label for="iswc" class="form-label">"ISWC *"</label>
+                            <label for="iswc" class="form-label">{move || t("register.form.iswc")}"*"</label>
                             <input
                                 type="text"
                                 id="iswc"
@@ -369,50 +375,35 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                                 value=move || iswc.get()
                                 on:input=move |ev| set_iswc.set(event_target_value(&ev))
                             />
-                            <div class="form-hint">"Format: T followed by 10 digits"</div>
+                            <div class="form-hint">{move || t("register.form.iswc_format")}</div>
                         </div>
                         
                         <div class="form-field">
-                            <label for="title" class="form-label">"Title *"</label>
+                            <label for="title" class="form-label">{move || t("register.form.title_label")}"*"</label>
                             <input
                                 type="text"
                                 id="title"
                                 class="form-input"
-                                placeholder="Song title"
+                                placeholder=move || t("register.form.title_placeholder_song")
                                 value=move || title.get()
                                 on:input=move |ev| set_title.set(event_target_value(&ev))
                             />
                         </div>
                     </div>
                     
-                    // Year + WorkType + Instrumental (3 columns)
+                    // Year + Instrumental + WorkType (3 columns) - REORDERED
                     <div class="grid-cols-3">
                         <div class="form-field">
-                            <label for="creation_year" class="form-label">"Creation Year"</label>
+                            <label for="creation_year" class="form-label">{move || t("register.form.creation_year")}</label>
                             <input
-                                type="number"
+                                type="text"
                                 id="creation_year"
                                 class="form-input"
-                                placeholder="2024"
-                                min="1000"
-                                max="9999"
+                                placeholder=move || t("register.form.creation_year_placeholder")
+                                maxlength="4"
                                 value=move || creation_year.get()
                                 on:input=move |ev| set_creation_year.set(event_target_value(&ev))
                             />
-                        </div>
-                        
-                        <div class="form-field">
-                            <label for="work_type" class="form-label">"Work Type"</label>
-                            <select
-                                id="work_type"
-                                class="form-select"
-                                on:change=move |ev| set_work_type.set(event_target_value(&ev))
-                            >
-                                <option value="Original" selected>"Original"</option>
-                                <option value="Medley">"Medley"</option>
-                                <option value="Mashup">"Mashup"</option>
-                                <option value="Adaptation">"Adaptation"</option>
-                            </select>
                         </div>
                         
                         <div class="form-field">
@@ -423,57 +414,72 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                                     checked=move || instrumental.get()
                                     on:change=move |ev| set_instrumental.set(event_target_checked(&ev))
                                 />
-                                " Instrumental"
+                                " "{move || t("register.form.instrumental")}
                             </label>
+                        </div>
+                        
+                        <div class="form-field">
+                            <label for="work_type" class="form-label">{move || t("register.form.work_type")}"*"</label>
+                            <select
+                                id="work_type"
+                                class="form-select"
+                                on:change=move |ev| set_work_type.set(event_target_value(&ev))
+                            >
+                                <option value="" selected>{move || t("register.form.select_work_type")}</option>
+                                <option value="Original">{move || t("register.form.work_type_original")}</option>
+                                <option value="Medley">{move || t("register.form.work_type_medley")}</option>
+                                <option value="Mashup">{move || t("register.form.work_type_mashup")}</option>
+                                <option value="Adaptation">{move || t("register.form.work_type_adaptation")}</option>
+                            </select>
                         </div>
                     </div>
                     
                     // Language + BPM + Key (3 columns)
                     <div class="grid-cols-3">
                         <div class="form-field">
-                            <label for="language" class="form-label">"Language"</label>
+                            <label for="language" class="form-label">{move || t("register.form.language")}</label>
                             <select
                                 id="language"
                                 class="form-select"
                                 on:change=move |ev| set_language.set(event_target_value(&ev))
                             >
-                                <option value="" selected>"Select language"</option>
-                                <option value="English">"English"</option>
-                                <option value="French">"French"</option>
-                                <option value="Spanish">"Spanish"</option>
-                                <option value="German">"German"</option>
-                                <option value="Italian">"Italian"</option>
-                                <option value="Portuguese">"Portuguese"</option>
-                                <option value="Japanese">"Japanese"</option>
-                                <option value="Korean">"Korean"</option>
-                                <option value="Chinese">"Chinese"</option>
-                                <option value="Arabic">"Arabic"</option>
-                                <option value="Other">"Other"</option>
+                                <option value="" selected>{move || t("register.form.select_language")}</option>
+                                <option value="English">{move || t("language.english")}</option>
+                                <option value="French">{move || t("language.french")}</option>
+                                <option value="Spanish">{move || t("language.spanish")}</option>
+                                <option value="German">{move || t("language.german")}</option>
+                                <option value="Italian">{move || t("language.italian")}</option>
+                                <option value="Portuguese">{move || t("language.portuguese")}</option>
+                                <option value="Japanese">{move || t("language.japanese")}</option>
+                                <option value="Korean">{move || t("language.korean")}</option>
+                                <option value="Chinese">{move || t("language.chinese")}</option>
+                                <option value="Arabic">{move || t("language.arabic")}</option>
+                                <option value="Other">{move || t("language.other")}</option>
                             </select>
                         </div>
                         
                         <div class="form-field">
-                            <label for="bpm" class="form-label">"BPM"</label>
+                            <label for="bpm" class="form-label">{move || t("register.form.bpm")}</label>
                             <input
                                 type="number"
                                 id="bpm"
                                 class="form-input"
-                                placeholder="120"
-                                min="1"
-                                max="999"
+                                placeholder=move || t("register.form.bpm_range")
+                                min="20"
+                                max="300"
                                 value=move || bpm.get()
                                 on:input=move |ev| set_bpm.set(event_target_value(&ev))
                             />
                         </div>
                         
                         <div class="form-field">
-                            <label for="key" class="form-label">"Key"</label>
+                            <label for="key" class="form-label">{move || t("register.form.key_musical")}</label>
                             <select
                                 id="key"
                                 class="form-select"
                                 on:change=move |ev| set_key.set(event_target_value(&ev))
                             >
-                                <option value="" selected>"Select key"</option>
+                                <option value="" selected>{move || t("register.form.select_key")}</option>
                                 <option value="C">"C"</option>
                                 <option value="C#">"C#"</option>
                                 <option value="D">"D"</option>
@@ -504,13 +510,12 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                     
                     // CREATORS SECTION (Card style)
                     <div class="ts-section-card">
-                        <h3 class="ts-section-title">"Creators *"</h3>
-                        <p class="ts-section-subtitle">"Add creators with their roles (Composer, Lyricist, etc.)"</p>
+                        <h3 class="ts-section-title">{move || t("register.form.creators")}"*"</h3>
                         
                         // Creator form (IPI + ISNI)
                         <div class="grid-cols-2">
                             <div class="form-field">
-                                <label for="creator_ipi" class="form-label">"IPI code"</label>
+                                <label for="creator_ipi" class="form-label">{move || t("register.form.ipi_code")}</label>
                                 <input
                                     type="text"
                                     id="creator_ipi"
@@ -527,11 +532,11 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                                         set_creator_form.update(|f| f.ipi = value);
                                     }
                                 />
-                                <div class="form-hint">"Format: 1-11 digits (Either IPI or ISNI required)"</div>
+                                <div class="form-hint">{move || t("register.form.ipi_format")}</div>
                             </div>
                             
                             <div class="form-field">
-                                <label for="creator_isni" class="form-label">"ISNI code"</label>
+                                <label for="creator_isni" class="form-label">{move || t("register.form.isni_code")}</label>
                                 <input
                                     type="text"
                                     id="creator_isni"
@@ -543,16 +548,17 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                                         set_creator_form.update(|f| f.isni = event_target_value(&ev));
                                     }
                                 />
-                                <div class="form-hint">"Format: 16 characters (Either IPI or ISNI required)"</div>
+                                <div class="form-hint">{move || t("register.form.isni_format")}</div>
                             </div>
                         </div>
                         
                         // Role selection (badges)
                         <div class="form-field">
-                            <label class="form-label">"Roles *"</label>
+                            <label class="form-label">{move || t("register.form.roles")}</label>
                             <div class="role-badges">
                                 {CREATOR_ROLES.iter().map(|role| {
                                     let role_str = role.to_string();
+                                    let role_for_display = role_str.clone();
                                     let role_for_class = role_str.clone();
                                     let role_for_check = role_str.clone();
                                     let role_for_click = role_str.clone();
@@ -568,7 +574,7 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                                             }
                                             on:click=move |_| toggle_role(role_for_click.clone())
                                         >
-                                            {role_str.clone()}
+                                            {move || translate_role(&role_for_display)}
                                             {move || {
                                                 if creator_form.get().selected_roles.contains(&role_for_check) {
                                                     view! { <span class="role-check">" ✓"</span> }.into_view()
@@ -582,80 +588,82 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                             </div>
                         </div>
                         
-                        // Add button
-                        <div class="form-actions-center">
+                        // Add button (right-aligned like TS version)
+                        <div class="form-actions-right">
                             <button
                                 type="button"
-                                class="btn-add"
+                                class="btn-add-small"
                                 disabled=move || {
                                     let form = creator_form.get();
                                     form.ipi.is_empty() && form.isni.is_empty() || form.selected_roles.is_empty()
                                 }
                                 on:click=add_creators
                             >
-                                "+ Add Creator"
+                                {move || t("register.form.add_button")}" +"
                             </button>
                         </div>
                         
-                        // Creators list (grouped by IPI/ISNI)
-                        {move || {
-                            let groups = grouped_creators();
-                            if groups.is_empty() {
+                        // Creators list (grouped by IPI/ISNI) - WITH CARD
+                        <div class="assigned-card">
+                            {move || {
+                                let groups = grouped_creators();
                                 view! {
-                                    <div class="empty-list">
-                                        <p>"No creators assigned yet."</p>
-                                        <p class="empty-hint">"Use the form above to add creators."</p>
+                                    <div class="assigned-header">
+                                        <h4>{move || t("register.form.assigned_creators")}</h4>
+                                        <span class="assigned-count">{groups.len()}" "{move || t("register.form.creators_count")}</span>
                                     </div>
-                                }.into_view()
-                            } else {
-                                view! {
-                                    <div class="creators-list">
-                                        <div class="list-header">
-                                            <span class="list-title">"Assigned Creators"</span>
-                                            <span class="list-count">{groups.len()}" creator(s)"</span>
-                                        </div>
-                                        <ul class="list-items">
-                                            {groups.into_iter().map(|group| {
-                                                let pid_display = format_party_id(&group.party_id);
-                                                let group_pid = group.party_id.clone();
-                                                view! {
-                                                    <li class="list-item">
-                                                        <div class="item-content">
-                                                            <div class="item-id">{pid_display}</div>
-                                                            <div class="item-roles">
-                                                                {group.roles.iter().map(|role| {
-                                                                    view! {
-                                                                        <span class="role-tag">{role.clone()}</span>
-                                                                    }
-                                                                }).collect::<Vec<_>>()}
+                                    {if groups.is_empty() {
+                                        view! {
+                                            <div class="empty-list">
+                                                <p>{move || t("register.form.no_creators")}</p>
+                                                <p class="empty-hint">{move || t("register.form.use_form_above_creators")}</p>
+                                            </div>
+                                        }.into_view()
+                                    } else {
+                                        view! {
+                                            <ul class="assigned-list">
+                                                {groups.into_iter().map(|group| {
+                                                    let pid_display = format_party_id(&group.party_id);
+                                                    let group_pid = group.party_id.clone();
+                                                    view! {
+                                                        <li class="assigned-item">
+                                                            <div class="item-content">
+                                                                <div class="item-id">{pid_display}</div>
+                                                                <div class="item-roles">
+                                                                    {group.roles.iter().map(|role| {
+                                                                        let role_for_display = role.clone();
+                                                                        view! {
+                                                                            <span class="role-tag">{move || translate_role(&role_for_display)}</span>
+                                                                        }
+                                                                    }).collect::<Vec<_>>()}
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <button
-                                                            type="button"
-                                                            class="btn-remove"
-                                                            on:click=move |_| remove_creator_group(group_pid.clone())
-                                                        >
-                                                            "✕"
-                                                        </button>
-                                                    </li>
-                                                }
-                                            }).collect::<Vec<_>>()}
-                                        </ul>
-                                    </div>
-                                }.into_view()
-                            }
-                        }}
+                                                            <button
+                                                                type="button"
+                                                                class="btn-remove"
+                                                                on:click=move |_| remove_creator_group(group_pid.clone())
+                                                            >
+                                                                "✕"
+                                                            </button>
+                                                        </li>
+                                                    }
+                                                }).collect::<Vec<_>>()}
+                                            </ul>
+                                        }.into_view()
+                                    }}
+                                }
+                            }}
+                        </div>
                     </div>
                     
                     // PUBLISHERS SECTION (Card style)
                     <div class="ts-section-card">
-                        <h3 class="ts-section-title">"Publishers"</h3>
-                        <p class="ts-section-subtitle">"Add publishers (IPI or ISNI)"</p>
+                        <h3 class="ts-section-title">{move || t("register.form.publishers")}</h3>
                         
                         // Publisher form
                         <div class="grid-cols-2">
                             <div class="form-field">
-                                <label for="publisher_ipi" class="form-label">"IPI code"</label>
+                                <label for="publisher_ipi" class="form-label">{move || t("register.form.ipi_code")}</label>
                                 <input
                                     type="text"
                                     id="publisher_ipi"
@@ -672,10 +680,11 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                                         set_publisher_form.update(|f| f.ipi = value);
                                     }
                                 />
+                                <div class="form-hint">{move || t("register.form.ipi_format")}</div>
                             </div>
                             
                             <div class="form-field">
-                                <label for="publisher_isni" class="form-label">"ISNI code"</label>
+                                <label for="publisher_isni" class="form-label">{move || t("register.form.isni_code")}</label>
                                 <input
                                     type="text"
                                     id="publisher_isni"
@@ -687,118 +696,126 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                                         set_publisher_form.update(|f| f.isni = event_target_value(&ev));
                                     }
                                 />
+                                <div class="form-hint">{move || t("register.form.isni_format")}</div>
                             </div>
                         </div>
                         
-                        // Add button
-                        <div class="form-actions-center">
+                        // Add button (right-aligned)
+                        <div class="form-actions-right">
                             <button
                                 type="button"
-                                class="btn-add"
+                                class="btn-add-small"
                                 disabled=move || {
                                     let form = publisher_form.get();
                                     form.ipi.is_empty() && form.isni.is_empty()
                                 }
                                 on:click=add_publisher
                             >
-                                "+ Add Publisher"
+                                {move || t("register.form.add_button")}" +"
                             </button>
                         </div>
                         
-                        // Publishers list
-                        {move || {
-                            let pubs = publishers.get();
-                            if pubs.is_empty() {
+                        // Publishers list - WITH CARD
+                        <div class="assigned-card">
+                            {move || {
+                                let pubs = publishers.get();
                                 view! {
-                                    <div class="empty-list">
-                                        <p>"No publishers assigned yet."</p>
+                                    <div class="assigned-header">
+                                        <h4>{move || t("register.form.assigned_publishers")}</h4>
+                                        <span class="assigned-count">{pubs.len()}" "{move || t("register.form.publishers_count")}</span>
                                     </div>
-                                }.into_view()
-                            } else {
-                                view! {
-                                    <div class="creators-list">
-                                        <div class="list-header">
-                                            <span class="list-title">"Assigned Publishers"</span>
-                                            <span class="list-count">{pubs.len()}" publisher(s)"</span>
-                                        </div>
-                                        <ul class="list-items">
-                                            {pubs.iter().enumerate().map(|(idx, pub_)| {
-                                                let pid_display = format_party_id(&pub_.id);
-                                                view! {
-                                                    <li class="list-item">
-                                                        <div class="item-content">
-                                                            <div class="item-id">{pid_display}</div>
-                                                        </div>
-                                                        <button
-                                                            type="button"
-                                                            class="btn-remove"
-                                                            on:click=move |_| remove_publisher(idx)
-                                                        >
-                                                            "✕"
-                                                        </button>
-                                                    </li>
-                                                }
-                                            }).collect::<Vec<_>>()}
-                                        </ul>
-                                    </div>
-                                }.into_view()
-                            }
-                        }}
+                                    {if pubs.is_empty() {
+                                        view! {
+                                            <div class="empty-list">
+                                                <p>{move || t("register.form.no_publishers")}</p>
+                                                <p class="empty-hint">{move || t("register.form.use_form_above_publishers")}</p>
+                                            </div>
+                                        }.into_view()
+                                    } else {
+                                        view! {
+                                            <ul class="assigned-list">
+                                                {pubs.iter().enumerate().map(|(idx, pub_)| {
+                                                    let pid_display = format_party_id(&pub_.id);
+                                                    view! {
+                                                        <li class="assigned-item">
+                                                            <div class="item-content">
+                                                                <div class="item-id">{pid_display}</div>
+                                                            </div>
+                                                            <button
+                                                                type="button"
+                                                                class="btn-remove"
+                                                                on:click=move |_| remove_publisher(idx)
+                                                            >
+                                                                "✕"
+                                                            </button>
+                                                        </li>
+                                                    }
+                                                }).collect::<Vec<_>>()}
+                                            </ul>
+                                        }.into_view()
+                                    }}
+                                }
+                            }}
+                        </div>
                     </div>
                     
                     // CLASSICAL INFO SECTION (Card style)
                     <div class="ts-section-card">
-                        <h3 class="ts-section-title">"Classical Information"</h3>
-                        <p class="ts-section-subtitle">"Optional fields for classical works"</p>
+                        <h3 class="ts-section-title">{move || t("register.form.classical_section")}</h3>
                         
                         <div class="grid-cols-3">
                             <div class="form-field">
-                                <label for="opus" class="form-label">"Opus"</label>
+                                <label for="opus" class="form-label">{move || t("register.form.opus")}</label>
                                 <input
                                     type="text"
                                     id="opus"
                                     class="form-input"
-                                    placeholder="Op. 27 No. 2"
+                                    placeholder=move || t("register.form.opus_placeholder")
+                                    maxlength="128"
                                     value=move || opus.get()
                                     on:input=move |ev| set_opus.set(event_target_value(&ev))
                                 />
+                                <div class="form-hint">{move || t("register.form.opus_limit")}</div>
                             </div>
                             
                             <div class="form-field">
-                                <label for="catalog_number" class="form-label">"Catalog Number"</label>
+                                <label for="catalog_number" class="form-label">{move || t("register.form.catalog_number")}</label>
                                 <input
                                     type="text"
                                     id="catalog_number"
                                     class="form-input"
-                                    placeholder="BWV 1007"
+                                    placeholder=move || t("register.form.catalog_placeholder")
+                                    maxlength="128"
                                     value=move || catalog_number.get()
                                     on:input=move |ev| set_catalog_number.set(event_target_value(&ev))
                                 />
+                                <div class="form-hint">{move || t("register.form.catalog_limit")}</div>
                             </div>
                             
                             <div class="form-field">
-                                <label for="number_of_voices" class="form-label">"Number of Voices"</label>
+                                <label for="number_of_voices" class="form-label">{move || t("register.form.voices")}</label>
                                 <input
                                     type="number"
                                     id="number_of_voices"
                                     class="form-input"
                                     placeholder="4"
                                     min="1"
-                                    max="99"
+                                    max="65535"
                                     value=move || number_of_voices.get()
                                     on:input=move |ev| set_number_of_voices.set(event_target_value(&ev))
                                 />
+                                <div class="form-hint">{move || t("register.form.voices_range")}</div>
                             </div>
                         </div>
                     </div>
                     
-                    // SUBMIT BUTTON
+                    // SUBMIT BUTTONS (2 buttons like TS version)
                     <div class="form-submit-section">
                         {move || {
                             if !wallet_connected.get() {
                                 view! {
                                     <div class="wallet-warning">
-                                        "⚠️ Please connect your wallet to submit."
+                                        {move || t("register.form.wallet_connect_warning")}
                                     </div>
                                 }.into_view()
                             } else {
@@ -806,19 +823,25 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                             }
                         }}
                         
-                        <button
-                            type="submit"
-                            class="btn-submit"
-                            disabled=move || !wallet_connected.get() || is_submitting.get()
-                        >
+                        <div class="form-actions-row">
+                            <A href="/register" class="btn-secondary">
+                                {move || t("register.form.back_home")}
+                            </A>
+                            
+                            <button
+                                type="submit"
+                                class="btn-submit"
+                                disabled=move || !wallet_connected.get() || is_submitting.get()
+                            >
                             {move || {
                                 if is_submitting.get() {
-                                    "Submitting...".to_string()
+                                    t("form.submitting")
                                 } else {
-                                    "Review Entries & Submit".to_string()
+                                    t("register.form.review_submit")
                                 }
                             }}
-                        </button>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>

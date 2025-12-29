@@ -1,0 +1,137 @@
+/* Notification/Toast Container */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    pointer-events: none;
+}
+
+/* Notification Item */
+.notification {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    background: var(--bg-card, #1e1e1e);
+    border: 1px solid var(--border, #333);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    pointer-events: auto;
+    animation: slide-in 0.3s ease-out;
+    transition: all 0.2s ease;
+}
+
+.notification:hover {
+    transform: translateX(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Notification Levels */
+.notification-info {
+    border-left: 4px solid #3b82f6;
+}
+
+.notification-success {
+    border-left: 4px solid #10b981;
+}
+
+.notification-warning {
+    border-left: 4px solid #f59e0b;
+}
+
+.notification-error {
+    border-left: 4px solid #ef4444;
+}
+
+/* Notification Icon */
+.notification-icon {
+    font-size: 20px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Notification Content */
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--text-primary, #fff);
+}
+
+.notification-message {
+    font-size: 14px;
+    color: var(--text-secondary, #aaa);
+    line-height: 1.5;
+}
+
+/* Notification Close Button */
+.notification-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary, #aaa);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.notification-close:hover {
+    background-color: var(--hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--text-primary, #fff);
+}
+
+/* Animations */
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Light Theme Adjustments */
+[data-theme="light"] .notification {
+    background: var(--bg-card-light, #fff);
+    border-color: var(--border-light, #e5e7eb);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .notification:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .notification-title {
+    color: var(--text-primary-light, #111);
+}
+
+[data-theme="light"] .notification-message {
+    color: var(--text-secondary-light, #666);
+}
+
+[data-theme="light"] .notification-close {
+    color: var(--text-secondary-light, #666);
+}
+
+[data-theme="light"] .notification-close:hover {
+    background-color: var(--hover-bg-light, rgba(0, 0, 0, 0.05));
+    color: var(--text-primary-light, #111);
+}
+

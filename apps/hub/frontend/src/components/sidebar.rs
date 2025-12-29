@@ -36,7 +36,7 @@ pub fn Sidebar() -> impl IntoView {
                         }
                     >
                         <span class="nav-icon"><IconHome/></span>
-                        <span class="nav-label">{t("nav.home")}</span>
+                        <span class="nav-label">{move || t("nav.home")}</span>
                     </A>
                 </div>
                 
@@ -47,7 +47,7 @@ pub fn Sidebar() -> impl IntoView {
                         class=move || if is_active("/explore") { "nav-item active" } else { "nav-item" }
                     >
                         <span class="nav-icon"><IconSearch/></span>
-                        <span class="nav-label">{t("nav.explore")}</span>
+                        <span class="nav-label">{move || t("nav.explore")}</span>
                     </A>
                 </div>
                 
@@ -58,7 +58,7 @@ pub fn Sidebar() -> impl IntoView {
                         class=move || if is_active("/register") { "nav-item active" } else { "nav-item" }
                     >
                         <span class="nav-icon"><IconPenLine/></span>
-                        <span class="nav-label">{t("nav.register")}</span>
+                        <span class="nav-label">{move || t("nav.register")}</span>
                     </A>
                 </div>
                 
@@ -69,7 +69,7 @@ pub fn Sidebar() -> impl IntoView {
                         class=move || if is_active("/protect") { "nav-item active" } else { "nav-item" }
                     >
                         <span class="nav-icon"><IconShield/></span>
-                        <span class="nav-label">{t("nav.protect")}</span>
+                        <span class="nav-label">{move || t("nav.protect")}</span>
                     </A>
                 </div>
                 
@@ -80,7 +80,7 @@ pub fn Sidebar() -> impl IntoView {
                         class=move || if is_active("/massload") { "nav-item active" } else { "nav-item" }
                     >
                         <span class="nav-icon"><IconPackage/></span>
-                        <span class="nav-label">{t("nav.massload")}</span>
+                        <span class="nav-label">{move || t("nav.massload")}</span>
                     </A>
                 </div>
                 
@@ -94,7 +94,7 @@ pub fn Sidebar() -> impl IntoView {
                         class=move || if is_active("/how-it-works") { "nav-item active" } else { "nav-item" }
                     >
                         <span class="nav-icon"><IconBookOpen/></span>
-                        <span class="nav-label">{t("nav.how_it_works")}</span>
+                        <span class="nav-label">{move || t("nav.how_it_works")}</span>
                     </A>
                 </div>
                 
@@ -102,7 +102,7 @@ pub fn Sidebar() -> impl IntoView {
                 <div class="nav-section">
                     <a href="https://docs.allfeat.org" target="_blank" class="nav-item external">
                         <span class="nav-icon"><IconBookOpen/></span>
-                        <span class="nav-label">{t("nav.docs")}</span>
+                        <span class="nav-label">{move || t("nav.docs")}</span>
                         <span class="nav-external"><IconExternalLink/></span>
                     </a>
                 </div>
@@ -111,7 +111,7 @@ pub fn Sidebar() -> impl IntoView {
             <div class="sidebar-footer">
                 <div class="network-status">
                     <span class="status-dot online"></span>
-                    <span class="status-text">"Melodie Testnet"</span>
+                    <span class="status-text">{move || t("network.melodie_testnet")}</span>
                 </div>
             </div>
         </aside>

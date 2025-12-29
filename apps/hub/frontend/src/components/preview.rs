@@ -3,6 +3,7 @@
 use leptos::*;
 use crate::{PreviewItem, WorkDetail, LogEntry, LogLevel};
 use crate::services::BlockchainService;
+use crate::i18n::t;
 
 #[component]
 pub fn PreviewSection(
@@ -44,7 +45,7 @@ pub fn PreviewSection(
             set_logs.update(|logs| {
                 logs.push(LogEntry {
                     level: LogLevel::Warning,
-                    message: "Veuillez connecter votre wallet avant de signer".to_string(),
+                    message: t("preview.connect_wallet_required"),
                     timestamp: js_sys::Date::new_0().to_locale_time_string("fr-FR").as_string().unwrap_or_default(),
                 });
             });
@@ -56,10 +57,10 @@ pub fn PreviewSection(
             set_is_processing.set(true);
             
             set_logs.update(|logs| {
+                let count = works_json.as_array().map(|a| a.len()).unwrap_or(0);
                 logs.push(LogEntry {
                     level: LogLevel::Info,
-                    message: format!("Envoi de {} œuvres à la blockchain...", 
-                        works_json.as_array().map(|a| a.len()).unwrap_or(0)),
+                    message: t("preview.sending_works").replace("{count}", &count.to_string()),
                     timestamp: js_sys::Date::new_0().to_locale_time_string("fr-FR").as_string().unwrap_or_default(),
                 });
             });
@@ -88,7 +89,7 @@ pub fn PreviewSection(
                             set_logs.update(|logs| {
                                 logs.push(LogEntry {
                                     level: LogLevel::Error,
-                                    message: format!("❌ Échec: {}", result.error.as_deref().unwrap_or("Erreur inconnue")),
+                                    message: format!("❌ {}: {}", t("preview.failed"), result.error.as_deref().unwrap_or(&t("preview.unknown_error"))),
                                     timestamp: js_sys::Date::new_0().to_locale_time_string("fr-FR").as_string().unwrap_or_default(),
                                 });
                             });
@@ -115,7 +116,7 @@ pub fn PreviewSection(
         <div class="preview-section show" id="previewSection">
             <div class="preview-header">
                 <div class="preview-title">"📋 Aperçu des transactions"</div>
-                <button class="btn btn-secondary" id="cancelBtn" on:click=on_cancel>"Annuler"</button>
+                <button class="btn btn-secondary" id="cancelBtn" on:click=on_cancel>{t("preview.cancel")}</button>
             </div>
             
             <div id="previewContent">
@@ -151,7 +152,7 @@ pub fn PreviewSection(
                                             {item.title.clone()}
                                         </div>
                                         <div class="preview-item-details">
-                                            "ISWC: " {item.iswc.clone()} " • Créateurs: " {item.creators_count}
+                                            {t("preview.iswc")} ": " {item.iswc.clone()} " • " {t("preview.creators")} ": " {item.creators_count}
                                         </div>
                                     </div>
                                     
@@ -167,7 +168,7 @@ pub fn PreviewSection(
                                                     }.into_view()
                                                 } else {
                                                     view! {
-                                                        <div>"Détails non disponibles"</div>
+                                                        <div>{t("preview.no_details")}</div>
                                                     }.into_view()
                                                 }
                                             }}
@@ -183,7 +184,7 @@ pub fn PreviewSection(
             <div class="preview-footer">
                 <div class="preview-cost">
                     <strong>{move || data.get().map(|d| d.len()).unwrap_or(0)}</strong> " œuvres • "
-                    "Coût estimé: " <strong>{move || format!("{:.2}", data.get().map(|d| d.len()).unwrap_or(0) as f32 * 0.05)}</strong> " AFT"
+                    {t("preview.estimated_cost")} ": " <strong>{move || format!("{:.2}", data.get().map(|d| d.len()).unwrap_or(0) as f32 * 0.05)}</strong> " AFT"
                 </div>
                 <button 
                     class="btn btn-primary" 
@@ -191,7 +192,7 @@ pub fn PreviewSection(
                     on:click=on_sign_and_send
                     disabled=move || !wallet_connected.get()
                 >
-                    {move || if wallet_connected.get() { "Signer & Envoyer" } else { "Connectez votre wallet" }}
+                    {move || if wallet_connected.get() { t("preview.sign_send") } else { t("preview.connect_wallet") }}
                 </button>
             </div>
         </div>

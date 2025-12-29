@@ -7,7 +7,7 @@ use web_sys::{Event, HtmlInputElement};
 use wasm_bindgen::JsCast;
 use crate::{PreviewItem, LogEntry, LogLevel, backend_url};
 use crate::services::upload_csv;
-use crate::i18n::{use_language, Translations};
+use crate::i18n::t;
 
 #[component]
 pub fn UploadSection(
@@ -18,7 +18,6 @@ pub fn UploadSection(
 ) -> impl IntoView {
     let (is_uploading, set_is_uploading) = create_signal(false);
     let (error, set_error) = create_signal(None::<String>);
-    let lang = use_language();
 
     // Handler pour le changement de fichier
     let on_file_change = move |ev: Event| {
@@ -144,9 +143,9 @@ pub fn UploadSection(
             <div class="upload-icon">"📤"</div>
             <div class="upload-text">
                 {move || if is_uploading.get() {
-                    "⏳ Uploading and processing..."
+                    t("upload.uploading")
                 } else {
-                    Translations::drag_csv_here(lang.get())
+                    t("common.drag_csv_here")
                 }}
             </div>
             
@@ -154,11 +153,11 @@ pub fn UploadSection(
                 when=move || !is_uploading.get()
                 fallback=|| view! { }
             >
-                <div class="upload-hint">{move || Translations::or_click_to_select(lang.get())}</div>
+                <div class="upload-hint">{move || t("common.or_click_to_select")}</div>
                 <div class="upload-hint mt-20">
-                    {move || Translations::supported_formats(lang.get())}
+                    {move || t("common.supported_formats")}
                     <br/>
-                    {move || Translations::auto_transform_ai(lang.get())}
+                    {move || t("common.auto_transform_ai")}
                 </div>
             </Show>
             
@@ -184,7 +183,7 @@ pub fn UploadSection(
                 fallback=|| view! { }
             >
                 <label for="fileInput" class="upload-button">
-                    {move || Translations::choose_csv_file(lang.get())}
+                    {move || t("common.choose_csv_file")}
                 </label>
             </Show>
         </div>

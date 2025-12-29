@@ -1,6 +1,7 @@
 //! Footer component with social links
 
 use leptos::*;
+use crate::i18n::t;
 
 /// Telegram icon SVG
 fn telegram_icon() -> &'static str {
@@ -21,7 +22,7 @@ fn github_icon() -> &'static str {
 pub fn Footer() -> impl IntoView {
     view! {
         <footer>
-            <div>"Copyright © 2025 Allfeat"</div>
+            <div>{t("footer.copyright")}</div>
             <div class="footer-links">
                 <a href="https://t.me/Allfeat_fndn" class="footer-link" target="_blank" rel="noopener">
                     <span inner_html=telegram_icon()></span>

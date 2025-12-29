@@ -1,17 +1,15 @@
 //! Hero section component
 
 use leptos::*;
-use crate::i18n::{use_language, Translations};
+use crate::i18n::t;
 
 #[component]
 pub fn Hero() -> impl IntoView {
-    let lang = use_language();
-
     view! {
         <div class="hero">
-            <h1>{move || Translations::title(lang.get())}</h1>
+            <h1>{move || t("common.title")}</h1>
             <p class="subtitle">
-                {move || Translations::subtitle(lang.get())}
+                {move || t("common.subtitle")}
             </p>
         </div>
     }

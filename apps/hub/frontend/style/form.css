@@ -3,16 +3,18 @@
    Matches register.allfeat.org/fr/musical-work layout exactly
    ========================================================================= */
 
-/* Single Card Wrapper (like TS) */
+/* Single Card Wrapper (like TS) - increased width for better space */
 .ts-form-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     margin-top: 32px;
-    max-width: 896px;
+    width: 90%; /* Use 90% of available width */
+    max-width: 1600px; /* Increased from 1200px to use more horizontal space */
     margin-left: auto;
     margin-right: auto;
+    padding: 0 40px; /* Increased horizontal padding for better breathing room */
 }
 
 .ts-form-header {
@@ -61,19 +63,21 @@
     gap: 16px;
 }
 
-/* Grid layouts (TS style) */
+/* Grid layouts (TS style) - improved spacing */
 .grid-cols-2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    gap: 24px; /* Increased from implicit to explicit for better spacing */
 }
 
 .grid-cols-3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    gap: 24px; /* Increased from implicit to explicit for better spacing */
 }
 
 .gap-4 {
-    gap: 16px;
+    gap: 24px; /* Increased from 16px */
 }
 
 .mt-2 { margin-top: 8px; }
@@ -492,9 +496,10 @@
    ========================================================================= */
 
 .register-form-page {
-    max-width: 896px; /* 4xl like original */
+    width: 95%; /* Use most of the available width */
+    max-width: 1800px; /* Increased significantly for large screens */
     margin: 0 auto;
-    padding: 32px 20px;
+    padding: 32px 40px; /* Good horizontal breathing room */
 }
 
 .form-header {
@@ -815,10 +820,188 @@
     to { transform: rotate(360deg); }
 }
 
+/* Coming Soon Icon (for SVG icons) */
+.coming-soon-icon {
+    font-size: 4rem;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+}
+
+.coming-soon-icon svg {
+    width: 64px;
+    height: 64px;
+    stroke-width: 1.5;
+}
+
+/* ============================================================================
+   NEW STYLES FOR TS ALIGNMENT
+   ========================================================================= */
+
+/* Section Header (like "Titre") */
+.ts-section-header {
+    margin-bottom: 16px;
+}
+
+.ts-section-header .ts-section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Assigned Card (for Assigned Creators/Publishers) */
+.assigned-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.assigned-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.assigned-header h4 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.assigned-count {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    background: var(--bg-card);
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+.assigned-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.assigned-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.assigned-item:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.assigned-item .item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.assigned-item .item-id {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.assigned-item .item-roles {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+/* Button Add Small (right-aligned like TS version) */
+.btn-add-small {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+    background: #4ade80;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-add-small:hover:not(:disabled) {
+    background: #22c55e;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(74, 222, 128, 0.3);
+}
+
+.btn-add-small:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Form Actions Right (for Add button) */
+.form-actions-right {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+/* Form Actions Row (for 2 buttons at bottom) */
+.form-actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+/* Button Secondary (for "Retour à l'accueil") */
+.btn-secondary {
+    padding: 12px 24px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-secondary:hover {
+    background: var(--bg-secondary);
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+}
+
 /* Responsive (mobile) */
 @media (max-width: 768px) {
     .register-form-page {
         padding: 20px 16px;
+    }
+    
+    .ts-form-card {
+        padding: 0 16px;
     }
     
     .form-header h1 {
