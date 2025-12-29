@@ -289,3 +289,145 @@ export async function disconnect() {
         cachedRpcUrl = null;
     }
 }
+
+/**
+ * Get blockchain metrics (counts of works, recordings, releases)
+ * @param {string} rpcUrl - RPC endpoint URL
+ * @returns {Promise<{works: number, recordings: number, releases: number, total: number}>}
+ */
+export async function getBlockchainMetrics(rpcUrl) {
+    try {
+        console.log('📊 Fetching blockchain metrics...');
+        const client = await getClient(rpcUrl);
+        
+        // Query storage entries for each MIDDS type
+        const worksEntries = await client.query.musicalWorks.middsOf.entries();
+        const recordingsEntries = await client.query.recordings?.middsOf?.entries() || [];
+        const releasesEntries = await client.query.releases?.middsOf?.entries() || [];
+        
+        const works = worksEntries.length;
+        const recordings = recordingsEntries.length;
+        const releases = releasesEntries.length;
+        
+        console.log(`✅ Metrics: ${works} works, ${recordings} recordings, ${releases} releases`);
+        
+        return {
+            works,
+            recordings,
+            releases,
+            total: works + recordings + releases
+        };
+    } catch (error) {
+        console.error('❌ Failed to fetch metrics:', error);
+        throw new Error(`Failed to fetch metrics: ${error.message}`);
+    }
+}
+
+/**
+ * Get all musical works from blockchain
+ * @param {string} rpcUrl - RPC endpoint URL
+ * @returns {Promise<Array<{id: string, title: string, iswc: string, creators: Array, ...}>>}
+ */
+export async function getAllMusicalWorks(rpcUrl) {
+    try {
+        console.log('🎵 Fetching all musical works...');
+        const client = await getClient(rpcUrl);
+        
+        // Query all musical works
+        const entries = await client.query.musicalWorks.middsOf.entries();
+        console.log(`📦 Found ${entries.length} entries`);
+        
+        const works = [];
+        
+        let workId = 0;
+        for (const [key, value] of entries) {
+            try {
+                // The key is just the storage key, we'll use an incrementing ID
+                const id = workId++;
+                
+                // Helper to decode bytes to string
+                const decodeBytes = (bytes) => {
+                    if (!bytes) return null;
+                    // If it's a hex string starting with 0x
+                    if (typeof bytes === 'string' && bytes.startsWith('0x')) {
+                        const hex = bytes.slice(2);
+                        const arr = new Uint8Array(hex.length / 2);
+                        for (let i = 0; i < hex.length; i += 2) {
+                            arr[i / 2] = parseInt(hex.substr(i, 2), 16);
+                        }
+                        return new TextDecoder().decode(arr);
+                    }
+                    // If it's a number (hex), convert to hex string first
+                    if (typeof bytes === 'number') {
+                        const hex = bytes.toString(16);
+                        const arr = new Uint8Array(hex.length / 2);
+                        for (let i = 0; i < hex.length; i += 2) {
+                            arr[i / 2] = parseInt(hex.substr(i, 2), 16);
+                        }
+                        return new TextDecoder().decode(arr);
+                    }
+                    // If it's already a Uint8Array or array
+                    if (bytes instanceof Uint8Array || Array.isArray(bytes)) {
+                        return new TextDecoder().decode(new Uint8Array(bytes));
+                    }
+                    return String(bytes);
+                };
+                
+                const title = decodeBytes(value.title) || 'Untitled';
+                const iswc = decodeBytes(value.iswc);
+                
+                // Format creators nicely
+                const creators = (value.creators || []).map(creator => {
+                    let name = 'Unknown';
+                    if (creator.id) {
+                        if (creator.id.type === 'Ipi') {
+                            name = `IPI ${creator.id.value}`;
+                        } else if (creator.id.type === 'Isni') {
+                            name = `ISNI ${creator.id.value}`;
+                        } else if (creator.id.type === 'Both') {
+                            name = `IPI ${creator.id.value.ipi} / ISNI ${creator.id.value.isni}`;
+                        }
+                    }
+                    return {
+                        name,
+                        roles: creator.role ? [creator.role] : [],
+                        id: creator.id || {}
+                    };
+                });
+                
+                // Format work type
+                let workType = 'Original';
+                if (value.workType) {
+                    if (typeof value.workType === 'object' && value.workType.type) {
+                        workType = value.workType.type;
+                    } else {
+                        workType = String(value.workType);
+                    }
+                }
+                
+                console.log(`✅ Work ${id}: ${title} (${iswc || 'no ISWC'})`);
+                
+                works.push({
+                    id: String(id),
+                    title,
+                    iswc,
+                    creators,
+                    creationYear: value.creationYear || null,
+                    isInstrumental: value.instrumental === true,
+                    workType,
+                    language: value.language || null,
+                    musicalKey: value.key || null
+                });
+            } catch (entryError) {
+                console.warn('⚠️ Failed to parse entry:', entryError);
+            }
+        }
+        
+        console.log(`✅ Fetched ${works.length} musical works`);
+        return works;
+        
+    } catch (error) {
+        console.error('❌ Failed to fetch musical works:', error);
+        throw new Error(`Failed to fetch musical works: ${error.message}`);
+    }
+}
