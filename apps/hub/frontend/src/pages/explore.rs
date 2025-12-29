@@ -5,9 +5,14 @@ use leptos::*;
 
 use crate::i18n::t;
 use crate::components::icons::*;
-use crate::components::MiddsWorkDisplay;
-use crate::services::explorer::{fetch_blockchain_metrics, fetch_all_musical_works};
-use crate::MusicalWorkData;
+use crate::components::{MiddsWorkDisplay, RecordingDisplay, ReleaseDisplay};
+use crate::services::explorer::{
+    fetch_blockchain_metrics, 
+    fetch_all_musical_works,
+    fetch_all_recordings,
+    fetch_all_releases
+};
+use crate::{MusicalWorkData, RecordingData, ReleaseData};
 
 /// Explore page - Browse on-chain MIDDS
 #[component]
@@ -20,6 +25,8 @@ pub fn ExplorePage() -> impl IntoView {
     // RPC URL from config
     let rpc_url_metrics = "wss://melodie-rpc.allfeat.io".to_string();
     let rpc_url_works = "wss://melodie-rpc.allfeat.io".to_string();
+    let rpc_url_recordings = "wss://melodie-rpc.allfeat.io".to_string();
+    let rpc_url_releases = "wss://melodie-rpc.allfeat.io".to_string();
     
     // Fetch metrics
     let metrics = create_resource(
@@ -35,6 +42,14 @@ pub fn ExplorePage() -> impl IntoView {
     // Works state - loaded when "works" filter is selected
     let (works, set_works) = create_signal(None::<Vec<MusicalWorkData>>);
     let (is_loading_works, set_is_loading_works) = create_signal(false);
+    
+    // Recordings state - loaded when "recordings" filter is selected
+    let (recordings, set_recordings) = create_signal(None::<Vec<RecordingData>>);
+    let (is_loading_recordings, set_is_loading_recordings) = create_signal(false);
+    
+    // Releases state - loaded when "releases" filter is selected
+    let (releases, set_releases) = create_signal(None::<Vec<ReleaseData>>);
+    let (is_loading_releases, set_is_loading_releases) = create_signal(false);
     
     // Effect to load works when filter changes
     create_effect(move |_| {
@@ -54,6 +69,50 @@ pub fn ExplorePage() -> impl IntoView {
                     }
                 }
                 set_is_loading_works.set(false);
+            });
+        }
+    });
+    
+    // Effect to load recordings when filter changes
+    create_effect(move |_| {
+        let current_filter = filter.get();
+        if current_filter == "recordings" && recordings.get().is_none() {
+            set_is_loading_recordings.set(true);
+            let url = rpc_url_recordings.clone();
+            spawn_local(async move {
+                match fetch_all_recordings(&url).await {
+                    Ok(recordings_vec) => {
+                        log::info!("✅ Loaded {} recordings", recordings_vec.len());
+                        set_recordings.set(Some(recordings_vec));
+                    },
+                    Err(e) => {
+                        log::error!("❌ Failed to load recordings: {}", e);
+                        set_recordings.set(Some(vec![]));
+                    }
+                }
+                set_is_loading_recordings.set(false);
+            });
+        }
+    });
+    
+    // Effect to load releases when filter changes
+    create_effect(move |_| {
+        let current_filter = filter.get();
+        if current_filter == "releases" && releases.get().is_none() {
+            set_is_loading_releases.set(true);
+            let url = rpc_url_releases.clone();
+            spawn_local(async move {
+                match fetch_all_releases(&url).await {
+                    Ok(releases_vec) => {
+                        log::info!("✅ Loaded {} releases", releases_vec.len());
+                        set_releases.set(Some(releases_vec));
+                    },
+                    Err(e) => {
+                        log::error!("❌ Failed to load releases: {}", e);
+                        set_releases.set(Some(vec![]));
+                    }
+                }
+                set_is_loading_releases.set(false);
             });
         }
     });
@@ -135,7 +194,10 @@ pub fn ExplorePage() -> impl IntoView {
             // Results area
             <div class="explore-results">
                 {move || {
-                    if filter.get() == "works" {
+                    let current_filter = filter.get();
+                    
+                    // WORKS
+                    if current_filter == "works" {
                         if is_loading_works.get() {
                             view! { 
                                 <div class="results-placeholder"><p>"Chargement..."</p></div> 
@@ -147,69 +209,205 @@ pub fn ExplorePage() -> impl IntoView {
                                     let works_count = works_list.len();
                                     
                                     view! {
-                                                <div class="preview-section show">
-                                                    <div class="preview-list">
-                                                        <For
-                                                            each=move || works.get().unwrap_or_default().into_iter().enumerate()
-                                                            key=|(idx, _)| *idx
-                                                            children=move |(idx, work)| {
-                                                                let is_expanded = move || expanded_index.get() == Some(idx);
-                                                                
-                                                                let toggle_expand = move |_| {
-                                                                    if expanded_index.get() == Some(idx) {
-                                                                        set_expanded_index.set(None);
-                                                                    } else {
-                                                                        set_expanded_index.set(Some(idx));
-                                                                    }
-                                                                };
-                                                                
-                                                                view! {
-                                                                    <div class="preview-item" class:expanded=is_expanded>
-                                                                        <div class="preview-item-header" on:click=toggle_expand style="cursor: pointer;">
-                                                                            <div class="preview-item-title">
-                                                                                {if is_expanded() { "▼ " } else { "▶ " }}
-                                                                                {work.title.clone()}
-                                                                            </div>
-                                                                            <div class="preview-item-details">
-                                                                                "ISWC: " {work.iswc.clone().unwrap_or_else(|| "-".to_string())} 
-                                                                                " • Créateurs: " {work.creators.len()}
-                                                                            </div>
-                                                                        </div>
-                                                                        
-                                                                        <Show
-                                                                            when=is_expanded
-                                                                            fallback=|| view! { }
-                                                                        >
-                                                                            <div class="preview-item-expanded">
-                                                                                <MiddsWorkDisplay work=work.clone()/>
-                                                                            </div>
-                                                                        </Show>
-                                                                    </div>
-                                                                }
+                                        <div class="preview-section show">
+                                            <div class="preview-list">
+                                                <For
+                                                    each=move || works.get().unwrap_or_default().into_iter().enumerate()
+                                                    key=|(idx, _)| *idx
+                                                    children=move |(idx, work)| {
+                                                        let is_expanded = move || expanded_index.get() == Some(idx);
+                                                        let toggle_expand = move |_| {
+                                                            if expanded_index.get() == Some(idx) {
+                                                                set_expanded_index.set(None);
+                                                            } else {
+                                                                set_expanded_index.set(Some(idx));
                                                             }
-                                                        />
-                                                    </div>
-                                                    
-                                                    <div class="preview-footer">
-                                                        <div class="preview-cost">
-                                                            <strong>{works_count}</strong> " œuvres enregistrées"
-                                                        </div>
-                                                    </div>
+                                                        };
+                                                        
+                                                        view! {
+                                                            <div class="preview-item" class:expanded=is_expanded>
+                                                                <div class="preview-item-header" on:click=toggle_expand style="cursor: pointer;">
+                                                                    <div class="preview-item-title">
+                                                                        {if is_expanded() { "▼ " } else { "▶ " }}
+                                                                        {work.title.clone()}
+                                                                    </div>
+                                                                    <div class="preview-item-details">
+                                                                        "ISWC: " {work.iswc.clone().unwrap_or_else(|| "-".to_string())} 
+                                                                        " • Créateurs: " {work.creators.len()}
+                                                                    </div>
+                                                                </div>
+                                                                <Show when=is_expanded fallback=|| view! { }>
+                                                                    <div class="preview-item-expanded">
+                                                                        <MiddsWorkDisplay work=work.clone()/>
+                                                                    </div>
+                                                                </Show>
+                                                            </div>
+                                                        }
+                                                    }
+                                                />
+                                            </div>
+                                            <div class="preview-footer">
+                                                <div class="preview-cost">
+                                                    <strong>{works_count}</strong> " œuvres enregistrées"
                                                 </div>
-                                            }.into_view()
-                                        }
-                                        _ => {
-                                            view! {
-                                                <div class="results-placeholder">
-                                                    <span class="placeholder-icon"><IconMusic/></span>
-                                                    <p>{t("explore.no_results")}</p>
-                                                    <p class="hint">{t("explore.search_hint")}</p>
-                                                </div>
-                                            }.into_view()
-                                        }
-                                    }
+                                            </div>
+                                        </div>
+                                    }.into_view()
+                                }
+                                _ => {
+                                    view! {
+                                        <div class="results-placeholder">
+                                            <span class="placeholder-icon"><IconMusic/></span>
+                                            <p>{t("explore.no_results")}</p>
+                                            <p class="hint">{t("explore.search_hint")}</p>
+                                        </div>
+                                    }.into_view()
+                                }
+                            }
                         }
-                    } else {
+                    }
+                    // RECORDINGS
+                    else if current_filter == "recordings" {
+                        if is_loading_recordings.get() {
+                            view! { 
+                                <div class="results-placeholder"><p>"Chargement..."</p></div> 
+                            }.into_view()
+                        } else {
+                            match recordings.get() {
+                                Some(recordings_list) if !recordings_list.is_empty() => {
+                                    let (expanded_index, set_expanded_index) = create_signal(None::<usize>);
+                                    let recordings_count = recordings_list.len();
+                                    
+                                    view! {
+                                        <div class="preview-section show">
+                                            <div class="preview-list">
+                                                <For
+                                                    each=move || recordings.get().unwrap_or_default().into_iter().enumerate()
+                                                    key=|(idx, _)| *idx
+                                                    children=move |(idx, recording)| {
+                                                        let is_expanded = move || expanded_index.get() == Some(idx);
+                                                        let toggle_expand = move |_| {
+                                                            if expanded_index.get() == Some(idx) {
+                                                                set_expanded_index.set(None);
+                                                            } else {
+                                                                set_expanded_index.set(Some(idx));
+                                                            }
+                                                        };
+                                                        
+                                                        view! {
+                                                            <div class="preview-item" class:expanded=is_expanded>
+                                                                <div class="preview-item-header" on:click=toggle_expand style="cursor: pointer;">
+                                                                    <div class="preview-item-title">
+                                                                        {if is_expanded() { "▼ " } else { "▶ " }}
+                                                                        {recording.title.clone()}
+                                                                    </div>
+                                                                    <div class="preview-item-details">
+                                                                        "ISRC: " {recording.isrc.clone().unwrap_or_else(|| "-".to_string())} 
+                                                                        " • Performers: " {recording.performers.len()}
+                                                                    </div>
+                                                                </div>
+                                                                <Show when=is_expanded fallback=|| view! { }>
+                                                                    <div class="preview-item-expanded">
+                                                                        <RecordingDisplay recording=recording.clone()/>
+                                                                    </div>
+                                                                </Show>
+                                                            </div>
+                                                        }
+                                                    }
+                                                />
+                                            </div>
+                                            <div class="preview-footer">
+                                                <div class="preview-cost">
+                                                    <strong>{recordings_count}</strong> " enregistrements"
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }.into_view()
+                                }
+                                _ => {
+                                    view! {
+                                        <div class="results-placeholder">
+                                            <span class="placeholder-icon"><IconMusic/></span>
+                                            <p>{t("explore.no_results")}</p>
+                                            <p class="hint">{t("explore.search_hint")}</p>
+                                        </div>
+                                    }.into_view()
+                                }
+                            }
+                        }
+                    }
+                    // RELEASES
+                    else if current_filter == "releases" {
+                        if is_loading_releases.get() {
+                            view! { 
+                                <div class="results-placeholder"><p>"Chargement..."</p></div> 
+                            }.into_view()
+                        } else {
+                            match releases.get() {
+                                Some(releases_list) if !releases_list.is_empty() => {
+                                    let (expanded_index, set_expanded_index) = create_signal(None::<usize>);
+                                    let releases_count = releases_list.len();
+                                    
+                                    view! {
+                                        <div class="preview-section show">
+                                            <div class="preview-list">
+                                                <For
+                                                    each=move || releases.get().unwrap_or_default().into_iter().enumerate()
+                                                    key=|(idx, _)| *idx
+                                                    children=move |(idx, release)| {
+                                                        let is_expanded = move || expanded_index.get() == Some(idx);
+                                                        let toggle_expand = move |_| {
+                                                            if expanded_index.get() == Some(idx) {
+                                                                set_expanded_index.set(None);
+                                                            } else {
+                                                                set_expanded_index.set(Some(idx));
+                                                            }
+                                                        };
+                                                        
+                                                        view! {
+                                                            <div class="preview-item" class:expanded=is_expanded>
+                                                                <div class="preview-item-header" on:click=toggle_expand style="cursor: pointer;">
+                                                                    <div class="preview-item-title">
+                                                                        {if is_expanded() { "▼ " } else { "▶ " }}
+                                                                        {release.title.clone()}
+                                                                    </div>
+                                                                    <div class="preview-item-details">
+                                                                        "UPC: " {release.upc.clone().unwrap_or_else(|| "-".to_string())} 
+                                                                        " • Type: " {release.release_type.clone()}
+                                                                    </div>
+                                                                </div>
+                                                                <Show when=is_expanded fallback=|| view! { }>
+                                                                    <div class="preview-item-expanded">
+                                                                        <ReleaseDisplay release=release.clone()/>
+                                                                    </div>
+                                                                </Show>
+                                                            </div>
+                                                        }
+                                                    }
+                                                />
+                                            </div>
+                                            <div class="preview-footer">
+                                                <div class="preview-cost">
+                                                    <strong>{releases_count}</strong> " sorties"
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }.into_view()
+                                }
+                                _ => {
+                                    view! {
+                                        <div class="results-placeholder">
+                                            <span class="placeholder-icon"><IconMusic/></span>
+                                            <p>{t("explore.no_results")}</p>
+                                            <p class="hint">{t("explore.search_hint")}</p>
+                                        </div>
+                                    }.into_view()
+                                }
+                            }
+                        }
+                    }
+                    // ALL or other
+                    else {
                         view! {
                             <div class="results-placeholder">
                                 <span class="placeholder-icon"><IconMusic/></span>

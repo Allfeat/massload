@@ -47,6 +47,36 @@ function convertPartyIdToBigInt(id) {
     return id;
 }
 
+/**
+ * Helper to decode bytes to string
+ */
+function decodeBytes(bytes) {
+    if (!bytes) return null;
+    // If it's a hex string starting with 0x
+    if (typeof bytes === 'string' && bytes.startsWith('0x')) {
+        const hex = bytes.slice(2);
+        const arr = new Uint8Array(hex.length / 2);
+        for (let i = 0; i < hex.length; i += 2) {
+            arr[i / 2] = parseInt(hex.substr(i, 2), 16);
+        }
+        return new TextDecoder().decode(arr);
+    }
+    // If it's a number (hex), convert to hex string first
+    if (typeof bytes === 'number') {
+        const hex = bytes.toString(16);
+        const arr = new Uint8Array(hex.length / 2);
+        for (let i = 0; i < hex.length; i += 2) {
+            arr[i / 2] = parseInt(hex.substr(i, 2), 16);
+        }
+        return new TextDecoder().decode(arr);
+    }
+    // If it's already a Uint8Array or array
+    if (bytes instanceof Uint8Array || Array.isArray(bytes)) {
+        return new TextDecoder().decode(new Uint8Array(bytes));
+    }
+    return String(bytes);
+}
+
 async function ensureWeb3Enabled() {
     if (!web3Initialized) {
         console.log('🔌 Initializing web3...');
@@ -345,34 +375,6 @@ export async function getAllMusicalWorks(rpcUrl) {
                 // The key is just the storage key, we'll use an incrementing ID
                 const id = workId++;
                 
-                // Helper to decode bytes to string
-                const decodeBytes = (bytes) => {
-                    if (!bytes) return null;
-                    // If it's a hex string starting with 0x
-                    if (typeof bytes === 'string' && bytes.startsWith('0x')) {
-                        const hex = bytes.slice(2);
-                        const arr = new Uint8Array(hex.length / 2);
-                        for (let i = 0; i < hex.length; i += 2) {
-                            arr[i / 2] = parseInt(hex.substr(i, 2), 16);
-                        }
-                        return new TextDecoder().decode(arr);
-                    }
-                    // If it's a number (hex), convert to hex string first
-                    if (typeof bytes === 'number') {
-                        const hex = bytes.toString(16);
-                        const arr = new Uint8Array(hex.length / 2);
-                        for (let i = 0; i < hex.length; i += 2) {
-                            arr[i / 2] = parseInt(hex.substr(i, 2), 16);
-                        }
-                        return new TextDecoder().decode(arr);
-                    }
-                    // If it's already a Uint8Array or array
-                    if (bytes instanceof Uint8Array || Array.isArray(bytes)) {
-                        return new TextDecoder().decode(new Uint8Array(bytes));
-                    }
-                    return String(bytes);
-                };
-                
                 const title = decodeBytes(value.title) || 'Untitled';
                 const iswc = decodeBytes(value.iswc);
                 
@@ -429,5 +431,138 @@ export async function getAllMusicalWorks(rpcUrl) {
     } catch (error) {
         console.error('❌ Failed to fetch musical works:', error);
         throw new Error(`Failed to fetch musical works: ${error.message}`);
+    }
+}
+
+/**
+ * Get all recordings from blockchain
+ * @param {string} rpcUrl - RPC endpoint
+ * @returns {Promise<Array>} Array of recording objects
+ */
+export async function getAllRecordings(rpcUrl) {
+    try {
+        console.log('🎙️ Fetching all recordings from blockchain...');
+        
+        const client = await getClient(rpcUrl);
+        
+        // Fetch all entries from recordings.middsOf storage map
+        const entries = await client.query.recordings.middsOf.entries();
+        
+        const recordings = [];
+        let id = 0;
+        
+        for (const [key, value] of entries) {
+            try {
+                id++;
+                
+                const title = decodeBytes(value.title) || 'Untitled';
+                const isrc = decodeBytes(value.isrc);
+                const musicalWorkId = String(value.musicalWorkId || id);
+                
+                // Format performers
+                const performers = (value.performers || []).map(performer => {
+                    let name = 'Unknown';
+                    if (performer.id) {
+                        if (performer.id.type === 'Ipi') {
+                            name = `IPI ${performer.id.value}`;
+                        } else if (performer.id.type === 'Isni') {
+                            name = `ISNI ${performer.id.value}`;
+                        } else if (performer.id.type === 'Both') {
+                            name = `IPI ${performer.id.value.ipi} / ISNI ${performer.id.value.isni}`;
+                        }
+                    }
+                    return {
+                        name,
+                        id: performer.id || {}
+                    };
+                });
+                
+                console.log(`✅ Recording ${id}: ${title} (${isrc || 'no ISRC'})`);
+                
+                recordings.push({
+                    id: String(id),
+                    title,
+                    isrc,
+                    musicalWorkId,
+                    performers,
+                    durationMs: value.duration || null,
+                    recordingDate: value.recordingDate || null,
+                    recordingLocation: value.recordingLocation || null
+                });
+            } catch (entryError) {
+                console.warn('⚠️ Failed to parse recording entry:', entryError);
+            }
+        }
+        
+        console.log(`✅ Fetched ${recordings.length} recordings`);
+        return recordings;
+        
+    } catch (error) {
+        console.error('❌ Failed to fetch recordings:', error);
+        throw new Error(`Failed to fetch recordings: ${error.message}`);
+    }
+}
+
+/**
+ * Get all releases from blockchain
+ * @param {string} rpcUrl - RPC endpoint
+ * @returns {Promise<Array>} Array of release objects
+ */
+export async function getAllReleases(rpcUrl) {
+    try {
+        console.log('💿 Fetching all releases from blockchain...');
+        
+        const client = await getClient(rpcUrl);
+        
+        // Fetch all entries from releases.middsOf storage map
+        const entries = await client.query.releases.middsOf.entries();
+        
+        const releases = [];
+        let id = 0;
+        
+        for (const [key, value] of entries) {
+            try {
+                id++;
+                
+                const title = decodeBytes(value.title) || 'Untitled';
+                const upc = decodeBytes(value.upc);
+                
+                // Format release type
+                let releaseType = 'Album';
+                if (value.releaseType) {
+                    if (typeof value.releaseType === 'object' && value.releaseType.type) {
+                        releaseType = value.releaseType.type;
+                    } else {
+                        releaseType = String(value.releaseType);
+                    }
+                }
+                
+                // Recording IDs
+                const recordingIds = (value.recordings || []).map((rec, idx) => String(rec || idx));
+                
+                console.log(`✅ Release ${id}: ${title} (${upc || 'no UPC'})`);
+                
+                releases.push({
+                    id: String(id),
+                    title,
+                    upc,
+                    releaseType,
+                    releaseDate: value.releaseDate || null,
+                    label: decodeBytes(value.label) || null,
+                    catalogNumber: decodeBytes(value.catalogNumber) || null,
+                    recordingIds,
+                    totalTracks: value.totalTracks || null
+                });
+            } catch (entryError) {
+                console.warn('⚠️ Failed to parse release entry:', entryError);
+            }
+        }
+        
+        console.log(`✅ Fetched ${releases.length} releases`);
+        return releases;
+        
+    } catch (error) {
+        console.error('❌ Failed to fetch releases:', error);
+        throw new Error(`Failed to fetch releases: ${error.message}`);
     }
 }
