@@ -1,7 +1,6 @@
-//! How it works page - Explains Allfeat ecosystem
+//! How it works page - Explains Allfeat ecosystem and Proof of Metadata
 
 use leptos::*;
-use leptos_router::*;
 
 use crate::i18n::t;
 use crate::components::icons::*;
@@ -99,42 +98,6 @@ pub fn HowItWorksPage() -> impl IntoView {
                         <li><strong>{t("how.adv2_title")}</strong> {t("how.adv2_desc")}</li>
                         <li><strong>{t("how.adv3_title")}</strong> {t("how.adv3_desc")}</li>
                     </ul>
-                </div>
-            </div>
-            
-            // Key concepts
-            <div class="concepts-section">
-                <h2>{t("how.concepts_title")}</h2>
-                
-                <div class="concepts-grid">
-                    <div class="concept-card">
-                        <h4>"MIDDS"</h4>
-                        <p>{t("how.midds_desc")}</p>
-                    </div>
-                    <div class="concept-card">
-                        <h4>"ISWC"</h4>
-                        <p>{t("how.iswc_desc")}</p>
-                    </div>
-                    <div class="concept-card">
-                        <h4>"ISRC"</h4>
-                        <p>{t("how.isrc_desc")}</p>
-                    </div>
-                    <div class="concept-card">
-                        <h4>"IPI"</h4>
-                        <p>{t("how.ipi_desc")}</p>
-                    </div>
-                </div>
-            </div>
-            
-            // CTA
-            <div class="cta-section">
-                <h2>{t("how.cta_title")}</h2>
-                <div class="cta-buttons">
-                    <A href="/register" class="btn btn-primary">{t("how.start_registering")}</A>
-                    <a href="https://docs.allfeat.org" target="_blank" class="btn btn-secondary">
-                        {t("how.read_docs")}
-                        <span class="btn-icon"><IconExternalLink/></span>
-                    </a>
                 </div>
             </div>
         </div>
