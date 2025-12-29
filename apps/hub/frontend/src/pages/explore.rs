@@ -5,7 +5,7 @@ use leptos::*;
 
 use crate::i18n::t;
 use crate::components::icons::*;
-use crate::components::MiddsDisplay;
+use crate::components::MiddsWorkDisplay;
 use crate::services::explorer::{fetch_blockchain_metrics, fetch_all_musical_works};
 use crate::MusicalWorkData;
 
@@ -181,7 +181,7 @@ pub fn ExplorePage() -> impl IntoView {
                                                                             fallback=|| view! { }
                                                                         >
                                                                             <div class="preview-item-expanded">
-                                                                                <MiddsDisplay work=work.clone()/>
+                                                                                <MiddsWorkDisplay work=work.clone()/>
                                                                             </div>
                                                                         </Show>
                                                                     </div>

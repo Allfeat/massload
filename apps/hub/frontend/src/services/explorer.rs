@@ -14,6 +14,29 @@ pub struct BlockchainMetrics {
     pub total: u32,
 }
 
+// =============================================================================
+// Common structures
+// =============================================================================
+
+/// Creator/Contributor with Party ID (IPI/ISNI)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CreatorData {
+    pub name: String,
+    pub roles: Vec<String>,
+    pub id: serde_json::Value, // PartyId enum serialized
+}
+
+/// Performer/Artist data
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PerformerData {
+    pub name: String,
+    pub id: serde_json::Value, // PartyId enum serialized
+}
+
+// =============================================================================
+// MIDDS Type: Musical Work
+// =============================================================================
+
 /// Musical work data from blockchain
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -29,11 +52,82 @@ pub struct MusicalWorkData {
     pub musical_key: Option<String>,
 }
 
+// =============================================================================
+// MIDDS Type: Recording
+// =============================================================================
+
+/// Recording data from blockchain
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CreatorData {
-    pub name: String,
-    pub roles: Vec<String>,
-    pub id: serde_json::Value,
+#[serde(rename_all = "camelCase")]
+pub struct RecordingData {
+    pub id: String,
+    pub title: String,
+    pub isrc: Option<String>,
+    pub musical_work_id: String, // Reference to MusicalWork
+    pub performers: Vec<PerformerData>,
+    pub duration_ms: Option<u32>,
+    pub recording_date: Option<String>, // ISO date
+    pub recording_location: Option<String>,
+}
+
+// =============================================================================
+// MIDDS Type: Release
+// =============================================================================
+
+/// Release data from blockchain
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReleaseData {
+    pub id: String,
+    pub title: String,
+    pub upc: Option<String>,
+    pub release_type: String, // "Album", "Single", "EP", etc.
+    pub release_date: Option<String>, // ISO date
+    pub label: Option<String>,
+    pub catalog_number: Option<String>,
+    pub recording_ids: Vec<String>, // References to Recordings
+    pub total_tracks: Option<u16>,
+}
+
+// =============================================================================
+// Generic MIDDS Item wrapper
+// =============================================================================
+
+/// Generic MIDDS item that can be Work, Recording, or Release
+#[derive(Debug, Clone)]
+pub enum MiddsItem {
+    Work(MusicalWorkData),
+    Recording(RecordingData),
+    Release(ReleaseData),
+}
+
+impl MiddsItem {
+    /// Get the item ID
+    pub fn id(&self) -> &str {
+        match self {
+            MiddsItem::Work(w) => &w.id,
+            MiddsItem::Recording(r) => &r.id,
+            MiddsItem::Release(r) => &r.id,
+        }
+    }
+    
+    /// Get the item title
+    pub fn title(&self) -> &str {
+        match self {
+            MiddsItem::Work(w) => &w.title,
+            MiddsItem::Recording(r) => &r.title,
+            MiddsItem::Release(r) => &r.title,
+        }
+    }
+    
+    /// Get the MIDDS type name
+    pub fn type_name(&self) -> &'static str {
+        match self {
+            MiddsItem::Work(_) => "MusicalWork",
+            MiddsItem::Recording(_) => "Recording",
+            MiddsItem::Release(_) => "Release",
+        }
+    }
 }
 
 // Import JS functions from blockchain.js

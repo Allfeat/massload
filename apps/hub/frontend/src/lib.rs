@@ -66,7 +66,11 @@ pub use types::{
 };
 
 // Explorer types
-pub use services::explorer::{MusicalWorkData, CreatorData};
+pub use services::explorer::{
+    MusicalWorkData, RecordingData, ReleaseData,
+    CreatorData, PerformerData,
+    MiddsItem,
+};
 
 // Components
 pub use components::*;
