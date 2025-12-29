@@ -460,7 +460,9 @@ export async function getAllRecordings(rpcUrl) {
                 const musicalWorkId = String(value.musicalWorkId || id);
                 
                 // Format performers
-                const performers = (value.performers || []).map(performer => {
+                const performers = (value.performers || []).map((performer, idx) => {
+                    const bigIntReplacer = (key, value) => typeof value === 'bigint' ? value.toString() : value;
+                    console.log(`  Performer ${idx}:`, JSON.stringify(performer, bigIntReplacer, 2));
                     let name = 'Unknown';
                     if (performer.id) {
                         if (performer.id.type === 'Ipi') {

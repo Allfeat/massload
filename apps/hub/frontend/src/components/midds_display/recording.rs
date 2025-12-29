@@ -17,10 +17,6 @@ fn PerformerItem(
             <span class="midds-index">{index}</span>
             <div class="midds-object">
                 <div class="midds-prop">
-                    <span class="prop-key">"name"</span>
-                    <span class="prop-value">{performer.name}</span>
-                </div>
-                <div class="midds-prop">
                     <span class="prop-key">"id"</span>
                     <span class="prop-value ipi-code">{id_display}</span>
                 </div>
