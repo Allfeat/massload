@@ -80,10 +80,16 @@ pub fn HowItWorksPage() -> impl IntoView {
                     <h3>{t("how.roles_title")}</h3>
                     <div class="roles-grid">
                         <div class="role-card">
+                            <div class="role-icon">
+                                <IconPenLine/>
+                            </div>
                             <h4>{t("how.role_provider_title")}</h4>
                             <p>{t("how.role_provider_desc")}</p>
                         </div>
                         <div class="role-card">
+                            <div class="role-icon">
+                                <IconCheckCircle/>
+                            </div>
                             <h4>{t("how.role_truster_title")}</h4>
                             <p>{t("how.role_truster_desc")}</p>
                         </div>

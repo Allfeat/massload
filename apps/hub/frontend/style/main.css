@@ -811,6 +811,300 @@ footer {
   height: 20px;
 }
 
+/* ===== HOW IT WORKS PAGE ===== */
+.how-it-works-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.page-subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-top: 12px;
+}
+
+.protocol-intro {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 64px;
+  padding: 32px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.intro-text {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+/* Core Principles - Horizontal Grid */
+.principles-section {
+  margin-bottom: 64px;
+}
+
+.principles-section h2 {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.principle-card {
+  padding: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.principle-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--border-color-hover);
+}
+
+.principle-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  border-radius: 12px;
+}
+
+.principle-icon svg {
+  width: 32px;
+  height: 32px;
+  color: var(--accent-primary);
+}
+
+.principle-card h4 {
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.principle-card p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* Certification Process - Horizontal Steps */
+.certification-section {
+  margin-bottom: 64px;
+}
+
+.certification-section h2 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.section-intro {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 48px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.process-step {
+  padding: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.process-step:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--border-color-hover);
+}
+
+.process-step-number {
+  position: absolute;
+  top: -16px;
+  left: 32px;
+  width: 40px;
+  height: 40px;
+  background: var(--accent-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.step-icon {
+  width: 56px;
+  height: 56px;
+  margin: 24px auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  border-radius: 10px;
+}
+
+.step-icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--accent-primary);
+}
+
+.process-step h4 {
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.process-step p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* Roles Section - Horizontal Grid */
+.roles-section {
+  margin-top: 48px;
+  padding-top: 48px;
+  border-top: 1px solid var(--border-color);
+}
+
+.roles-section h3 {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.role-card {
+  padding: 32px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.role-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: var(--border-color-hover);
+}
+
+.role-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+}
+
+.role-icon svg {
+  width: 32px;
+  height: 32px;
+  color: var(--accent-primary);
+}
+
+.role-card h4 {
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  font-size: 20px;
+  text-align: center;
+}
+
+.role-card p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Advantages Section */
+.advantages-section {
+  margin-top: 48px;
+  padding: 32px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.advantages-section h3 {
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+.advantages-list {
+  list-style: none;
+  padding: 0;
+}
+
+.advantages-list li {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.advantages-list li:last-child {
+  border-bottom: none;
+}
+
+.advantages-list strong {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+/* Responsive for How it Works */
+@media (max-width: 1024px) {
+  .principles-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .process-steps {
+    grid-template-columns: 1fr;
+  }
+  
+  .roles-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ===== UTILS ===== */
 .hidden { display: none !important; }
 .mt-20 { margin-top: 20px; }
