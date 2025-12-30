@@ -1,14 +1,14 @@
-# Massload Backend
+# Allfeat Apps Hub - Backend
 
 <div align="center">
 
-**🔧 Microservice — AI-powered CSV to MIDDS transformation**
+**🔧 Unified server — AI-powered CSV transformation + static file serving**
 
 [![Rust](https://img.shields.io/badge/rust-1.75+-orange?style=flat-square&logo=rust)](https://www.rust-lang.org/)
-[![License](https://img.shields.io/badge/license-GPL--3.0-blue?style=flat-square)](../LICENSE)
-[![Docker](https://img.shields.io/badge/docker-ready-2496ED?style=flat-square&logo=docker)](Dockerfile)
+[![Axum](https://img.shields.io/badge/axum-0.7-blue?style=flat-square)](https://github.com/tokio-rs/axum)
+[![License](https://img.shields.io/badge/license-GPL--3.0-blue?style=flat-square)](../../../LICENSE)
 
-[API](#api-endpoints) • [Algorithm](#algorithm) • [CLI](#cli-usage) • [Docker](#docker) • [Configuration](#configuration)
+[API](#api-endpoints) • [Algorithm](#algorithm) • [Running](#running) • [Configuration](#configuration)
 
 </div>
 
@@ -16,170 +16,199 @@
 
 ## Overview
 
-A **standalone REST microservice** that transforms CSV files from various music industry sources (SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE) into MIDDS format compatible with the `@allfeat/client` SDK.
+A **unified Axum server** that:
+1. **Serves the frontend** (CSR static files from `../frontend/dist`)
+2. **Provides REST API** for CSV transformation (`/api/upload`)
+3. **Streams real-time logs** via Server-Sent Events (`/api/logs`)
 
-### Microservice Features
-
-- ⚡ **Stateless** — No session, horizontal scaling ready
-- 🔌 **API-first** — REST + SSE, consumed by any client
-- 🐳 **Container-ready** — Single binary, minimal dependencies
-- 📊 **Observable** — Real-time SSE logs for monitoring
+### Architecture
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│    CSV File     │────▶│    Massload     │────▶│   MIDDS JSON    │
-│  (any format)   │     │    Backend      │     │  (SDK-ready)    │
-└─────────────────┘     └────────┬────────┘     └─────────────────┘
-                                 │
-                    ┌────────────┴────────────┐
-                    │                         │
-               ┌────▼────┐              ┌─────▼─────┐
-               │ Template│              │  Claude   │
-               │  Cache  │              │    AI     │
-               └─────────┘              └───────────┘
+┌─────────────────────────────────────────────────────────┐
+│                 Allfeat Apps Hub                        │
+│                 (Unified Server)                        │
+├─────────────────────────────────────────────────────────┤
+│  Backend (Axum)                                         │
+│  • POST /api/upload  → CSV → MIDDS JSON                │
+│  • GET  /api/logs    → SSE real-time logs              │
+│  • GET  /health      → Health check                    │
+│  • /*                → Serve frontend static files      │
+├─────────────────────────────────────────────────────────┤
+│  Frontend (Leptos CSR)                                 │
+│  • Compiled to WASM + JS                               │
+│  • Served from apps/hub/frontend/dist                  │
+└─────────────────────────────────────────────────────────┘
 ```
+
+**Key Benefits:**
+- 🚀 **Single deployment** — One binary/container for everything
+- 🔌 **No CORS** — Frontend and API share the same origin
+- ⚡ **Stateless** — Horizontal scaling ready
+- 📊 **Observable** — SSE logs for monitoring
 
 ## Algorithm
 
-The transformation pipeline uses a smart fallback strategy:
+### CSV → MIDDS Transformation Pipeline
 
-### Step 1: CSV Parsing
-- Auto-detect encoding (UTF-8, ISO-8859-1, Windows-1252)
-- Auto-detect delimiter (`,` `;` `|` `\t`)
-- Extract headers and records
-
-### Step 2: Template Matching
 ```
-For each cached template (sorted by success rate):
-    1. Check column compatibility
-    2. Execute transformation
-    3. Validate results
-    4. If valid → Use this template
-    5. If invalid → Try next template
-```
-
-### Step 3: AI Fallback
-If all cached templates fail:
-1. Send preview rows + unique values to Claude
-2. Claude analyzes the data structure
-3. Generates a transformation matrix (DSL)
-4. Matrix is cached for future use
-
-### Step 4: Transformation DSL
-Available operations:
-| Operation | Description | Example |
-|-----------|-------------|---------|
-| `copy` | Direct copy | `"Title" → title` |
-| `normalize` | Clean ISWC format | `T-123.456.789-0 → T1234567890` |
-| `map` | Value mapping | `CA → Composer` |
-| `concat` | Merge fields | `First + Last → fullName` |
-| `split` | Split field | `"A, B" → [A, B]` |
-| `constant` | Fixed value | `→ "Original"` |
-
-### Step 5: Validation
-- **Flat validation**: Each record against MIDDS schema
-- **Grouped validation**: Final SDK format before output
-
-### Step 6: Grouping
-```
-Flat rows (one per creator)     →    Grouped works (SDK format)
-┌─────────────────────────────┐     ┌──────────────────────────────┐
-│ ISWC: T123, Creator: Alice  │     │ ISWC: T123                   │
-│ ISWC: T123, Creator: Bob    │ ──▶ │ Creators: [Alice, Bob]       │
-│ ISWC: T456, Creator: Carol  │     │ Participants: []             │
-└─────────────────────────────┘     ├──────────────────────────────┤
-                                    │ ISWC: T456                   │
-                                    │ Creators: [Carol]            │
-                                    └──────────────────────────────┘
+CSV File
+  │
+  ├─1. Parse (auto-detect encoding & delimiter)
+  │
+  ├─2. Try Template Cache
+  │   ├─✅ Match found → Reuse transformation
+  │   └─❌ No match → Generate new matrix
+  │
+  ├─3. AI Matrix Generation (Claude)
+  │   ├─ Analyze CSV structure
+  │   ├─ Generate transformation DSL
+  │   └─ Save to cache
+  │
+  ├─4. Apply DSL Transformation
+  │   ├─ Map columns to MIDDS fields
+  │   ├─ Split creators (Composer, Lyricist, etc.)
+  │   └─ Group by ISWC
+  │
+  ├─5. Validation (JSON Schema)
+  │   ├─ Validate each work
+  │   └─ Report errors
+  │
+  └─6. Return MIDDS JSON
 ```
 
-## Output Format
+### Template Caching
 
-The output is directly compatible with `@allfeat/client` SDK (dedot):
+The backend caches successful transformation matrices:
+- **Key**: CSV column hash
+- **Value**: Transformation DSL
+- **Storage**: Local JSON files (`~/.cache/massload/templates/`)
 
-```json
-{
-  "iswc": "T1234567890",
-  "title": "My Song",
-  "creationYear": 2024,
-  "creators": [
-    { "id": { "type": "Ipi", "value": 123456789 }, "role": "Composer" },
-    { "id": { "type": "Both", "value": { "ipi": 987654321, "isni": "0000000412345678" }}, "role": "Author" }
-  ],
-  "participants": []
-}
-```
-
-> **Note**: Optional fields are omitted when null (SDK requirement). The `participants` field is required by the Melodie runtime.
+**Benefits**:
+- ⚡ **Instant transformation** for known CSV formats
+- 💰 **Save AI costs** by reusing matrices
+- 📈 **Improve over time** as more formats are cached
 
 ## API Endpoints
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Health check |
-| `POST` | `/api/upload` | Upload CSV for transformation |
-| `GET` | `/api/logs` | SSE stream for real-time logs |
+### Health Check
 
-### POST /api/upload
-
-Upload a CSV file and receive transformed MIDDS JSON.
-
-**Request:**
 ```bash
-curl -X POST http://localhost:3000/api/upload \
-  -F "file=@catalog.csv"
+GET /health
 ```
 
 **Response:**
 ```json
 {
-  "status": "success",
-  "jobId": "abc123",
-  "musicalWorks": [...],
-  "metadata": {
-    "totalWorks": 150,
-    "estimatedCost": "7.50 AFT",
-    "cached": true,
-    "matrixId": "template-123"
+  "status": "ok",
+  "service": "allfeat-hub",
+  "version": "0.2.0",
+  "endpoints": {
+    "upload": "POST /api/upload",
+    "logs": "GET /api/logs (SSE)"
   }
 }
 ```
 
-### GET /api/logs
-
-Server-Sent Events stream for real-time processing logs.
-
-```javascript
-const events = new EventSource('/api/logs');
-events.onmessage = (e) => console.log(JSON.parse(e.data));
-```
-
-## CLI Usage
+### Upload CSV
 
 ```bash
-# Start HTTP server
-massload serve --port 3000
+POST /api/upload
+Content-Type: multipart/form-data
 
-# Transform a CSV file
-massload transform input.csv --output output.json --grouped grouped.json
+file: <csv_file>
+```
 
-# Use a specific transformation matrix
-massload transform input.csv --matrix custom-matrix.json
+**Response:**
+```json
+{
+  "jobId": "uuid",
+  "status": "ready",
+  "musicalWorks": [
+    {
+      "iswc": "T1234567890",
+      "title": "Song Title",
+      "creationYear": 2024,
+      "instrumental": false,
+      "language": "English",
+      "creators": [
+        {"id": {"Ipi": 123456789}, "role": "Composer"}
+      ],
+      "workType": "Original"
+    }
+  ],
+  "metadata": {
+    "totalWorks": 1,
+    "estimatedCost": "0.05 AFT",
+    "matrixId": "uuid",
+    "cached": true,
+    "csvInfo": {
+      "encoding": "utf-8",
+      "delimiter": ",",
+      "rowCount": 10,
+      "columns": ["ISWC", "Title", "Composer"]
+    },
+    "validation": {
+      "valid": 1,
+      "invalid": 0,
+      "errors": []
+    }
+  }
+}
+```
 
-# List cached templates
-massload template list
+### Real-time Logs (SSE)
 
-# Show template details
-massload template show <id>
+```bash
+GET /api/logs
+Accept: text/event-stream
+```
 
-# Delete a template
-massload template delete <id>
+**Stream:**
+```
+data: {"level":"info","message":"📄 Parsing CSV..."}
 
-# Show available DSL operations
-massload operations
+data: {"level":"success","message":"✅ Transformation complete!"}
+```
 
-# Show example transformation matrix
-massload example-matrix
+### Static Files (SPA Fallback)
+
+All other routes serve the frontend:
+
+```bash
+GET /                 → index.html
+GET /massload         → index.html (SPA routing)
+GET /explore          → index.html (SPA routing)
+GET /assets/*.js      → static JS/WASM files
+GET /assets/*.css     → static CSS files
+```
+
+## Running
+
+### Prerequisites
+
+- Rust 1.75+
+- `ANTHROPIC_API_KEY` environment variable
+
+### Development
+
+```bash
+# From workspace root
+cargo run --bin allfeat-hub -- serve --port 3000
+```
+
+The server will:
+1. Look for frontend in `apps/hub/frontend/dist`
+2. Serve it on `http://localhost:3000`
+3. Expose API on `/api/*`
+
+### Production
+
+```bash
+# Build release binary
+cargo build --release --bin allfeat-hub
+
+# Run
+./target/release/allfeat-hub serve --port 3000
 ```
 
 ## Configuration
@@ -188,74 +217,99 @@ massload example-matrix
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `ANTHROPIC_API_KEY` | Claude API key for AI matrix generation | Yes |
-| `RUST_LOG` | Log level (trace, debug, info, warn, error) | No |
+| `ANTHROPIC_API_KEY` | Claude API key | Yes |
+| `RUST_LOG` | Log level (info, debug, warn, error) | No |
+| `PORT` | Server port (default: 3000) | No |
 
-### Example `.env`
+### Frontend Path Detection
 
-```bash
-ANTHROPIC_API_KEY=sk-ant-api03-...
-RUST_LOG=info
-```
+The server looks for frontend files in multiple locations:
+1. `apps/hub/frontend/dist` (workspace root)
+2. `frontend/dist` (legacy path)
+3. `../frontend/dist` (when run from backend dir)
 
-## Project Structure
+## File Structure
 
 ```
 backend/
 ├── src/
-│   ├── ai/              # Claude AI integration
-│   │   ├── mod.rs       # API client
-│   │   └── prompt.rs    # System & user prompts
-│   ├── api/             # HTTP API layer
-│   │   ├── mod.rs       # Module exports
-│   │   ├── server.rs    # HTTP server (Axum)
-│   │   ├── types.rs     # Request/Response DTOs
+│   ├── api/
+│   │   ├── server.rs    # Axum server + routes
+│   │   ├── types.rs     # API types
 │   │   └── logs.rs      # SSE log broadcaster
-│   ├── cache/           # Template caching
-│   │   └── mod.rs       # Matrix registry
-│   ├── parser/          # CSV parsing
-│   │   └── mod.rs       # Auto-detect encoding/delimiter
-│   ├── transform/       # Transformation engine
-│   │   ├── mod.rs       # Module exports
-│   │   ├── dsl/         # DSL engine
-│   │   │   ├── mod.rs
-│   │   │   ├── matrix.rs     # Matrix structure
-│   │   │   ├── operations.rs # Transform operations
-│   │   │   └── executor.rs   # DSL executor
-│   │   ├── grouper.rs   # Flat → Grouped transformation
-│   │   └── pipeline.rs  # Main transformation pipeline
-│   ├── validation/      # JSON Schema validation
-│   │   └── mod.rs       # Schema validators
-│   ├── models/          # Domain models
-│   │   └── mod.rs       # Creator, PartyId, GroupedWork
-│   ├── error.rs         # Hierarchical error types
-│   ├── lib.rs           # Library exports & re-exports
+│   ├── lib.rs           # Public API
 │   └── main.rs          # CLI entry point
-├── schemas/
-│   ├── midds-musical-work-flat.json    # Flat record schema
-│   ├── midds-musical-work-grouped.json # SDK-compatible schema
-│   └── transformation-matrix-schema.json
-└── .massload/           # Runtime data (gitignored)
-    └── matrices/        # Cached transformation templates
+└── Cargo.toml
 ```
 
-## Building
+## CLI Usage
+
+The backend also provides a CLI for offline transformation:
 
 ```bash
-# Development
-cargo build
+# Transform a CSV file
+allfeat-hub transform input.csv --output works.json
 
-# Release
-cargo build --release
+# List cached templates
+allfeat-hub template list
 
-# Run tests
-cargo test
+# Show DSL operations
+allfeat-hub operations
 ```
+
+See `cargo run --bin allfeat-hub -- --help` for all commands.
+
+## Docker
+
+The backend is built as part of the unified Docker image:
+
+```dockerfile
+# Multi-stage build
+FROM rust:1.75-slim as builder
+
+# ... build frontend and backend ...
+
+# Runtime
+FROM debian:bookworm-slim
+COPY --from=builder /app/apps/hub/backend/target/release/allfeat-hub .
+COPY --from=builder /app/apps/hub/frontend/dist ./apps/hub/frontend/dist
+
+CMD ["./allfeat-hub", "serve", "--port", "3000"]
+```
+
+## Dependencies
+
+Key Rust crates:
+
+| Crate | Purpose |
+|-------|---------|
+| `axum` | Web framework |
+| `tower-http` | Middleware (CORS, static files) |
+| `serde_json` | JSON handling |
+| `tokio` | Async runtime |
+| `allfeat-services` | Transformation logic (workspace crate) |
+| `allfeat-core` | MIDDS validation (workspace crate) |
+
+## Error Handling
+
+The API returns structured errors:
+
+```json
+{
+  "error": "Failed to parse CSV",
+  "details": "Invalid encoding: expected UTF-8"
+}
+```
+
+HTTP status codes:
+- `200` — Success
+- `400` — Bad request (invalid CSV, no file, etc.)
+- `500` — Internal server error (AI failure, etc.)
 
 ---
 
 <div align="center">
 
-Part of [Massload](../README.md) • Built with ❤️ by [Allfeat](https://allfeat.org)
+Part of [Allfeat Apps Hub](../../../README.md) • Built with ❤️ by [Allfeat](https://allfeat.org)
 
 </div>

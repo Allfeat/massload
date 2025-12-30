@@ -9,9 +9,10 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - RUST_LOG=${RUST_LOG:-info}
-      # Optional: Override blockchain RPC endpoint
-      # - BLOCKCHAIN_RPC=wss://node-dev.allfeat.io
+      # Optional: Override blockchain RPC endpoint (default: wss://node-dev.allfeat.io)
+      # - BLOCKCHAIN_RPC=wss://melodie-rpc.allfeat.io
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
