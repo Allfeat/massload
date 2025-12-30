@@ -186,9 +186,11 @@ export async function submitMusicalWorksBatch(rpcUrl, worksJson, walletAddress) 
         });
         console.log(`✅ ${calls.length} transactions prepared`);
 
-        // Create batch
+        // Create batch (using batch instead of batchAll for resilience)
+        // batchAll is atomic: if ONE tx fails, ALL fail
+        // batch is non-atomic: continues even if some tx fail
         console.log('📤 Creating batch transaction...');
-        const batchTx = client.tx.utility.batchAll(calls);
+        const batchTx = client.tx.utility.batch(calls);
         
         // Sign and send with callback for finalization
         console.log('✍️ Signing and submitting (waiting for finalization)...');

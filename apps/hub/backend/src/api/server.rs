@@ -12,7 +12,7 @@
 //! | GET    | `/api/logs`       | SSE stream for real-time logs        |
 
 use axum::{
-    extract::Multipart,
+    extract::{DefaultBodyLimit, Multipart},
     http::{header, Method, StatusCode},
     response::{Html, Json, Sse, sse::Event},
     routing::{get, post},
@@ -82,6 +82,7 @@ pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
         .fallback_service(spa_fallback)
         
         // Middleware
+        .layer(DefaultBodyLimit::max(5 * 1024 * 1024))  // 5 MB upload limit
         .layer(cors);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], port));

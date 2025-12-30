@@ -7,29 +7,57 @@ use super::common::{format_party_id, MiddsHeader, MiddsField};
 
 /// Convert JSON Value to MusicalWorkData for massload compatibility
 fn value_to_musical_work_data(work: &Value) -> Option<MusicalWorkData> {
-    Some(MusicalWorkData {
-        id: work.get("id")?.as_str()?.to_string(),
-        title: work.get("title")?.as_str()?.to_string(),
+    log::debug!("🔍 Converting work JSON: {}", serde_json::to_string_pretty(work).unwrap_or_default());
+    
+    // Title is required - if missing, return None
+    let title = work.get("title")
+        .and_then(|v| v.as_str());
+    
+    if title.is_none() {
+        log::error!("❌ Missing title field in work JSON");
+        return None;
+    }
+    
+    let result = MusicalWorkData {
+        id: work.get("id")
+            .and_then(|v| v.as_str().or_else(|| v.as_u64().map(|_| "generated")))
+            .unwrap_or("0")
+            .to_string(),
+        title: title.unwrap().to_string(),
         iswc: work.get("iswc").and_then(|v| v.as_str()).map(String::from),
         creators: work.get("creators")
             .and_then(|v| v.as_array())
             .map(|arr| {
                 arr.iter()
                     .filter_map(|c| {
+                        let id = c.get("id")?;
+                        
+                        // Handle both "role" (massload) and "roles" (explore) formats
+                        let roles = if let Some(role_str) = c.get("role").and_then(|r| r.as_str()) {
+                            vec![role_str.to_string()]
+                        } else if let Some(roles_arr) = c.get("roles").and_then(|r| r.as_array()) {
+                            roles_arr.iter()
+                                .filter_map(|r| r.as_str().map(String::from))
+                                .collect()
+                        } else {
+                            vec![]
+                        };
+                        
                         Some(CreatorData {
                             name: String::new(), // Not displayed anymore
-                            roles: c.get("role")
-                                .and_then(|r| r.as_str())
-                                .map(|s| vec![s.to_string()])
-                                .unwrap_or_default(),
-                            id: c.get("id")?.clone(),
+                            roles,
+                            id: id.clone(),
                         })
                     })
                     .collect()
             })
             .unwrap_or_default(),
         creation_year: work.get("creationYear").and_then(|v| v.as_u64()).map(|y| y as u16),
-        is_instrumental: work.get("instrumental").and_then(|v| v.as_bool()).unwrap_or(false),
+        // Handle both "instrumental" (massload) and "isInstrumental" (explore)
+        is_instrumental: work.get("instrumental")
+            .or_else(|| work.get("isInstrumental"))
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false),
         work_type: work.get("workType")
             .and_then(|w| {
                 // Handle both { "type": "Original" } and "Original" formats
@@ -39,8 +67,15 @@ fn value_to_musical_work_data(work: &Value) -> Option<MusicalWorkData> {
             .unwrap_or("Unknown")
             .to_string(),
         language: work.get("language").and_then(|v| v.as_str()).map(String::from),
-        musical_key: work.get("key").and_then(|v| v.as_str()).map(String::from),
-    })
+        // Handle both "key" (massload) and "musicalKey" (explore)
+        musical_key: work.get("key")
+            .or_else(|| work.get("musicalKey"))
+            .and_then(|v| v.as_str())
+            .map(String::from),
+    };
+    
+    log::debug!("✅ Successfully converted work: {}", result.title);
+    Some(result)
 }
 
 /// Display a single creator with roles

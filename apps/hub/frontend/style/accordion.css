@@ -1,7 +1,9 @@
 /* Accordion styles for preview items */
+/* Using Allfeat Brand Colors: Green #00B18C, Red #FF4A5F, Grey #151515 */
+
 .preview-item.expanded {
-    background: #2a2a2a;
-    border-left-color: #00d4ff;
+    background: #1a1a1a;
+    border-left-color: #FF4A5F;  /* Allfeat Red for active state */
 }
 
 .preview-item-header {
@@ -30,7 +32,7 @@
     }
 }
 
-/* ===== MIDDS Format Display ===== */
+/* ===== MIDDS Format Display - Allfeat Brand Colors ===== */
 .midds-work {
     display: flex;
     flex-direction: column;
@@ -49,8 +51,8 @@
 }
 
 .midds-badge {
-    background: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
-    color: #0A0A0A;
+    background: #FF4A5F;  /* Allfeat Red */
+    color: #FFFFFF;
     padding: 3px 8px;
     border-radius: 4px;
     font-weight: 700;
@@ -59,7 +61,7 @@
 }
 
 .midds-type {
-    color: #00d4ff;
+    color: #FF4A5F;  /* Allfeat Red */
     font-weight: 600;
 }
 
@@ -70,7 +72,7 @@
 }
 
 .midds-label {
-    color: #00ff88;
+    color: #00B18C;  /* Allfeat Green for keys */
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -88,22 +90,22 @@
 }
 
 .midds-value {
-    color: #FAFAFA;
+    color: #888888;  /* Grey for all values */
     padding: 6px 12px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
-    border-left: 2px solid #00d4ff;
+    border-left: 2px solid #FF4A5F;  /* Allfeat Red for accent */
 }
 
 .iswc-value {
-    color: #00d4ff;
+    color: #00B18C;  /* Allfeat Green for important codes */
     font-weight: 600;
     letter-spacing: 1px;
 }
 
 .midds-lang {
-    background: rgba(0, 212, 255, 0.15);
-    color: #00d4ff;
+    background: rgba(0, 177, 140, 0.15);  /* Allfeat Green background */
+    color: #00B18C;  /* Allfeat Green text */
     padding: 2px 8px;
     border-radius: 3px;
     font-size: 11px;
@@ -158,7 +160,7 @@
 }
 
 .prop-key {
-    color: #888;
+    color: #00B18C;  /* Allfeat Green for keys */
     min-width: 80px;
 }
 
@@ -167,19 +169,19 @@
 }
 
 .prop-value {
-    color: #FAFAFA;
+    color: #888888;  /* Grey for values */
 }
 
 .role-badge {
-    background: rgba(0, 255, 136, 0.15);
-    color: #00ff88;
+    background: rgba(0, 177, 140, 0.15);  /* Allfeat Green background */
+    color: #00B18C;  /* Allfeat Green text */
     padding: 2px 10px;
     border-radius: 10px;
     font-size: 12px;
 }
 
 .ipi-code {
-    color: #888;
+    color: #888888;  /* Grey for IPI/ISNI codes */
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
