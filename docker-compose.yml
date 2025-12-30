@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  hub:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - RUST_LOG=${RUST_LOG:-info}
+      # Optional: Override blockchain RPC endpoint
+      # - BLOCKCHAIN_RPC=wss://node-dev.allfeat.io
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
