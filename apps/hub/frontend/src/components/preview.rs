@@ -53,7 +53,7 @@ pub fn PreviewSection(
     let start_index = move || (current_page.get() - 1) * items_per_page.get();
     
     // Handler pour annuler - reset tout et revient à la zone de drop
-    let on_cancel = move |_| {
+    let on_cancel = move || {
         log::info!("🚫 Annulation - retour à la zone de drop");
         if let Some(setter) = set_preview_data {
             setter.set(None);
@@ -74,7 +74,7 @@ pub fn PreviewSection(
     };
     
     // Handler pour confirmer et envoyer
-    let on_confirm_send = move |_| {
+    let on_confirm_send = move || {
         set_show_confirm_dialog.set(false);
         
         let works = musical_works_json.get();
@@ -150,21 +150,21 @@ pub fn PreviewSection(
     };
     
     // Pagination handlers
-    let on_prev_page = move |_ev: web_sys::MouseEvent| {
+    let on_prev_page = move |_| {
         if current_page.get() > 1 {
             set_current_page.update(|p| *p -= 1);
             set_expanded_index.set(None);
         }
     };
     
-    let on_next_page = move |_ev: web_sys::MouseEvent| {
+    let on_next_page = move |_| {
         if current_page.get() < total_pages() {
             set_current_page.update(|p| *p += 1);
             set_expanded_index.set(None);
         }
     };
     
-    let on_page_size_change = move |ev: web_sys::Event| {
+    let on_page_size_change = move |ev| {
         let target = event_target::<web_sys::HtmlSelectElement>(&ev);
         if let Ok(size) = target.value().parse::<usize>() {
             set_items_per_page.set(size);
@@ -172,6 +172,9 @@ pub fn PreviewSection(
             set_expanded_index.set(None);
         }
     };
+    
+    // Wrapper handler for cancel button (on_cancel doesn't take argument)
+    let handle_cancel_click = move |_| on_cancel();
     
     view! {
         // Success message overlay
@@ -193,7 +196,7 @@ pub fn PreviewSection(
             <ConfirmDialog
                 works_count=move || data.get().map(|d| d.len()).unwrap_or(0)
                 on_confirm=on_confirm_send
-                on_cancel=move |_| set_show_confirm_dialog.set(false)
+                on_cancel=move || set_show_confirm_dialog.set(false)
             />
         </Show>
         
@@ -357,7 +360,7 @@ pub fn PreviewSection(
             <div id="previewFooter" class="preview-footer">
                 <button 
                     class="btn btn-secondary"
-                    on:click=on_cancel
+                    on:click=handle_cancel_click
                 >
                     {move || t("preview.cancel")}
                 </button>
@@ -387,9 +390,13 @@ struct RegistrationResult {
 #[component]
 fn ConfirmDialog(
     works_count: impl Fn() -> usize + 'static,
-    on_confirm: impl Fn(web_sys::MouseEvent) + 'static,
-    on_cancel: impl Fn(web_sys::MouseEvent) + 'static,
+    on_confirm: impl Fn() + 'static,
+    on_cancel: impl Fn() + 'static,
 ) -> impl IntoView {
+    // Wrapper handlers that accept events but ignore them
+    let handle_confirm = move |_| on_confirm();
+    let handle_cancel = move |_| on_cancel();
+    
     view! {
         <div class="modal-overlay">
             <div class="modal-content confirm-dialog">
@@ -402,10 +409,10 @@ fn ConfirmDialog(
                     <strong>{works_count}</strong> " " {move || t("preview.works_count")}
                 </div>
                 <div class="confirm-buttons">
-                    <button class="btn btn-secondary" on:click=on_cancel>
+                    <button class="btn btn-secondary" on:click=handle_cancel>
                         {move || t("preview.cancel")}
                     </button>
-                    <button class="btn btn-primary" on:click=on_confirm>
+                    <button class="btn btn-primary" on:click=handle_confirm>
                         {move || t("preview.confirm")}
                     </button>
                 </div>
@@ -418,8 +425,11 @@ fn ConfirmDialog(
 #[component]
 fn SuccessMessage(
     result: ReadSignal<Option<RegistrationResult>>,
-    on_close: impl Fn(web_sys::MouseEvent) + Copy + 'static,
+    on_close: impl Fn() + Copy + 'static,
 ) -> impl IntoView {
+    // Wrapper handler that accepts event but ignores it
+    let handle_close = move |_| on_close();
+    
     view! {
         <div class="modal-overlay success-overlay">
             <div class="modal-content success-message">
@@ -440,7 +450,7 @@ fn SuccessMessage(
                         </code>
                     </div>
                 </Show>
-                <button class="btn btn-primary" on:click=on_close>
+                <button class="btn btn-primary" on:click=handle_close>
                     {move || t("preview.back_to_upload")}
                 </button>
             </div>
