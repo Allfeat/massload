@@ -5,7 +5,7 @@
 use leptos::*;
 use web_sys::{Event, HtmlInputElement};
 use wasm_bindgen::JsCast;
-use crate::{PreviewItem, LogEntry, LogLevel, backend_url};
+use crate::{PreviewItem, LogEntry, LogLevel};
 use crate::services::upload_csv;
 use crate::i18n::t;
 use allfeat_ui::components::IconUpload;
@@ -40,8 +40,8 @@ pub fn UploadSection(
                         // Log de début
                         add_log(set_logs, LogLevel::Info, "📤 Uploading CSV file...");
                         
-                        // Upload
-                        match upload_csv(file, &backend_url()).await {
+                        // Upload (using relative path for unified server)
+                        match upload_csv(file).await {
                             Ok(response) => {
                                 add_log(
                                     set_logs,

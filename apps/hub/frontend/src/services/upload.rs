@@ -55,8 +55,8 @@ pub struct ValidationError {
     pub errors: Vec<String>,
 }
 
-/// Upload un fichier CSV vers le backend
-pub async fn upload_csv(file: File, backend_url: &str) -> Result<UploadResponse, String> {
+/// Upload un fichier CSV vers le backend (unified server - chemin relatif)
+pub async fn upload_csv(file: File) -> Result<UploadResponse, String> {
     // Créer FormData
     let form_data = FormData::new().map_err(|e| format!("Failed to create FormData: {:?}", e))?;
     
@@ -65,9 +65,8 @@ pub async fn upload_csv(file: File, backend_url: &str) -> Result<UploadResponse,
         .append_with_blob("file", &file)
         .map_err(|e| format!("Failed to append file: {:?}", e))?;
 
-    // Envoyer la requête
-    let url = format!("{}/api/upload", backend_url);
-    let request = Request::post(&url)
+    // Envoyer la requête (chemin relatif pour unified server)
+    let request = Request::post("/api/upload")
         .body(form_data)
         .map_err(|e| format!("Failed to build request: {}", e))?;
     
