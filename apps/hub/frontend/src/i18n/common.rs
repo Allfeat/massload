@@ -310,6 +310,26 @@ pub fn translate(key: &str, lang: Language) -> Option<&'static str> {
             Language::Greek => "Μουσικό έργο",
         }),
         
+        "common.recording" => Some(match lang {
+            Language::English => "Recording",
+            Language::French => "Enregistrement",
+            Language::Spanish => "Grabación",
+            Language::German => "Aufnahme",
+            Language::Japanese => "レコーディング",
+            Language::Korean => "녹음",
+            Language::Greek => "Ηχογράφηση",
+        }),
+        
+        "common.release" => Some(match lang {
+            Language::English => "Release",
+            Language::French => "Sortie",
+            Language::Spanish => "Lanzamiento",
+            Language::German => "Veröffentlichung",
+            Language::Japanese => "リリース",
+            Language::Korean => "릴리스",
+            Language::Greek => "Κυκλοφορία",
+        }),
+        
         // Network names
         "network.melodie" => Some(match lang {
             Language::English => "Melodie",

@@ -1,6 +1,7 @@
 //! Common utilities for MIDDS display components
 
 use leptos::*;
+use crate::i18n::t;
 
 /// Format Party ID (IPI/ISNI/Both) from JSON value
 pub fn format_party_id(id: &serde_json::Value) -> String {
@@ -45,10 +46,18 @@ pub fn format_party_id(id: &serde_json::Value) -> String {
 pub fn MiddsHeader(
     #[prop(into)] midds_type: String,
 ) -> impl IntoView {
+    // Map MIDDS type to translation key
+    let type_key = match midds_type.as_str() {
+        "MusicalWork" => "common.musical_work",
+        "Recording" => "common.recording",
+        "Release" => "common.release",
+        _ => "common.midds",
+    };
+    
     view! {
         <div class="midds-header">
-            <span class="midds-badge">"MIDDS"</span>
-            <span class="midds-type">{midds_type}</span>
+            <span class="midds-badge">{move || t("common.midds")}</span>
+            <span class="midds-type">{move || t(type_key)}</span>
         </div>
     }
 }
