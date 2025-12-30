@@ -2,7 +2,7 @@
 /* Using Allfeat Brand Colors: Green #00B18C, Red #FF4A5F, Grey #151515 */
 
 .preview-item.expanded {
-    background: #1a1a1a;
+    background: var(--bg-card-hover);
     border-left-color: #FF4A5F;  /* Allfeat Red for active state */
 }
 
@@ -17,7 +17,7 @@
 .preview-item-expanded {
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid #333;
+    border-top: 1px solid var(--border-color);
     animation: slideDown 0.3s ease-out;
 }
 
@@ -46,7 +46,7 @@
     align-items: center;
     gap: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border-color);
     margin-bottom: 5px;
 }
 
@@ -81,18 +81,18 @@
 
 .midds-label::before {
     content: '•';
-    color: #333;
+    color: var(--text-muted);
 }
 
 .midds-count {
-    color: #666;
+    color: var(--text-muted);
     font-weight: 400;
 }
 
 .midds-value {
-    color: #888888;  /* Grey for all values */
+    color: var(--text-secondary);
     padding: 6px 12px;
-    background: rgba(0, 0, 0, 0.3);
+    background: var(--bg-secondary);
     border-radius: 4px;
     border-left: 2px solid #FF4A5F;  /* Allfeat Red for accent */
 }
@@ -118,7 +118,7 @@
     flex-direction: column;
     gap: 8px;
     padding-left: 15px;
-    border-left: 1px dashed #333;
+    border-left: 1px dashed var(--border-color);
     margin-left: 10px;
 }
 
@@ -129,7 +129,7 @@
 }
 
 .midds-index {
-    color: #666;
+    color: var(--text-muted);
     min-width: 20px;
     font-size: 11px;
 }
@@ -144,13 +144,13 @@
 
 .midds-object {
     flex: 1;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--bg-primary);
     border-radius: 6px;
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 6px;
-    border: 1px solid #222;
+    border: 1px solid var(--border-color);
 }
 
 .midds-prop {

@@ -87,8 +87,9 @@ pub fn Sidebar() -> impl IntoView {
                 // Separator
                 <div class="nav-divider"></div>
                 
-                // How it works
+                // Documentation section (grouped together)
                 <div class="nav-section">
+                    // How it works
                     <A 
                         href="/how-it-works" 
                         class=move || if is_active("/how-it-works") { "nav-item active" } else { "nav-item" }
@@ -96,10 +97,8 @@ pub fn Sidebar() -> impl IntoView {
                         <span class="nav-icon"><IconBookOpen/></span>
                         <span class="nav-label">{move || t("nav.how_it_works")}</span>
                     </A>
-                </div>
-                
-                // External links
-                <div class="nav-section">
+                    
+                    // External links
                     <a href="https://docs.allfeat.org" target="_blank" class="nav-item external">
                         <span class="nav-icon"><IconBookOpen/></span>
                         <span class="nav-label">{move || t("nav.docs")}</span>

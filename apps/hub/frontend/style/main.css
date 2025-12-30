@@ -28,6 +28,8 @@
   --text-secondary: #D6D8DC;
   --text-muted: #999999;
   --footer-bg: #0A0A0A;
+  --header-bg: #0A0A0A;  /* Dark header in dark mode */
+  --header-border: #262626;
 }
 
 /* Light theme - Matching protect.allfeat.org */
@@ -42,6 +44,8 @@
   --text-secondary: #525252;
   --text-muted: #888888;  /* Allfeat Grey */
   --footer-bg: #E8E8E8;
+  --header-bg: #FFFFFF;  /* White header in light mode */
+  --header-border: #E5E5E5;
 }
 
 body {
@@ -70,8 +74,8 @@ main {
 
 /* ===== HEADER ===== */
 header {
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
+  background: var(--header-bg);  /* White in light mode, dark in dark mode */
+  border-bottom: 1px solid var(--header-border);
   padding: 16px 40px;
   display: flex;
   justify-content: space-between;
