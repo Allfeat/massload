@@ -169,9 +169,12 @@ header {
 .lang-text {
   font-size: 14px;
   /* Fix CJK characters rendering */
+  font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", "Noto Sans JP", sans-serif;
   word-break: keep-all;
   white-space: nowrap;
-  line-height: 1.6;
+  line-height: normal;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* Language dropdown menu */
@@ -187,6 +190,7 @@ header {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   z-index: 200;
   animation: dropdown-appear 0.15s ease-out;
+  overflow: visible;
 }
 
 @keyframes dropdown-appear {
@@ -205,7 +209,7 @@ header {
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px;
   background: transparent;
   border: none;
   border-radius: 8px;
@@ -215,10 +219,12 @@ header {
   transition: background 0.15s;
   text-align: left;
   /* Fix CJK characters rendering */
+  font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", "Noto Sans JP", sans-serif;
   word-break: keep-all;
   white-space: nowrap;
   overflow: visible;
-  line-height: 1.6;
+  line-height: normal;
+  min-height: 40px;
 }
 
 .lang-option:hover {
