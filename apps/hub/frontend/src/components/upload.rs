@@ -8,6 +8,7 @@ use wasm_bindgen::JsCast;
 use crate::{PreviewItem, LogEntry, LogLevel, backend_url};
 use crate::services::upload_csv;
 use crate::i18n::t;
+use allfeat_ui::components::IconUpload;
 
 #[component]
 pub fn UploadSection(
@@ -140,7 +141,7 @@ pub fn UploadSection(
             id="uploadZone"
             on:click=trigger_file_input
         >
-            <div class="upload-icon">"📤"</div>
+            <div class="upload-icon"><IconUpload/></div>
             <div class="upload-text">
                 {move || if is_uploading.get() {
                     t("upload.uploading")

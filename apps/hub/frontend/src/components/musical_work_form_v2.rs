@@ -3,6 +3,7 @@ use leptos_router::A;
 use crate::i18n::t;
 use crate::midds::*;
 use crate::services::blockchain::BlockchainService;
+use allfeat_ui::components::IconCheckCircle;
 
 // Temporary form state for adding creators
 #[derive(Clone, Debug, Default)]
@@ -350,7 +351,7 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                         if submission_success.get() {
                             view! {
                                 <div class="form-success">
-                                    "✅ Musical work registered successfully!"
+                                    <IconCheckCircle/> " Musical work registered successfully!"
                                 </div>
                             }.into_view()
                         } else {

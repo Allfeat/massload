@@ -609,6 +609,27 @@ h1 {
 .logs-content::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 .logs-content::-webkit-scrollbar-thumb:hover { background: var(--border-color-hover); }
 
+/* ===== ICONS (SVG) ===== */
+.confirm-icon svg,
+.success-icon svg,
+.upload-icon svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+}
+
+.confirm-icon svg {
+  color: #FCD34D;  /* Warning yellow */
+}
+
+.success-icon svg {
+  color: var(--color-primary);  /* Allfeat Teal */
+}
+
+.upload-icon svg {
+  color: var(--color-primary);
+}
+
 /* ===== WALLET STATUS - exact match to register.allfeat.org ===== */
 .wallet-status {
   display: inline-flex;

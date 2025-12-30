@@ -5,6 +5,7 @@ use crate::{PreviewItem, LogEntry, LogLevel};
 use crate::services::BlockchainService;
 use crate::i18n::t;
 use crate::components::midds_display::WorkDisplayJson;
+use allfeat_ui::components::{IconCheckCircle, IconAlertTriangle};
 
 /// Available page sizes for pagination
 const PAGE_SIZES: [usize; 4] = [10, 25, 50, 100];
@@ -393,7 +394,7 @@ fn ConfirmDialog(
     view! {
         <div class="modal-overlay">
             <div class="modal-content confirm-dialog">
-                <div class="confirm-icon">"⚠️"</div>
+                <div class="confirm-icon"><IconAlertTriangle/></div>
                 <h2>{move || t("preview.confirm_title")}</h2>
                 <p class="confirm-message">
                     {move || t("preview.confirm_message")}
@@ -423,7 +424,7 @@ fn SuccessMessage(
     view! {
         <div class="modal-overlay success-overlay">
             <div class="modal-content success-message">
-                <div class="success-icon">"✅"</div>
+                <div class="success-icon"><IconCheckCircle/></div>
                 <h2>{move || t("preview.success_title")}</h2>
                 <p class="success-count">
                     <strong>{move || result.get().map(|r| r.works_count).unwrap_or(0)}</strong>
