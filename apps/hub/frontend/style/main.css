@@ -8,10 +8,10 @@
 }
 
 :root {
-  /* Official Allfeat Brand Colors */
-  --color-primary: #00B18C;  /* Allfeat Green */
-  --color-primary-hover: #009874;
-  --color-primary-light: rgba(0, 177, 140, 0.1);
+  /* Official Allfeat Brand Colors - Matching protect.allfeat.org */
+  --color-primary: #1BA794;  /* Allfeat Teal (protect.allfeat.org) */
+  --color-primary-hover: #17957e;
+  --color-primary-light: rgba(27, 167, 148, 0.1);
   
   --color-accent: #FF4A5F;  /* Allfeat Red for accents/borders */
   --color-accent-hover: #ff3349;
@@ -30,18 +30,18 @@
   --footer-bg: #0A0A0A;
 }
 
-/* Light theme */
+/* Light theme - Matching protect.allfeat.org */
 [data-theme="light"] {
-  --bg-primary: #FFFBEB;  /* Allfeat Beige for light theme */
+  --bg-primary: #E8E8E8;  /* Neutral grey like protect.allfeat.org */
   --bg-secondary: #FFFFFF;
   --bg-card: #FFFFFF;
-  --bg-card-hover: #FFF9E6;
+  --bg-card-hover: #F5F5F5;
   --border-color: #E5E5E5;
   --border-color-hover: #D4D4D4;
   --text-primary: #151515;  /* Allfeat Dark Grey */
   --text-secondary: #525252;
   --text-muted: #888888;  /* Allfeat Grey */
-  --footer-bg: #FFFBEB;
+  --footer-bg: #E8E8E8;
 }
 
 body {
