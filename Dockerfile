@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Rust toolchain and build tools (separate layers for caching)
+# Install Rust toolchain and build tools
 RUN rustup target add wasm32-unknown-unknown
 RUN cargo install trunk --version 0.21.5
 RUN cargo install wasm-bindgen-cli --version 0.2.106
@@ -17,19 +17,17 @@ RUN cargo install wasm-opt --locked
 
 WORKDIR /app
 
-# Copy workspace manifests
+# Copy workspace manifests for ALL members
 COPY Cargo.toml Cargo.lock ./
 COPY apps/hub/backend/Cargo.toml ./apps/hub/backend/
 COPY apps/hub/frontend/Cargo.toml ./apps/hub/frontend/
+COPY crates/core/Cargo.toml ./crates/core/
 COPY crates/ui/Cargo.toml ./crates/ui/
+COPY crates/services/Cargo.toml ./crates/services/
 
 # Copy all source code
-COPY apps/hub/backend/src/ ./apps/hub/backend/src/
-COPY apps/hub/frontend/src/ ./apps/hub/frontend/src/
-COPY apps/hub/frontend/index.html ./apps/hub/frontend/
-COPY apps/hub/frontend/style/ ./apps/hub/frontend/style/
-COPY apps/hub/frontend/public/ ./apps/hub/frontend/public/
-COPY crates/ui/src/ ./crates/ui/src/
+COPY apps/ ./apps/
+COPY crates/ ./crates/
 COPY schemas/ ./schemas/
 
 # Build frontend with Trunk
