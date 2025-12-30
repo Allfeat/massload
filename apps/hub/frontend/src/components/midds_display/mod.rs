@@ -12,7 +12,7 @@ pub mod release;
 
 // Re-export components
 pub use common::{format_party_id, MiddsHeader, MiddsField};
-pub use work::WorkDisplay;
+pub use work::{WorkDisplay, WorkDisplayJson};
 pub use recording::RecordingDisplay;
 pub use release::ReleaseDisplay;
 
@@ -35,14 +35,5 @@ pub fn MiddsDisplay(
             view! { <ReleaseDisplay release=release/> }.into_view()
         }
     }
-}
-
-/// Backwards compatibility: display only a musical work
-/// This is what the explorer currently uses
-#[component]
-pub fn MiddsWorkDisplay(
-    #[prop(into)] work: crate::services::explorer::MusicalWorkData,
-) -> impl IntoView {
-    view! { <WorkDisplay work=work/> }
 }
 

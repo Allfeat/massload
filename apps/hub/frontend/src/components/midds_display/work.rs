@@ -1,8 +1,47 @@
 //! Musical Work MIDDS display component
 
 use leptos::*;
+use serde_json::Value;
 use crate::services::explorer::{MusicalWorkData, CreatorData};
 use super::common::{format_party_id, MiddsHeader, MiddsField};
+
+/// Convert JSON Value to MusicalWorkData for massload compatibility
+fn value_to_musical_work_data(work: &Value) -> Option<MusicalWorkData> {
+    Some(MusicalWorkData {
+        id: work.get("id")?.as_str()?.to_string(),
+        title: work.get("title")?.as_str()?.to_string(),
+        iswc: work.get("iswc").and_then(|v| v.as_str()).map(String::from),
+        creators: work.get("creators")
+            .and_then(|v| v.as_array())
+            .map(|arr| {
+                arr.iter()
+                    .filter_map(|c| {
+                        Some(CreatorData {
+                            name: String::new(), // Not displayed anymore
+                            roles: c.get("role")
+                                .and_then(|r| r.as_str())
+                                .map(|s| vec![s.to_string()])
+                                .unwrap_or_default(),
+                            id: c.get("id")?.clone(),
+                        })
+                    })
+                    .collect()
+            })
+            .unwrap_or_default(),
+        creation_year: work.get("creationYear").and_then(|v| v.as_u64()).map(|y| y as u16),
+        is_instrumental: work.get("instrumental").and_then(|v| v.as_bool()).unwrap_or(false),
+        work_type: work.get("workType")
+            .and_then(|w| {
+                // Handle both { "type": "Original" } and "Original" formats
+                w.get("type").and_then(|t| t.as_str())
+                    .or_else(|| w.as_str())
+            })
+            .unwrap_or("Unknown")
+            .to_string(),
+        language: work.get("language").and_then(|v| v.as_str()).map(String::from),
+        musical_key: work.get("key").and_then(|v| v.as_str()).map(String::from),
+    })
+}
 
 /// Display a single creator with roles
 #[component]
@@ -30,6 +69,17 @@ fn CreatorItem(
                 </div>
             </div>
         </div>
+    }
+}
+
+/// Display musical work from JSON Value (for massload compatibility)
+#[component]
+pub fn WorkDisplayJson(
+    work: Value,
+) -> impl IntoView {
+    match value_to_musical_work_data(&work) {
+        Some(work_data) => view! { <WorkDisplay work=work_data/> }.into_view(),
+        None => view! { <div class="error">"Invalid work data"</div> }.into_view(),
     }
 }
 

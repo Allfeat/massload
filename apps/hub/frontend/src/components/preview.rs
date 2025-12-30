@@ -1,9 +1,10 @@
 //! Composant Preview pour afficher et approuver les transactions
 
 use leptos::*;
-use crate::{PreviewItem, WorkDetail, LogEntry, LogLevel};
+use crate::{PreviewItem, LogEntry, LogLevel};
 use crate::services::BlockchainService;
 use crate::i18n::t;
+use crate::components::midds_display::WorkDisplayJson;
 
 #[component]
 pub fn PreviewSection(
@@ -164,7 +165,7 @@ pub fn PreviewSection(
                                             {move || {
                                                 if let Some(work) = full_work() {
                                                     view! {
-                                                        <WorkDetail work=work/>
+                                                        <WorkDisplayJson work=work/>
                                                     }.into_view()
                                                 } else {
                                                     view! {

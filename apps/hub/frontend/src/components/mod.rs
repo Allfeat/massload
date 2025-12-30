@@ -19,7 +19,6 @@ mod header;
 mod hero;
 mod upload;
 mod preview;
-mod preview_detail;
 pub mod midds_display; // Public module with submodules
 mod progress;
 mod footer;
@@ -33,9 +32,8 @@ pub use header::*;
 pub use hero::*;
 pub use upload::*;
 pub use preview::*;
-pub use preview_detail::*;
-// Re-export main MIDDS display components
-pub use midds_display::{MiddsDisplay, MiddsWorkDisplay, WorkDisplay, RecordingDisplay, ReleaseDisplay};
+// Re-export MIDDS display components
+pub use midds_display::{MiddsDisplay, WorkDisplay, WorkDisplayJson, RecordingDisplay, ReleaseDisplay};
 pub use progress::*;
 pub use footer::*;
 pub use logs::*;
