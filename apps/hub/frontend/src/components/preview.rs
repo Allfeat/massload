@@ -173,9 +173,6 @@ pub fn PreviewSection(
         }
     };
     
-    // Wrapper handler for cancel button (on_cancel doesn't take argument)
-    let handle_cancel_click = move |_| on_cancel();
-    
     view! {
         // Success message overlay
         <Show
@@ -360,7 +357,7 @@ pub fn PreviewSection(
             <div id="previewFooter" class="preview-footer">
                 <button 
                     class="btn btn-secondary"
-                    on:click=handle_cancel_click
+                    on:click=move |_| on_cancel()
                 >
                     {move || t("preview.cancel")}
                 </button>
@@ -393,10 +390,6 @@ fn ConfirmDialog(
     on_confirm: impl Fn() + 'static,
     on_cancel: impl Fn() + 'static,
 ) -> impl IntoView {
-    // Wrapper handlers that accept events but ignore them
-    let handle_confirm = move |_| on_confirm();
-    let handle_cancel = move |_| on_cancel();
-    
     view! {
         <div class="modal-overlay">
             <div class="modal-content confirm-dialog">
@@ -409,10 +402,10 @@ fn ConfirmDialog(
                     <strong>{works_count}</strong> " " {move || t("preview.works_count")}
                 </div>
                 <div class="confirm-buttons">
-                    <button class="btn btn-secondary" on:click=handle_cancel>
+                    <button class="btn btn-secondary" on:click=move |_| on_cancel()>
                         {move || t("preview.cancel")}
                     </button>
-                    <button class="btn btn-primary" on:click=handle_confirm>
+                    <button class="btn btn-primary" on:click=move |_| on_confirm()>
                         {move || t("preview.confirm")}
                     </button>
                 </div>
@@ -427,9 +420,6 @@ fn SuccessMessage(
     result: ReadSignal<Option<RegistrationResult>>,
     on_close: impl Fn() + Copy + 'static,
 ) -> impl IntoView {
-    // Wrapper handler that accepts event but ignores it
-    let handle_close = move |_| on_close();
-    
     view! {
         <div class="modal-overlay success-overlay">
             <div class="modal-content success-message">
@@ -450,7 +440,7 @@ fn SuccessMessage(
                         </code>
                     </div>
                 </Show>
-                <button class="btn btn-primary" on:click=handle_close>
+                <button class="btn btn-primary" on:click=move |_| on_close()>
                     {move || t("preview.back_to_upload")}
                 </button>
             </div>
