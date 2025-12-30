@@ -26,11 +26,17 @@ pub fn ExplorePage() -> impl IntoView {
     // RPC URL from config (defaults to devnet: wss://node-dev.allfeat.io)
     let rpc_url = config::blockchain_rpc();
     
+    // Clone rpc_url for each closure to avoid move errors
+    let rpc_url_metrics = rpc_url.clone();
+    let rpc_url_works = rpc_url.clone();
+    let rpc_url_recordings = rpc_url.clone();
+    let rpc_url_releases = rpc_url;
+    
     // Fetch metrics
     let metrics = create_resource(
         || (),
         move |_| {
-            let url = rpc_url.clone();
+            let url = rpc_url_metrics.clone();
             async move {
                 fetch_blockchain_metrics(&url).await
             }
@@ -54,7 +60,7 @@ pub fn ExplorePage() -> impl IntoView {
         let current_filter = filter.get();
         if current_filter == "works" && works.get().is_none() {
             set_is_loading_works.set(true);
-            let url = rpc_url.clone();
+            let url = rpc_url_works.clone();
             spawn_local(async move {
                 match fetch_all_musical_works(&url).await {
                     Ok(works_vec) => {
@@ -76,7 +82,7 @@ pub fn ExplorePage() -> impl IntoView {
         let current_filter = filter.get();
         if current_filter == "recordings" && recordings.get().is_none() {
             set_is_loading_recordings.set(true);
-            let url = rpc_url.clone();
+            let url = rpc_url_recordings.clone();
             spawn_local(async move {
                 match fetch_all_recordings(&url).await {
                     Ok(recordings_vec) => {
@@ -98,7 +104,7 @@ pub fn ExplorePage() -> impl IntoView {
         let current_filter = filter.get();
         if current_filter == "releases" && releases.get().is_none() {
             set_is_loading_releases.set(true);
-            let url = rpc_url.clone();
+            let url = rpc_url_releases.clone();
             spawn_local(async move {
                 match fetch_all_releases(&url).await {
                     Ok(releases_vec) => {
