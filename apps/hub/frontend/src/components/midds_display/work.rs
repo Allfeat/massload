@@ -88,7 +88,7 @@ fn CreatorItem(
     
     view! {
         <div class="midds-array-item">
-            <span class="midds-index">{index}</span>
+            <span class="midds-index">"[" {index} "]"</span>
             <div class="midds-object">
                 <div class="midds-prop">
                     <span class="prop-key">"id"</span>
@@ -123,7 +123,12 @@ pub fn WorkDisplayJson(
 pub fn WorkDisplay(
     #[prop(into)] work: MusicalWorkData,
 ) -> impl IntoView {
-    let creators_count = work.creators.len();
+    // Separate creators from publishers
+    let (creators, publishers): (Vec<_>, Vec<_>) = work.creators.clone().into_iter()
+        .partition(|c| !c.roles.iter().any(|r| r == "Publisher"));
+    
+    let creators_count = creators.len();
+    let publishers_count = publishers.len();
     
     view! {
         <div class="midds-work">
@@ -141,7 +146,7 @@ pub fn WorkDisplay(
                 </MiddsField>
             })}
             
-            // Creators
+            // Creators (non-publishers)
             <div class="midds-field">
                 <div class="midds-label">
                     "creators" 
@@ -149,14 +154,37 @@ pub fn WorkDisplay(
                 </div>
                 <div class="midds-array">
                     <For
-                        each=move || work.creators.clone().into_iter().enumerate()
+                        each=move || creators.clone().into_iter().enumerate()
                         key=|(i, _)| *i
                         children=move |(index, creator)| {
-                            view! { <CreatorItem index=index creator=creator/> }
+                            view! { <CreatorItem index=index + 1 creator=creator/> }
                         }
                     />
                 </div>
             </div>
+            
+            // Publishers (separate section)
+            {if publishers_count > 0 {
+                view! {
+                    <div class="midds-field">
+                        <div class="midds-label">
+                            "publishers" 
+                            <span class="midds-count">"(" {publishers_count} ")"</span>
+                        </div>
+                        <div class="midds-array">
+                            <For
+                                each=move || publishers.clone().into_iter().enumerate()
+                                key=|(i, _)| *i
+                                children=move |(index, publisher)| {
+                                    view! { <CreatorItem index=index + 1 creator=publisher/> }
+                                }
+                            />
+                        </div>
+                    </div>
+                }.into_view()
+            } else {
+                view! {}.into_view()
+            }}
             
             // Creation Year (optional)
             {work.creation_year.map(|year| view! {
