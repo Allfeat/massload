@@ -25,13 +25,14 @@
 //! - Optional fields are OMITTED if null (SDK doesn't like null)
 
 use serde_json::{json, Map, Value};
-use std::collections::HashMap;
+use indexmap::IndexMap;
 
 /// Transform a set of flat rows into grouped musical works.
 ///
 /// Output format is compatible with @allfeat/client SDK (dedot).
+/// **IMPORTANT**: Uses IndexMap to preserve the order from the CSV file.
 pub fn flat_to_grouped(flat_rows: Vec<Value>) -> Vec<Value> {
-    let mut works: HashMap<String, WorkBuilder> = HashMap::new();
+    let mut works: IndexMap<String, WorkBuilder> = IndexMap::new();
 
     for row in flat_rows {
         if let Some(iswc) = row.get("iswc").and_then(|v| v.as_str()) {

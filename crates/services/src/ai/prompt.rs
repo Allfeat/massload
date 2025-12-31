@@ -58,12 +58,36 @@ If the CSV has a column for work type (e.g., "Work Type", "Type", "Type d'oeuvre
 ## Role Code Mapping
 
 Common role codes to map:
-- CA, C+A → Both Composer and Author (map to "Composer" for now)
 - C, Comp, Komponist → "Composer"  
 - A, Autor, Textdichter, Lyricist → "Author"
 - AR, Arr, Arrangeur → "Arranger"
 - AD, Adapt → "Adapter"
 - E, Ed, Pub, Publisher, Verlag, Editeur → "Publisher"
+
+### IMPORTANT: Combined Roles (CA, C+A, etc.)
+
+If you detect combined roles like "CA", "C+A", "AC", "A+C" in the role column, you MUST use the `expand` section:
+
+```json
+{{
+  "expand": {{
+    "type": "split_role",
+    "source": "RoleColumnName",
+    "separator": "",
+    "mapping": {{
+      "C": "Composer",
+      "A": "Author",
+      "AR": "Arranger",
+      "AD": "Adapter",
+      "E": "Publisher"
+    }}
+  }}
+}}
+```
+
+- If separator is empty string (""), each character becomes a separate role (e.g., "CA" → "C", "A")
+- If separator is "+", split on that (e.g., "C+A" → "C", "A")
+- This will create ONE flat record per role for the SAME work and creator
 
 ## Rules
 
@@ -77,8 +101,8 @@ Common role codes to map:
 8. For workType: use `map` to convert CSV values to "Original" (only valid value) or omit invalid types
 9. MAP ALL COLUMNS that correspond to MIDDS fields - do not skip any mappable columns!
 10. Return ONLY the JSON object, no explanations or markdown
-11. DO NOT use `expand` section - only use `transforms`
-12. For combined roles like "CA" or "C+A", just map to "Composer" (the primary role)"#,
+11. **CRITICAL**: If you detect combined roles (CA, C+A, etc.), you MUST add an `expand` section as shown above
+12. For single roles (C, A, AR, etc.), use normal `map` transformation in `transforms`"#,
         matrix_schema = MATRIX_SCHEMA
     )
 }

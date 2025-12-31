@@ -24,29 +24,22 @@ pub fn UploadSection(
     let (is_uploading, set_is_uploading) = create_signal(false);
     let (error, set_error) = create_signal(None::<String>);
     
+    // File pending validation
+    let (selected_file, set_selected_file) = create_signal(None::<web_sys::File>);
+    let (selected_file_size, set_selected_file_size) = create_signal(0u64);
+    
     // Error dialog state
     let (show_error_dialog, set_show_error_dialog) = create_signal(false);
     let (error_title, set_error_title) = create_signal(String::new());
     let (error_message, set_error_message) = create_signal(String::new());
 
-    // Handler pour le changement de fichier
+    // Handler pour le changement de fichier (ne lance PAS l'upload)
     let on_file_change = move |ev: Event| {
         let input: HtmlInputElement = event_target(&ev);
         
         if let Some(files) = input.files() {
             if files.length() > 0 {
                 if let Some(file) = files.get(0) {
-                    // 🔒 Vérifier que le wallet est connecté
-                    if !wallet_connected.get() {
-                        set_error_title.set(t("upload.error_no_wallet_title").to_string());
-                        set_error_message.set(t("upload.error_no_wallet_message").to_string());
-                        set_show_error_dialog.set(true);
-                        
-                        // Réinitialiser l'input pour permettre un nouveau drop
-                        input.set_value("");
-                        return;
-                    }
-                    
                     // 📏 Vérifier la taille du fichier (5 MB max)
                     let file_size = file.size() as u64;
                     if file_size > MAX_FILE_SIZE {
@@ -66,21 +59,41 @@ pub fn UploadSection(
                         return;
                     }
                     
-                    // Réinitialiser l'état
+                    // Stocker le fichier pour validation (ne pas uploader encore)
+                    set_selected_file.set(Some(file.clone()));
+                    set_selected_file_size.set(file_size);
                     set_error.set(None);
-                    set_preview_data.set(None);
-                    set_logs.set(Vec::new());
-                    
-                    // Lancer l'upload
-                    spawn_local(async move {
-                        set_is_uploading.set(true);
-                        set_is_processing.set(true);
-                        
-                        // Log de début
-                        add_log(set_logs, LogLevel::Info, "📤 Uploading CSV file...");
+                }
+            }
+        }
+    };
+    
+    // Handler pour valider et uploader le fichier
+    let on_validate_click = move |_| {
+        if let Some(file) = selected_file.get() {
+            // 🔒 Vérifier que le wallet est connecté AVANT l'upload
+            if !wallet_connected.get() {
+                set_error_title.set(t("upload.error_no_wallet_title").to_string());
+                set_error_message.set(t("upload.error_no_wallet_message").to_string());
+                set_show_error_dialog.set(true);
+                return;
+            }
+            
+            // Réinitialiser l'état
+            set_error.set(None);
+            set_preview_data.set(None);
+            set_logs.set(Vec::new());
+            
+            // Lancer l'upload
+            spawn_local(async move {
+                set_is_uploading.set(true);
+                set_is_processing.set(true);
+                
+                // Log de début
+                add_log(set_logs, LogLevel::Info, "📤 Uploading CSV file...");
                         
                         // Upload (using relative path for unified server)
-                        match upload_csv(file).await {
+                        match upload_csv(file.clone()).await {
                             Ok(response) => {
                                 add_log(
                                     set_logs,
@@ -155,7 +168,27 @@ pub fn UploadSection(
                         
                         set_is_uploading.set(false);
                         set_is_processing.set(false);
+                        
+                        // Effacer le fichier sélectionné après l'upload
+                        set_selected_file.set(None);
+                        set_selected_file_size.set(0);
                     });
+        }
+    };
+    
+    // Handler pour supprimer le fichier sélectionné
+    let on_remove_file = move |_| {
+        set_selected_file.set(None);
+        set_selected_file_size.set(0);
+        set_error.set(None);
+        
+        // Réinitialiser l'input file
+        if let Some(window) = web_sys::window() {
+            if let Some(document) = window.document() {
+                if let Some(input) = document.get_element_by_id("fileInput") {
+                    if let Ok(input_element) = input.dyn_into::<HtmlInputElement>() {
+                        input_element.set_value("");
+                    }
                 }
             }
         }
@@ -175,58 +208,109 @@ pub fn UploadSection(
     };
 
     view! {
-        <div 
-            class="upload-section" 
-            id="uploadZone"
-            on:click=trigger_file_input
+        // FILE SELECTION / UPLOAD ZONE
+        <Show
+            when=move || selected_file.get().is_none() && !is_uploading.get()
+            fallback=move || view! { <></> }
         >
-            <div class="upload-icon"><IconUpload/></div>
-            <div class="upload-text">
-                {move || if is_uploading.get() {
-                    t("upload.uploading")
-                } else {
-                    t("common.drag_csv_here")
-                }}
-            </div>
-            
-            <Show
-                when=move || !is_uploading.get()
-                fallback=|| view! { }
+            <div 
+                class="upload-section" 
+                id="uploadZone"
+                on:click=trigger_file_input
             >
+                <div class="upload-icon"><IconUpload/></div>
+                <div class="upload-text">
+                    {move || t("common.drag_csv_here")}
+                </div>
                 <div class="upload-hint">{move || t("common.or_click_to_select")}</div>
                 <div class="upload-hint mt-20">
                     {move || t("common.supported_formats")}
                     <br/>
                     {move || t("common.auto_transform_ai")}
                 </div>
-            </Show>
-            
-            <Show
-                when=move || error.get().is_some()
-                fallback=|| view! { }
-            >
-                <div class="error-message">
-                    {move || error.get().unwrap_or_default()}
-                </div>
-            </Show>
-            
-            <input
-                type="file"
-                id="fileInput"
-                accept=".csv"
-                style="display:none"
-                on:change=on_file_change
-            />
-            
-            <Show
-                when=move || !is_uploading.get()
-                fallback=|| view! { }
-            >
+                
+                <Show
+                    when=move || error.get().is_some()
+                    fallback=|| view! { }
+                >
+                    <div class="error-message">
+                        {move || error.get().unwrap_or_default()}
+                    </div>
+                </Show>
+                
+                <input
+                    type="file"
+                    id="fileInput"
+                    accept=".csv"
+                    style="display:none"
+                    on:change=on_file_change
+                />
+                
                 <label for="fileInput" class="upload-button">
                     {move || t("common.choose_csv_file")}
                 </label>
-            </Show>
-        </div>
+            </div>
+        </Show>
+        
+        // FILE VALIDATION STAGE (file selected but not validated yet)
+        <Show
+            when=move || selected_file.get().is_some() && !is_uploading.get()
+            fallback=move || view! { <></> }
+        >
+            <div class="file-validation-section">
+                <div class="file-info-card">
+                    <div class="file-info-header">
+                        <span class="file-icon">📄</span>
+                        <div class="file-details">
+                            <div class="file-name">
+                                {move || selected_file.get().map(|f| f.name()).unwrap_or_default()}
+                            </div>
+                            <div class="file-size">
+                                {move || {
+                                    let size = selected_file_size.get();
+                                    if size < 1024 {
+                                        format!("{} bytes", size)
+                                    } else if size < 1024 * 1024 {
+                                        format!("{:.2} KB", size as f64 / 1024.0)
+                                    } else {
+                                        format!("{:.2} MB", size as f64 / (1024.0 * 1024.0))
+                                    }
+                                }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="file-validation-actions">
+                        <button class="btn btn-secondary" on:click=on_remove_file>
+                            {move || t("common.remove")}
+                        </button>
+                        <button class="btn btn-primary" on:click=on_validate_click>
+                            {move || t("common.validate")}
+                        </button>
+                    </div>
+                </div>
+                
+                <input
+                    type="file"
+                    id="fileInput"
+                    accept=".csv"
+                    style="display:none"
+                    on:change=on_file_change
+                />
+            </div>
+        </Show>
+        
+        // UPLOADING STATE
+        <Show
+            when=move || is_uploading.get()
+            fallback=move || view! { <></> }
+        >
+            <div class="upload-section uploading">
+                <div class="upload-icon"><IconUpload/></div>
+                <div class="upload-text">
+                    {move || t("upload.uploading")}
+                </div>
+            </div>
+        </Show>
         
         // Error Dialog
         <ErrorDialog

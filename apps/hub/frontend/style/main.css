@@ -572,6 +572,61 @@ h1 {
   color: var(--text-muted);
 }
 
+/* ===== FILE VALIDATION SECTION ===== */
+.file-validation-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 30px;
+}
+
+.file-info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.file-info-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.file-icon {
+  font-size: 32px;
+}
+
+.file-details {
+  flex: 1;
+}
+
+.file-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+  word-break: break-word;
+}
+
+.file-size {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.file-validation-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.file-validation-actions .btn {
+  min-width: 120px;
+}
+
 /* ===== PREVIEW SECTION ===== */
 .preview-section {
   display: none;
@@ -635,6 +690,19 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 15;  /* Au-dessus de la pagination (z-index: 5-10) */
+}
+
+/* S'assurer que les boutons du footer sont cliquables */
+.preview-footer .btn {
+  position: relative;
+  z-index: 16;
+  pointer-events: auto;
+}
+
+.preview-footer .btn:hover {
+  z-index: 17;  /* Au-dessus de tout au hover */
 }
 
 .preview-cost {

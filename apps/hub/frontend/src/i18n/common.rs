@@ -449,6 +449,26 @@ pub fn translate(key: &str, lang: Language) -> Option<&'static str> {
         "common.logs" => Some(logs(lang)),
         "common.clear" => Some(clear(lang)),
         
+        // File validation
+        "common.remove" => Some(match lang {
+            Language::English => "Remove",
+            Language::French => "Supprimer",
+            Language::Spanish => "Eliminar",
+            Language::German => "Entfernen",
+            Language::Japanese => "削除",
+            Language::Korean => "제거",
+            Language::Greek => "Αφαίρεση",
+        }),
+        "common.validate" => Some(match lang {
+            Language::English => "Validate",
+            Language::French => "Valider",
+            Language::Spanish => "Validar",
+            Language::German => "Validieren",
+            Language::Japanese => "検証",
+            Language::Korean => "검증",
+            Language::Greek => "Επικύρωση",
+        }),
+        
         _ => None,
     }
 }
