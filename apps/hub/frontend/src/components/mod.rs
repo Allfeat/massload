@@ -24,6 +24,7 @@ mod progress;
 mod footer;
 mod logs;
 mod wallet_modal;
+mod error_dialog;
 pub mod icons;
 pub mod musical_work_form_v2;
 
@@ -38,5 +39,6 @@ pub use progress::*;
 pub use footer::*;
 pub use logs::*;
 pub use wallet_modal::*;
+pub use error_dialog::*;
 pub use icons::*;
 

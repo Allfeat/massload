@@ -373,6 +373,67 @@ pub fn translate(key: &str, lang: Language) -> Option<&'static str> {
             Language::Greek => "⏳ Μεταφόρτωση και επεξεργασία...",
         }),
         
+        "upload.error_no_wallet_title" => Some(match lang {
+            Language::English => "Wallet Not Connected",
+            Language::French => "Wallet non connecté",
+            Language::Spanish => "Wallet no conectada",
+            Language::German => "Wallet nicht verbunden",
+            Language::Japanese => "ウォレット未接続",
+            Language::Korean => "지갑이 연결되지 않음",
+            Language::Greek => "Πορτοφόλι μη συνδεδεμένο",
+        }),
+        
+        "upload.error_no_wallet_message" => Some(match lang {
+            Language::English => "Please connect your wallet before uploading a CSV file. Click on \"Connect Wallet\" in the header.",
+            Language::French => "Veuillez connecter votre wallet avant de télécharger un fichier CSV. Cliquez sur \"Connecter Wallet\" dans l'en-tête.",
+            Language::Spanish => "Conecte su wallet antes de subir un archivo CSV. Haga clic en \"Conectar Wallet\" en el encabezado.",
+            Language::German => "Bitte verbinden Sie Ihre Wallet, bevor Sie eine CSV-Datei hochladen. Klicken Sie auf \"Wallet verbinden\" in der Kopfzeile.",
+            Language::Japanese => "CSVファイルをアップロードする前にウォレットを接続してください。ヘッダーの「ウォレット接続」をクリックしてください。",
+            Language::Korean => "CSV 파일을 업로드하기 전에 지갑을 연결하세요. 헤더의 \"지갑 연결\"을 클릭하세요.",
+            Language::Greek => "Συνδέστε το πορτοφόλι σας πριν ανεβάσετε ένα αρχείο CSV. Κάντε κλικ στο \"Σύνδεση Πορτοφολιού\" στην κεφαλίδα.",
+        }),
+        
+        "upload.error_file_too_large_title" => Some(match lang {
+            Language::English => "File Too Large",
+            Language::French => "Fichier trop volumineux",
+            Language::Spanish => "Archivo demasiado grande",
+            Language::German => "Datei zu groß",
+            Language::Japanese => "ファイルが大きすぎます",
+            Language::Korean => "파일이 너무 큼",
+            Language::Greek => "Αρχείο πολύ μεγάλο",
+        }),
+        
+        "upload.error_file_too_large_message" => Some(match lang {
+            Language::English => "The file is too large",
+            Language::French => "Le fichier est trop volumineux",
+            Language::Spanish => "El archivo es demasiado grande",
+            Language::German => "Die Datei ist zu groß",
+            Language::Japanese => "ファイルが大きすぎます",
+            Language::Korean => "파일이 너무 큽니다",
+            Language::Greek => "Το αρχείο είναι πολύ μεγάλο",
+        }),
+        
+        "upload.error_max_size" => Some(match lang {
+            Language::English => "Maximum size:",
+            Language::French => "Taille maximale :",
+            Language::Spanish => "Tamaño máximo:",
+            Language::German => "Maximale Größe:",
+            Language::Japanese => "最大サイズ:",
+            Language::Korean => "최대 크기:",
+            Language::Greek => "Μέγιστο μέγεθος:",
+        }),
+        
+        // Common buttons
+        "common.ok" => Some(match lang {
+            Language::English => "OK",
+            Language::French => "OK",
+            Language::Spanish => "OK",
+            Language::German => "OK",
+            Language::Japanese => "OK",
+            Language::Korean => "확인",
+            Language::Greek => "OK",
+        }),
+        
         // Hero section
         "common.title" => Some(title(lang)),
         "common.subtitle" => Some(subtitle(lang)),

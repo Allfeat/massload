@@ -29,7 +29,8 @@ pub fn MassloadPage(
                 when=move || logs.get().is_empty()
                 fallback=|| view! { }
             >
-                <UploadSection 
+                <UploadSection
+                    wallet_connected=wallet_connected
                     set_preview_data=set_preview_data
                     set_musical_works_json=set_musical_works_json
                     set_is_processing=set_is_processing 

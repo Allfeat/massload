@@ -8,10 +8,14 @@ use wasm_bindgen::JsCast;
 use crate::{PreviewItem, LogEntry, LogLevel};
 use crate::services::upload_csv;
 use crate::i18n::t;
+use crate::components::ErrorDialog;
 use allfeat_ui::components::IconUpload;
+
+const MAX_FILE_SIZE: u64 = 5 * 1024 * 1024; // 5 MB
 
 #[component]
 pub fn UploadSection(
+    wallet_connected: ReadSignal<bool>,
     set_preview_data: WriteSignal<Option<Vec<PreviewItem>>>,
     set_musical_works_json: WriteSignal<Option<serde_json::Value>>,
     set_is_processing: WriteSignal<bool>,
@@ -19,6 +23,11 @@ pub fn UploadSection(
 ) -> impl IntoView {
     let (is_uploading, set_is_uploading) = create_signal(false);
     let (error, set_error) = create_signal(None::<String>);
+    
+    // Error dialog state
+    let (show_error_dialog, set_show_error_dialog) = create_signal(false);
+    let (error_title, set_error_title) = create_signal(String::new());
+    let (error_message, set_error_message) = create_signal(String::new());
 
     // Handler pour le changement de fichier
     let on_file_change = move |ev: Event| {
@@ -27,6 +36,36 @@ pub fn UploadSection(
         if let Some(files) = input.files() {
             if files.length() > 0 {
                 if let Some(file) = files.get(0) {
+                    // 🔒 Vérifier que le wallet est connecté
+                    if !wallet_connected.get() {
+                        set_error_title.set(t("upload.error_no_wallet_title").to_string());
+                        set_error_message.set(t("upload.error_no_wallet_message").to_string());
+                        set_show_error_dialog.set(true);
+                        
+                        // Réinitialiser l'input pour permettre un nouveau drop
+                        input.set_value("");
+                        return;
+                    }
+                    
+                    // 📏 Vérifier la taille du fichier (5 MB max)
+                    let file_size = file.size() as u64;
+                    if file_size > MAX_FILE_SIZE {
+                        let size_mb = file_size as f64 / (1024.0 * 1024.0);
+                        set_error_title.set(t("upload.error_file_too_large_title").to_string());
+                        set_error_message.set(
+                            format!("{} ({:.2} MB). {} 5 MB.", 
+                                t("upload.error_file_too_large_message"),
+                                size_mb,
+                                t("upload.error_max_size")
+                            )
+                        );
+                        set_show_error_dialog.set(true);
+                        
+                        // Réinitialiser l'input
+                        input.set_value("");
+                        return;
+                    }
+                    
                     // Réinitialiser l'état
                     set_error.set(None);
                     set_preview_data.set(None);
@@ -188,6 +227,14 @@ pub fn UploadSection(
                 </label>
             </Show>
         </div>
+        
+        // Error Dialog
+        <ErrorDialog
+            show=show_error_dialog.into()
+            title=error_title.into()
+            message=error_message.into()
+            on_close=Box::new(move || set_show_error_dialog.set(false))
+        />
     }
 }
 
