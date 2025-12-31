@@ -9,6 +9,7 @@ use crate::services::wallet::PolkadotWallet;
 use crate::services::blockchain::get_wallet_balance;
 use crate::i18n::{Language, t, use_language, use_set_language};
 use crate::components::wallet_modal::{WalletModal, WalletType};
+use crate::network::{Network, use_network, use_set_network};
 
 /// Light theme logo path (dark text, for light backgrounds)
 const LOGO_DARK_PATH: &str = "/public/logo-dark.png";
@@ -27,6 +28,10 @@ pub fn Header(
     let lang = use_language();
     let set_lang = use_set_language();
     
+    // Get network context
+    let network = use_network();
+    let set_network = use_set_network();
+    
     // Get global theme state from allfeat-ui
     let theme_state = use_theme();
     
@@ -34,6 +39,8 @@ pub fn Header(
     let (balance, set_balance) = create_signal(None::<String>);
     // Language dropdown state
     let (lang_dropdown_open, set_lang_dropdown_open) = create_signal(false);
+    // Network dropdown state
+    let (network_dropdown_open, set_network_dropdown_open) = create_signal(false);
     // Wallet modal state
     let (wallet_modal_open, set_wallet_modal_open) = create_signal(false);
     
@@ -51,6 +58,17 @@ pub fn Header(
     let select_language = move |new_lang: Language| {
         set_lang.set(new_lang);
         set_lang_dropdown_open.set(false);
+    };
+    
+    // Toggle network dropdown
+    let toggle_network_dropdown = move |_| {
+        set_network_dropdown_open.update(|open| *open = !*open);
+    };
+    
+    // Select network
+    let select_network = move |new_network: Network| {
+        set_network.set(new_network);
+        set_network_dropdown_open.set(false);
     };
     
     // Handler pour ouvrir la modal de wallet
@@ -126,6 +144,38 @@ pub fn Header(
                         }
                     }}
                 </span>
+                
+                // Network selector with dropdown
+                <div class="network-selector-container">
+                    <button 
+                        class="network-selector"
+                        on:click=toggle_network_dropdown
+                    >
+                        <span class="network-indicator" class:devnet=move || network.get() == Network::Devnet class:melodie=move || network.get() == Network::Melodie></span>
+                        <span class="network-text">{move || network.get().name()}</span>
+                    </button>
+                    
+                    // Dropdown menu
+                    <Show when=move || network_dropdown_open.get()>
+                        <div class="network-dropdown">
+                            {Network::all().iter().map(|&n| {
+                                view! {
+                                    <button 
+                                        class="network-option"
+                                        class:active=move || network.get() == n
+                                        on:click=move |_| select_network(n)
+                                    >
+                                        <div class="network-option-header">
+                                            <span class="network-indicator" class:devnet=n == Network::Devnet class:melodie=n == Network::Melodie></span>
+                                            <span class="network-name">{n.name()}</span>
+                                        </div>
+                                        <span class="network-url">{n.rpc_url()}</span>
+                                    </button>
+                                }
+                            }).collect_view()}
+                        </div>
+                    </Show>
+                </div>
                 
                 // Language selector with dropdown
                 <div class="lang-selector-container">

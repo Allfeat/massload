@@ -50,14 +50,14 @@ pub fn RegisterPage() -> impl IntoView {
                             <span class="card-icon"><IconMusic/></span>
                             <span class="card-label">{move || t("register.musical_work.title")}</span>
                         </A>
-                        <A href="/register-recording" class="midds-card">
+                        <a href="https://register.allfeat.org/fr/recording" target="_blank" class="midds-card">
                             <span class="card-icon"><IconMic/></span>
                             <span class="card-label">{move || t("register.recording.title")}</span>
-                        </A>
-                        <A href="/register-release" class="midds-card">
+                        </a>
+                        <a href="https://register.allfeat.org/fr/release" target="_blank" class="midds-card">
                             <span class="card-icon"><IconDisc/></span>
                             <span class="card-label">{move || t("register.release.title")}</span>
-                        </A>
+                        </a>
                     </div>
                 </div>
             </div>

@@ -7,8 +7,8 @@ use leptos::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
 pub enum Language {
     #[default]
-    French,
     English,
+    French,
     Spanish,
     German,
     Japanese,

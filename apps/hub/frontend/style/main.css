@@ -8,28 +8,35 @@
 }
 
 :root {
-  /* Official Allfeat Brand Colors - Matching protect.allfeat.org */
-  --color-primary: #1BA794;  /* Allfeat Teal (protect.allfeat.org) */
-  --color-primary-hover: #17957e;
-  --color-primary-light: rgba(27, 167, 148, 0.1);
+  /* Official Allfeat Brand Colors - Matching allfeat.org */
+  --color-primary: #00DFC1;  /* Bright Allfeat Teal (allfeat.org) */
+  --color-primary-hover: #00F9D9;
+  --color-primary-light: rgba(0, 223, 193, 0.1);
   
-  --color-accent: #FF4A5F;  /* Allfeat Red for accents/borders */
-  --color-accent-hover: #ff3349;
-  --color-accent-light: rgba(255, 74, 95, 0.1);
+  --color-accent: #FF3366;  /* Allfeat Red/Pink for accents */
+  --color-accent-hover: #ff4a7a;
+  --color-accent-light: rgba(255, 51, 102, 0.1);
   
-  /* Dark theme (default) */
-  --bg-primary: #0A0A0A;
+  --color-burgundy: #6B3437;  /* Burgundy for special sections */
+  
+  /* Dark theme (default) - Gradient background with softer transitions */
+  --bg-primary: #000000;
+  --bg-gradient-start: #2A5555;  /* Teal plus clair */
+  --bg-gradient-mid-1: #1A3D3D;  /* Teal moyen */
+  --bg-gradient-mid-2: #0F2626;  /* Teal foncé */
+  --bg-gradient-mid-3: #0A0A0A;  /* Presque noir */
+  --bg-gradient-end: #000000;
   --bg-secondary: #111111;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --bg-card-hover: rgba(255, 255, 255, 0.05);
-  --border-color: #262626;
-  --border-color-hover: #333333;
-  --text-primary: #FAFAFA;
+  --bg-card: rgba(26, 77, 77, 0.3);
+  --bg-card-hover: rgba(26, 77, 77, 0.5);
+  --border-color: rgba(0, 223, 193, 0.2);
+  --border-color-hover: rgba(0, 223, 193, 0.4);
+  --text-primary: #FFFBEB;  /* Warmer white like allfeat.org */
   --text-secondary: #D6D8DC;
   --text-muted: #999999;
   --footer-bg: #0A0A0A;
   --header-bg: #0A0A0A;  /* Dark header in dark mode */
-  --header-border: #262626;
+  --header-border: rgba(0, 223, 193, 0.1);
 }
 
 /* Light theme - Matching protect.allfeat.org */
@@ -238,6 +245,137 @@ header {
 
 .lang-option .lang-flag {
   font-size: 16px;
+}
+
+/* Network selector (blockchain RPC) - Design sobre et élégant */
+.network-selector-container {
+  position: relative;
+}
+
+.network-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.network-selector:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--color-primary);
+}
+
+/* Indicateur de statut réseau - point de couleur */
+.network-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.2s;
+  background: #6B7280; /* Gris par défaut (non connecté) */
+}
+
+.network-indicator.devnet,
+.network-indicator.melodie {
+  background: #10B981; /* Vert - Connecté */
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+  animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.network-text {
+  font-size: 13px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+/* Network dropdown menu */
+.network-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 280px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  z-index: 200;
+  animation: dropdown-appear 0.15s ease-out;
+}
+
+.network-option {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 12px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+
+.network-option:hover {
+  background: var(--bg-card-hover);
+  transform: translateX(2px);
+}
+
+.network-option.active {
+  background: rgba(30, 215, 195, 0.1);
+  border-left: 3px solid var(--color-primary);
+  padding-left: 11px;
+}
+
+.network-option-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.network-name {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.network-url {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+  padding-left: 18px;
+  opacity: 0.7;
+}
+
+.network-option.active .network-name {
+  color: var(--color-primary);
+}
+
+.network-option.active .network-url {
+  color: var(--color-primary);
+  opacity: 0.8;
 }
 
 .header-right {
@@ -1166,6 +1304,8 @@ footer {
   margin-bottom: 15px;
   gap: 15px;
   flex-wrap: wrap;
+  position: relative;    /* Pour le z-index */
+  z-index: 5;            /* Au-dessus du contenu principal */
 }
 
 .pagination-top {
@@ -1219,6 +1359,10 @@ footer {
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
+  pointer-events: auto;  /* Assurer que les boutons sont cliquables */
+  position: relative;    /* S'assurer qu'ils sont au bon niveau de z-index */
+  z-index: 10;          /* Au-dessus des autres éléments */
+  white-space: nowrap;   /* Éviter le wrapping du texte */
 }
 
 .btn-pagination:hover:not(:disabled) {
@@ -1230,6 +1374,7 @@ footer {
 .btn-pagination:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+  pointer-events: none;  /* Désactiver vraiment les clics sur les boutons disabled */
 }
 
 /* ===== PREVIEW ITEM NUMBERING ===== */

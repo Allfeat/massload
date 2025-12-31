@@ -37,6 +37,7 @@ use wasm_bindgen::prelude::*;
 
 pub mod config;
 pub mod i18n;
+pub mod network;
 pub mod types;
 pub mod components;
 pub mod pages;
@@ -104,6 +105,9 @@ pub fn App() -> impl IntoView {
     
     // Initialize theme context (from allfeat-ui)
     allfeat_ui::provide_theme_context();
+    
+    // Initialize network context (blockchain RPC selector)
+    network::provide_network_context();
     
     // Global wallet state (shared across all pages)
     let (wallet_connected, set_wallet_connected) = create_signal(false);

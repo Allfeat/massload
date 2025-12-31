@@ -115,13 +115,6 @@ pub fn Sidebar() -> impl IntoView {
                     </a>
                 </div>
             </nav>
-            
-            <div class="sidebar-footer">
-                <div class="network-status">
-                    <span class="status-dot online"></span>
-                    <span class="status-text">{move || t("network.melodie_testnet")}</span>
-                </div>
-            </div>
         </aside>
     }
 }

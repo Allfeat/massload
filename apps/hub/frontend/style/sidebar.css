@@ -194,38 +194,155 @@
 /* ===== HOME PAGE ===== */
 
 .home-page {
-    padding: 40px;
+    padding: 0 40px 40px 40px; /* Pas de padding top */
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .home-hero {
     text-align: center;
-    margin-bottom: 60px;
-    padding: 40px 20px;
+    margin-bottom: 0;
+    padding: 80px 20px 40px; /* Réduit le padding bottom de 60px à 40px */
+    position: relative;
+    /* Prendre la largeur sans empiéter sur sidebar */
+    margin-left: -40px;
+    margin-right: -40px;
+    padding-left: 40px;
+    padding-right: 40px;
+    /* Gradient avec teal dans tous les coins (dark mode) */
+    background: 
+        radial-gradient(ellipse at top left, rgba(0, 223, 193, 0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at top right, rgba(0, 223, 193, 0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, rgba(0, 223, 193, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(0, 223, 193, 0.2) 0%, transparent 50%),
+        linear-gradient(
+            180deg, 
+            #00DFC1 0%,           /* Teal/Cyan très lumineux en haut */
+            #00BFA5 15%,          /* Teal lumineux */
+            #008B7A 30%,          /* Teal moyen */
+            #006B5E 45%,          /* Teal foncé */
+            #004D45 60%,          /* Teal très foncé */
+            #002D28 75%,          /* Presque noir avec nuance teal */
+            #001A18 85%,          /* Noir teinté */
+            #000000 100%          /* Noir pur */
+        );
+}
+
+/* Light mode - Gradient sobre et doux */
+[data-theme="light"] .home-hero {
+    background: 
+        radial-gradient(ellipse at top left, rgba(0, 223, 193, 0.15) 0%, transparent 40%),
+        radial-gradient(ellipse at top right, rgba(0, 223, 193, 0.15) 0%, transparent 40%),
+        linear-gradient(
+            180deg,
+            #E0F7F3 0%,           /* Teal très très clair */
+            #C8F2E9 20%,          /* Teal ultra clair */
+            #B8EDE4 40%,          /* Teal clair doux */
+            #D5D5D5 70%,          /* Gris clair */
+            #E8E8E8 100%          /* Gris neutre (bg-primary light) */
+        );
 }
 
 .home-title {
-    font-size: 2.8rem;
-    font-weight: 700;
-    margin-bottom: 16px;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--color-primary) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    text-shadow: 0 4px 16px rgba(0, 223, 193, 0.3);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
 }
 
 .home-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
 }
 
-/* Feature Cards */
+/* Hero Stats - Social Proof (fade to black on edges) */
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 48px;
+    padding: 32px 48px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 223, 193, 0.02) 10%,
+        rgba(0, 223, 193, 0.05) 20%,
+        rgba(0, 223, 193, 0.05) 80%,
+        rgba(0, 223, 193, 0.02) 90%,
+        transparent 100%
+    );
+    border: none;
+    border-top: 1px solid rgba(0, 223, 193, 0.15);
+    border-bottom: 1px solid rgba(0, 223, 193, 0.15);
+    border-radius: 0;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+/* Effet de bordure dégradée ultra-douce sur les côtés */
+.hero-stats::before,
+.hero-stats::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 10%,
+        rgba(0, 223, 193, 0.1) 30%,
+        rgba(0, 223, 193, 0.15) 50%,
+        rgba(0, 223, 193, 0.1) 70%,
+        transparent 90%,
+        transparent 100%
+    );
+}
+
+.hero-stats::before {
+    left: 0;
+}
+
+.hero-stats::after {
+    right: 0;
+}
+
+.hero-stat {
+    text-align: center;
+    flex: 1;
+}
+
+.hero-stat-value {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    text-shadow: 0 4px 16px rgba(0, 223, 193, 0.4);
+    margin-bottom: 8px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.hero-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+}
+
+/* Feature Cards - Rapprochées du hero */
 .feature-cards {
     display: grid;
     gap: 20px;
+    margin-top: 20px;  /* Réduit de 60px à 20px pour rapprocher du hero */
     margin-bottom: 60px;
 }
 
@@ -233,19 +350,21 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    padding: 24px 28px;
+    padding: 28px 32px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
+    border-radius: 20px;
     text-decoration: none;
     color: var(--text-primary);
     transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .feature-card:hover {
     background: var(--bg-card-hover);
     border-color: var(--color-primary);
-    transform: translateX(4px);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 223, 193, 0.25);
 }
 
 .feature-icon {
@@ -276,21 +395,24 @@
 }
 
 .feature-badge {
-    font-size: 0.65rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 24px;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .feature-badge.live {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
+    background: var(--color-primary);
+    color: #000000;
+    box-shadow: 0 4px 12px rgba(0, 223, 193, 0.4);
 }
 
 .feature-badge.soon {
-    background: rgba(234, 179, 8, 0.15);
-    color: #eab308;
+    background: #EAB308;
+    color: #000000;
+    box-shadow: 0 4px 12px rgba(234, 179, 8, 0.4);
 }
 
 .feature-description {
