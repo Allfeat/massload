@@ -596,8 +596,20 @@ h1 {
   border-radius: 12px;
 }
 
-.file-icon {
-  font-size: 32px;
+.file-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--color-primary-light);
+  border-radius: 8px;
+  color: var(--color-primary);
+}
+
+.file-icon-box svg {
+  width: 32px;
+  height: 32px;
 }
 
 .file-details {

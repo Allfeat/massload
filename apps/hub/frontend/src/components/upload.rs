@@ -260,7 +260,12 @@ pub fn UploadSection(
             <div class="file-validation-section">
                 <div class="file-info-card">
                     <div class="file-info-header">
-                        <span class="file-icon">📄</span>
+                        <div class="file-icon-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                        </div>
                         <div class="file-details">
                             <div class="file-name">
                                 {move || selected_file.get().map(|f| f.name()).unwrap_or_default()}
