@@ -230,10 +230,10 @@ pub fn UploadSection(
         
         // Error Dialog
         <ErrorDialog
-            show=show_error_dialog.into()
-            title=error_title.into()
-            message=error_message.into()
-            on_close=Box::new(move || set_show_error_dialog.set(false))
+            show=show_error_dialog
+            title=error_title
+            message=error_message
+            on_close=set_show_error_dialog
         />
     }
 }
