@@ -19,6 +19,9 @@
   
   --color-burgundy: #6B3437;  /* Burgundy for special sections */
   
+  /* Button text colors */
+  --btn-primary-text: #FFFFFF;  /* White text on colored buttons (dark mode) */
+  
   /* Dark theme (default) - Gradient background with softer transitions */
   --bg-primary: #000000;
   --bg-gradient-start: #2A5555;  /* Teal plus clair */
@@ -45,6 +48,9 @@
   --color-primary: #1B9B87;  /* hsl(172, 72%, 38%) - Teal foncé officiel */
   --color-primary-hover: #22B39E;  /* 10% plus clair */
   --color-primary-light: rgba(27, 155, 135, 0.1);
+  
+  /* Button text colors - White text on colored buttons */
+  --btn-primary-text: #FFFFFF;
   
   --color-accent: #F87171;  /* Destructive color from register */
   --color-accent-hover: #EF4444;
@@ -474,13 +480,14 @@ header {
 
 .btn-primary {
   background: var(--color-primary);
-  color: #FAFAFA;
+  color: var(--btn-primary-text);
   border-color: var(--color-primary);
 }
 
 .btn-primary:hover {
   background: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
+  color: var(--btn-primary-text);
   transform: translateY(-1px);
 }
 
