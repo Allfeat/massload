@@ -1788,6 +1788,64 @@ footer {
   min-width: 120px;
 }
 
+/* Modal close button (X in top right corner) */
+.modal-close-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.modal-close-button:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+.modal-close-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Confirmation modal styles */
+.confirmation-modal {
+  position: relative;
+  text-align: center;
+}
+
+.confirmation-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.confirmation-message {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.wallet-connect-btn {
+  min-width: 200px;
+}
+
 /* Responsive modal */
 @media (max-width: 768px) {
   .modal-content {
