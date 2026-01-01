@@ -63,21 +63,21 @@ pub fn UploadSection(
             WalletType::PolkadotJs => "polkadot-js",
         };
         
-        log::info!("🔑 Attempting to connect {}...", wallet_key);
+        log::info!("Attempting to connect {}...", wallet_key);
         
         spawn_local(async move {
             match PolkadotWallet::connect_specific(wallet_key).await {
                 Ok(account) => {
-                    log::info!("✅ Wallet connected: {}", account.address);
+                    log::info!("Wallet connected: {}", account.address);
                     set_wallet_connected.set(true);
                     set_wallet_address.set(Some(account.address.clone()));
                     
                     // Log success
-                    add_log(set_logs, LogLevel::Success, &format!("✅ Wallet connected: {}", account.address));
+                    add_log(set_logs, LogLevel::Success, &format!("Wallet connected: {}", account.address));
                 }
                 Err(e) => {
-                    log::error!("❌ Wallet connection failed: {}", e);
-                    add_log(set_logs, LogLevel::Error, &format!("❌ Wallet connection failed: {}", e));
+                    log::error!("Wallet connection failed: {}", e);
+                    add_log(set_logs, LogLevel::Error, &format!("Wallet connection failed: {}", e));
                 }
             }
         });
@@ -86,6 +86,21 @@ pub fn UploadSection(
     // Handler pour fermer la modal de wallet
     let on_wallet_modal_close = Callback::new(move |_| {
         set_wallet_modal_open.set(false);
+    });
+
+    // Effet pour lancer automatiquement l'upload quand le wallet se connecte
+    // et qu'un fichier est sélectionné (waiting for validation)
+    create_effect(move |_| {
+        // Si wallet vient de se connecter ET qu'un fichier est en attente
+        if wallet_connected.get() && selected_file.get().is_some() {
+            // Vérifier qu'on n'est pas déjà en train d'uploader
+            if !is_uploading.get() {
+                // Simuler un clic sur le bouton "Valider"
+                on_validate_click(());
+                // Effacer le fichier sélectionné pour éviter les uploads multiples
+                set_selected_file.set(None);
+            }
+        }
     });
 
     // Handler pour le changement de fichier (ne lance PAS l'upload)
@@ -143,7 +158,7 @@ pub fn UploadSection(
                 set_is_processing.set(true);
                 
                 // Log de début
-                add_log(set_logs, LogLevel::Info, "📤 Uploading CSV file...");
+                add_log(set_logs, LogLevel::Info, "Uploading CSV file...");
                         
                         // Upload (using relative path for unified server)
                         match upload_csv(file.clone()).await {
@@ -151,7 +166,7 @@ pub fn UploadSection(
                                 add_log(
                                     set_logs,
                                     LogLevel::Success,
-                                    &format!("✅ Upload successful! {} works found", response.metadata.total_works),
+                                    &format!("Upload successful! {} works found", response.metadata.total_works),
                                 );
                                 
                                 if response.metadata.cached {
@@ -159,14 +174,14 @@ pub fn UploadSection(
                                     add_log(
                                         set_logs,
                                         LogLevel::Info,
-                                        &format!("♻️  Used cached transformation matrix: {}", id),
+                                        &format!("Used cached transformation matrix: {}", id),
                                     );
                                 } else {
                                     let id = response.metadata.matrix_id.as_deref().unwrap_or("new");
                                     add_log(
                                         set_logs,
                                         LogLevel::Info,
-                                        &format!("🤖 AI generated new transformation matrix: {}", id),
+                                        &format!("AI generated new transformation matrix: {}", id),
                                     );
                                 }
                                 
@@ -210,11 +225,11 @@ pub fn UploadSection(
                                 add_log(
                                     set_logs,
                                     LogLevel::Success,
-                                    &format!("🎵 Estimated cost: {}", response.metadata.estimated_cost),
+                                    &format!("Estimated cost: {}", response.metadata.estimated_cost),
                                 );
                             }
                             Err(e) => {
-                                add_log(set_logs, LogLevel::Error, &format!("❌ Upload failed: {}", e));
+                                add_log(set_logs, LogLevel::Error, &format!("Upload failed: {}", e));
                                 set_error.set(Some(e));
                             }
                         }
