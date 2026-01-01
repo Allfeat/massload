@@ -39,18 +39,27 @@
   --header-border: rgba(0, 223, 193, 0.1);
 }
 
-/* Light theme - Matching protect.allfeat.org */
+/* Light theme - Matching register.allfeat.org */
 [data-theme="light"] {
-  --bg-primary: #E8E8E8;  /* Neutral grey like protect.allfeat.org */
-  --bg-secondary: #FFFFFF;
+  /* Couleurs officielles de register.allfeat.org en light mode */
+  --color-primary: #1B9B87;  /* hsl(172, 72%, 38%) - Teal foncé officiel */
+  --color-primary-hover: #22B39E;  /* 10% plus clair */
+  --color-primary-light: rgba(27, 155, 135, 0.1);
+  
+  --color-accent: #F87171;  /* Destructive color from register */
+  --color-accent-hover: #EF4444;
+  --color-accent-light: rgba(248, 113, 113, 0.1);
+  
+  --bg-primary: #FFFFFF;  /* Blanc pur comme register */
+  --bg-secondary: #F9F9F9;  /* Très léger gris */
   --bg-card: #FFFFFF;
-  --bg-card-hover: #F5F5F5;
-  --border-color: #E5E5E5;
+  --bg-card-hover: #F5F5F5;  /* hsl(0, 0%, 96.1%) */
+  --border-color: #E5E5E5;  /* hsl(0, 0%, 89.8%) - Border officiel */
   --border-color-hover: #D4D4D4;
-  --text-primary: #151515;  /* Allfeat Dark Grey */
+  --text-primary: #0A0A0A;  /* hsl(0, 0%, 3.9%) - Foreground officiel */
   --text-secondary: #525252;
-  --text-muted: #888888;  /* Allfeat Grey */
-  --footer-bg: #E8E8E8;
+  --text-muted: #6D7280;  /* hsl(220, 8%, 46%) - Muted officiel */
+  --footer-bg: #F9F9F9;
   --header-bg: #FFFFFF;  /* White header in light mode */
   --header-border: #E5E5E5;
 }
