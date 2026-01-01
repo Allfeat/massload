@@ -706,11 +706,12 @@
 
 .btn-primary {
     background: var(--color-primary);
-    color: white;
+    color: var(--btn-primary-text, white);
 }
 
 .btn-primary:hover {
-    background: var(--color-primary-dark);
+    background: var(--color-primary-hover);
+    color: var(--btn-primary-text, white);
 }
 
 .btn-outline {

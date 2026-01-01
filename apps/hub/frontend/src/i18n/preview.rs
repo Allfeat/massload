@@ -196,13 +196,13 @@ pub fn translate(key: &str, lang: Language) -> Option<&'static str> {
         }),
         
         "preview.register_on_chain" => Some(match lang {
-            Language::English => "Register on Chain",
-            Language::French => "Enregistrer sur la Blockchain",
-            Language::Spanish => "Registrar en Cadena",
-            Language::German => "Auf Chain Registrieren",
-            Language::Japanese => "チェーンに登録",
-            Language::Korean => "체인에 등록",
-            Language::Greek => "Εγγραφή στο Chain",
+            Language::English => "Submit to Blockchain",
+            Language::French => "Soumettre à la blockchain",
+            Language::Spanish => "Enviar a la Blockchain",
+            Language::German => "An Blockchain Übermitteln",
+            Language::Japanese => "ブロックチェーンに提出",
+            Language::Korean => "블록체인에 제출",
+            Language::Greek => "Υποβολή στο Blockchain",
         }),
         
         "preview.invalid_work_data" => Some(match lang {

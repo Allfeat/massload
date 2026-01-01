@@ -249,14 +249,14 @@ pub fn PreviewSection(
                     <button 
                         class="btn-pagination"
                         on:click=on_prev_page
-                        disabled=move || current_page.get() <= 1
+                        disabled=move || { current_page.get() <= 1 }
                     >
                         "◀ " {move || t("preview.previous")}
                     </button>
                     <button 
                         class="btn-pagination"
                         on:click=on_next_page
-                        disabled=move || current_page.get() >= total_pages()
+                        disabled=move || { current_page.get() >= total_pages() }
                     >
                         {move || t("preview.next")} " ▶"
                     </button>
@@ -266,10 +266,12 @@ pub fn PreviewSection(
             <div id="previewContent">
                 <div class="preview-list" id="previewList">
                     <For
-                        each=move || paginated_data().into_iter().enumerate()
-                        key=|(idx, _)| *idx
-                        children=move |(idx, item)| {
-                            let global_idx = start_index() + idx;
+                        each=move || {
+                            let start = start_index();
+                            paginated_data().into_iter().enumerate().map(move |(idx, item)| (start + idx, item)).collect::<Vec<_>>()
+                        }
+                        key=|(global_idx, _)| *global_idx
+                        children=move |(global_idx, item)| {
                             let is_expanded = move || expanded_index.get() == Some(global_idx);
                             
                             let toggle_expand = move |_| {
@@ -341,14 +343,14 @@ pub fn PreviewSection(
                     <button 
                         class="btn-pagination"
                         on:click=on_prev_page
-                        disabled=move || current_page.get() <= 1
+                        disabled=move || { current_page.get() <= 1 }
                     >
                         "◀ " {move || t("preview.previous")}
                     </button>
                     <button 
                         class="btn-pagination"
                         on:click=on_next_page
-                        disabled=move || current_page.get() >= total_pages()
+                        disabled=move || { current_page.get() >= total_pages() }
                     >
                         {move || t("preview.next")} " ▶"
                     </button>

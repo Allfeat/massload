@@ -88,21 +88,6 @@ pub fn UploadSection(
         set_wallet_modal_open.set(false);
     });
 
-    // Effet pour lancer automatiquement l'upload quand le wallet se connecte
-    // et qu'un fichier est sélectionné (waiting for validation)
-    create_effect(move |_| {
-        // Si wallet vient de se connecter ET qu'un fichier est en attente
-        if wallet_connected.get() && selected_file.get().is_some() {
-            // Vérifier qu'on n'est pas déjà en train d'uploader
-            if !is_uploading.get() {
-                // Simuler un clic sur le bouton "Valider"
-                on_validate_click(());
-                // Effacer le fichier sélectionné pour éviter les uploads multiples
-                set_selected_file.set(None);
-            }
-        }
-    });
-
     // Handler pour le changement de fichier (ne lance PAS l'upload)
     let on_file_change = move |ev: Event| {
         let input: HtmlInputElement = event_target(&ev);
@@ -138,8 +123,8 @@ pub fn UploadSection(
         }
     };
     
-    // Handler pour valider et uploader le fichier
-    let on_validate_click = move |_| {
+    // Fonction helper pour exécuter la validation et l'upload
+    let do_validate_and_upload = move || {
         if let Some(file) = selected_file.get() {
             // 🔒 Vérifier que le wallet est connecté AVANT l'upload
             if !wallet_connected.get() {
@@ -244,6 +229,11 @@ pub fn UploadSection(
         }
     };
     
+    // Handler pour le bouton de validation (event handler)
+    let on_validate_click = move |_ev| {
+        do_validate_and_upload();
+    };
+    
     // Handler pour supprimer le fichier sélectionné
     let on_remove_file = move |_| {
         set_selected_file.set(None);
@@ -261,6 +251,19 @@ pub fn UploadSection(
             }
         }
     };
+    
+    // Effet pour lancer automatiquement l'upload quand le wallet se connecte
+    // et qu'un fichier est sélectionné (waiting for validation)
+    create_effect(move |_| {
+        // Si wallet vient de se connecter ET qu'un fichier est en attente
+        if wallet_connected.get() && selected_file.get().is_some() {
+            // Vérifier qu'on n'est pas déjà en train d'uploader
+            if !is_uploading.get() {
+                // Déclencher la validation et l'upload
+                do_validate_and_upload();
+            }
+        }
+    });
     
     // Handler pour drag over (empêcher le comportement par défaut)
     let on_drag_over = move |ev: DragEvent| {
