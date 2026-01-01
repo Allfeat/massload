@@ -25,6 +25,7 @@ mod footer;
 mod logs;
 mod wallet_modal;
 mod error_dialog;
+mod wallet_required_dialog;
 pub mod icons;
 pub mod musical_work_form_v2;
 
@@ -40,5 +41,6 @@ pub use footer::*;
 pub use logs::*;
 pub use wallet_modal::*;
 pub use error_dialog::*;
+pub use wallet_required_dialog::*;
 pub use icons::*;
 

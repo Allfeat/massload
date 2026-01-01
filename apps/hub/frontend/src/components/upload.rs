@@ -3,19 +3,23 @@
 //! Handles file selection, upload to backend, and result parsing.
 
 use leptos::*;
+use leptos::ev::DragEvent;
 use web_sys::{Event, HtmlInputElement};
 use wasm_bindgen::JsCast;
 use crate::{PreviewItem, LogEntry, LogLevel};
 use crate::services::upload_csv;
 use crate::i18n::t;
-use crate::components::ErrorDialog;
+use crate::components::{ErrorDialog, WalletRequiredDialog, WalletModal, WalletType};
 use allfeat_ui::components::IconUpload;
+use crate::services::wallet::PolkadotWallet;
 
 const MAX_FILE_SIZE: u64 = 5 * 1024 * 1024; // 5 MB
 
 #[component]
 pub fn UploadSection(
     wallet_connected: ReadSignal<bool>,
+    set_wallet_connected: WriteSignal<bool>,
+    set_wallet_address: WriteSignal<Option<String>>,
     set_preview_data: WriteSignal<Option<Vec<PreviewItem>>>,
     set_musical_works_json: WriteSignal<Option<serde_json::Value>>,
     set_is_processing: WriteSignal<bool>,
@@ -28,10 +32,61 @@ pub fn UploadSection(
     let (selected_file, set_selected_file) = create_signal(None::<web_sys::File>);
     let (selected_file_size, set_selected_file_size) = create_signal(0u64);
     
-    // Error dialog state
+    // Error dialog state (for file size errors)
     let (show_error_dialog, set_show_error_dialog) = create_signal(false);
     let (error_title, set_error_title) = create_signal(String::new());
     let (error_message, set_error_message) = create_signal(String::new());
+    
+    // Wallet required dialog state
+    let (show_wallet_required_dialog, set_show_wallet_required_dialog) = create_signal(false);
+    
+    // Wallet modal state
+    let (wallet_modal_open, set_wallet_modal_open) = create_signal(false);
+
+    // Handler pour ouvrir la wallet modal depuis le dialog de confirmation
+    let on_connect_wallet_click = Callback::new(move |_| {
+        set_wallet_modal_open.set(true);
+    });
+
+    // Handler pour fermer le wallet required dialog
+    let on_wallet_required_close = Callback::new(move |_| {
+        set_show_wallet_required_dialog.set(false);
+    });
+
+    // Handler pour la sélection d'un wallet
+    let on_wallet_select = Callback::new(move |wallet_type: WalletType| {
+        set_wallet_modal_open.set(false);
+        
+        let wallet_key = match wallet_type {
+            WalletType::SubWallet => "subwallet-js",
+            WalletType::Talisman => "talisman",
+            WalletType::PolkadotJs => "polkadot-js",
+        };
+        
+        log::info!("🔑 Attempting to connect {}...", wallet_key);
+        
+        spawn_local(async move {
+            match PolkadotWallet::connect_specific(wallet_key).await {
+                Ok(account) => {
+                    log::info!("✅ Wallet connected: {}", account.address);
+                    set_wallet_connected.set(true);
+                    set_wallet_address.set(Some(account.address.clone()));
+                    
+                    // Log success
+                    add_log(set_logs, LogLevel::Success, &format!("✅ Wallet connected: {}", account.address));
+                }
+                Err(e) => {
+                    log::error!("❌ Wallet connection failed: {}", e);
+                    add_log(set_logs, LogLevel::Error, &format!("❌ Wallet connection failed: {}", e));
+                }
+            }
+        });
+    });
+
+    // Handler pour fermer la modal de wallet
+    let on_wallet_modal_close = Callback::new(move |_| {
+        set_wallet_modal_open.set(false);
+    });
 
     // Handler pour le changement de fichier (ne lance PAS l'upload)
     let on_file_change = move |ev: Event| {
@@ -73,9 +128,7 @@ pub fn UploadSection(
         if let Some(file) = selected_file.get() {
             // 🔒 Vérifier que le wallet est connecté AVANT l'upload
             if !wallet_connected.get() {
-                set_error_title.set(t("upload.error_no_wallet_title").to_string());
-                set_error_message.set(t("upload.error_no_wallet_message").to_string());
-                set_show_error_dialog.set(true);
+                set_show_wallet_required_dialog.set(true);
                 return;
             }
             
@@ -193,6 +246,59 @@ pub fn UploadSection(
             }
         }
     };
+    
+    // Handler pour drag over (empêcher le comportement par défaut)
+    let on_drag_over = move |ev: DragEvent| {
+        ev.prevent_default();
+    };
+    
+    // Handler pour drag enter (optionnel - pour style visuel)
+    let on_drag_enter = move |ev: DragEvent| {
+        ev.prevent_default();
+    };
+    
+    // Handler pour drag leave (optionnel - pour style visuel)
+    let on_drag_leave = move |ev: DragEvent| {
+        ev.prevent_default();
+    };
+    
+    // Handler pour drop (déposer le fichier)
+    let on_drop = move |ev: DragEvent| {
+        ev.prevent_default();
+        
+        // Caster l'événement Leptos vers web_sys::DragEvent
+        let native_event: &web_sys::Event = ev.as_ref();
+        if let Ok(drag_event) = native_event.dyn_ref::<web_sys::DragEvent>().ok_or(()) {
+            if let Some(data_transfer) = drag_event.data_transfer() {
+                if let Some(files) = data_transfer.files() {
+                    if files.length() > 0 {
+                        if let Some(file) = files.get(0) {
+                            // 📏 Vérifier la taille du fichier (5 MB max)
+                            let file_size = file.size() as u64;
+                            if file_size > MAX_FILE_SIZE {
+                                let size_mb = file_size as f64 / (1024.0 * 1024.0);
+                                set_error_title.set(t("upload.error_file_too_large_title").to_string());
+                                set_error_message.set(
+                                    format!("{} ({:.2} MB). {} 5 MB.", 
+                                        t("upload.error_file_too_large_message"),
+                                        size_mb,
+                                        t("upload.error_max_size")
+                                    )
+                                );
+                                set_show_error_dialog.set(true);
+                                return;
+                            }
+                            
+                            // Stocker le fichier pour validation (ne pas uploader encore)
+                            set_selected_file.set(Some(file.clone()));
+                            set_selected_file_size.set(file_size);
+                            set_error.set(None);
+                        }
+                    }
+                }
+            }
+        }
+    };
 
     // Handler pour cliquer sur la zone entière
     let trigger_file_input = move |_| {
@@ -217,6 +323,10 @@ pub fn UploadSection(
                 class="upload-section" 
                 id="uploadZone"
                 on:click=trigger_file_input
+                on:dragover=on_drag_over
+                on:dragenter=on_drag_enter
+                on:dragleave=on_drag_leave
+                on:drop=on_drop
             >
                 <div class="upload-icon"><IconUpload/></div>
                 <div class="upload-text">
@@ -317,12 +427,26 @@ pub fn UploadSection(
             </div>
         </Show>
         
-        // Error Dialog
+        // Error Dialog (for file size errors)
         <ErrorDialog
             show=show_error_dialog
             title=error_title
             message=error_message
             on_close=set_show_error_dialog
+        />
+        
+        // Wallet Required Dialog (Issue #3)
+        <WalletRequiredDialog
+            show=show_wallet_required_dialog
+            on_connect_click=on_connect_wallet_click
+            on_close=on_wallet_required_close
+        />
+        
+        // Wallet Selection Modal (Issue #3)
+        <WalletModal
+            show=Signal::derive(move || wallet_modal_open.get())
+            on_select=on_wallet_select
+            on_close=on_wallet_modal_close
         />
     }
 }

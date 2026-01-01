@@ -36,7 +36,8 @@ wasm-bindgen-futures.workspace = true
 js-sys.workspace = true
 web-sys = { workspace = true, features = [
     "File", "FileList", "FormData", "Window", "Blob",
-    "HtmlInputElement", "EventTarget", "Event", "Document"
+    "HtmlInputElement", "EventTarget", "Event", "Document",
+    "DataTransfer", "DragEvent"
 ] }
 
 # Serialization

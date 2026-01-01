@@ -160,6 +160,8 @@ pub fn App() -> impl IntoView {
                                     <pages::MassloadPage 
                                         wallet_connected=wallet_connected
                                         wallet_address=wallet_address
+                                        set_wallet_connected=set_wallet_connected
+                                        set_wallet_address=set_wallet_address
                                     />
                                 }/>
                                 

@@ -10,6 +10,8 @@ use crate::components::{Hero, UploadSection, LogsPanel, PreviewSection, init_sse
 pub fn MassloadPage(
     wallet_connected: ReadSignal<bool>,
     wallet_address: ReadSignal<Option<String>>,
+    set_wallet_connected: WriteSignal<bool>,
+    set_wallet_address: WriteSignal<Option<String>>,
 ) -> impl IntoView {
     // Page-specific state
     let (preview_data, set_preview_data) = create_signal(None::<Vec<PreviewItem>>);
@@ -31,6 +33,8 @@ pub fn MassloadPage(
             >
                 <UploadSection
                     wallet_connected=wallet_connected
+                    set_wallet_connected=set_wallet_connected
+                    set_wallet_address=set_wallet_address
                     set_preview_data=set_preview_data
                     set_musical_works_json=set_musical_works_json
                     set_is_processing=set_is_processing 
