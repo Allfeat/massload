@@ -1,9 +1,9 @@
 /* Accordion styles for preview items */
-/* Using Allfeat Brand Colors: Green #00B18C, Red #FF4A5F, Grey #151515 */
+/* Using Allfeat Brand Colors: Green (var(--color-primary)), Grey #888888 */
 
 .preview-item.expanded {
     background: var(--bg-card-hover);
-    border-left-color: #FF4A5F;  /* Allfeat Red for active state */
+    border-left-color: var(--color-primary);  /* Allfeat Green for active state */
 }
 
 .preview-item-header {
@@ -51,7 +51,7 @@
 }
 
 .midds-badge {
-    background: #FF4A5F;  /* Allfeat Red */
+    background: var(--color-primary);  /* Allfeat Green */
     color: #FFFFFF;
     padding: 3px 8px;
     border-radius: 4px;
@@ -61,7 +61,7 @@
 }
 
 .midds-type {
-    color: #FF4A5F;  /* Allfeat Red */
+    color: var(--color-primary);  /* Allfeat Green */
     font-weight: 600;
 }
 
@@ -94,11 +94,11 @@
     padding: 6px 12px;
     background: var(--bg-secondary);
     border-radius: 4px;
-    border-left: 2px solid #FF4A5F;  /* Allfeat Red for accent */
+    border-left: 2px solid var(--color-primary);  /* Allfeat Green for accent */
 }
 
 .iswc-value {
-    color: #00B18C;  /* Allfeat Green for important codes */
+    color: var(--text-primary);  /* Black text for values on white background */
     font-weight: 600;
     letter-spacing: 1px;
 }
@@ -173,8 +173,8 @@
 }
 
 .role-badge {
-    background: rgba(0, 177, 140, 0.15);  /* Allfeat Green background */
-    color: #00B18C;  /* Allfeat Green text */
+    background: rgba(136, 136, 136, 0.15);  /* Grey background */
+    color: var(--text-muted);  /* Grey text for role names */
     padding: 2px 10px;
     border-radius: 10px;
     font-size: 12px;
@@ -186,10 +186,10 @@
 }
 
 .bool-value {
-    color: #ff9f43;
+    color: var(--text-primary);  /* Black text for values on white background */
 }
 
 .type-value {
-    color: #a29bfe;
+    color: var(--text-primary);  /* Black text for values on white background */
 }
 

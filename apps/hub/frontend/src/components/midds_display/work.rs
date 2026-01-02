@@ -81,14 +81,12 @@ fn value_to_musical_work_data(work: &Value) -> Option<MusicalWorkData> {
 /// Display a single creator with roles
 #[component]
 fn CreatorItem(
-    #[prop(into)] index: usize,
     #[prop(into)] creator: CreatorData,
 ) -> impl IntoView {
     let id_display = format_party_id(&creator.id);
     
     view! {
         <div class="midds-array-item">
-            <span class="midds-index">"[" {index} "]"</span>
             <div class="midds-object">
                 <div class="midds-prop">
                     <span class="prop-key">"id"</span>
@@ -156,8 +154,8 @@ pub fn WorkDisplay(
                     <For
                         each=move || creators.clone().into_iter().enumerate()
                         key=|(i, _)| *i
-                        children=move |(index, creator)| {
-                            view! { <CreatorItem index=index + 1 creator=creator/> }
+                        children=move |(_index, creator)| {
+                            view! { <CreatorItem creator=creator/> }
                         }
                     />
                 </div>
@@ -175,8 +173,8 @@ pub fn WorkDisplay(
                             <For
                                 each=move || publishers.clone().into_iter().enumerate()
                                 key=|(i, _)| *i
-                                children=move |(index, publisher)| {
-                                    view! { <CreatorItem index=index + 1 creator=publisher/> }
+                                children=move |(_index, publisher)| {
+                                    view! { <CreatorItem creator=publisher/> }
                                 }
                             />
                         </div>
