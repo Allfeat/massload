@@ -216,10 +216,10 @@ impl LogBroadcaster {
     pub fn log(&self, entry: LogEntry) {
         // Print to stdout
         let prefix = match entry.level {
-            LogLevel::Info => "   ",
-            LogLevel::Success => "   ✓",
-            LogLevel::Warning => "   ⚠️",
-            LogLevel::Error => "   ❌",
+            LogLevel::Info => "[INFO]   ",
+            LogLevel::Success => "[OK]     ",
+            LogLevel::Warning => "[WARN]   ",
+            LogLevel::Error => "[ERROR]  ",
         };
         let indent = "   ".repeat(entry.indent as usize);
         println!("{}{} {}", indent, prefix, entry.message);

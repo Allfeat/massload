@@ -250,7 +250,7 @@ async fn transform_parsed(
     source_path: Option<&Path>,
 ) -> Result<PipelineResult, PipelineError> {
     // Step 1: CSV Info
-    log_info("📖 Reading CSV file...");
+    log_info("Reading CSV file...");
     log_info("Detecting encoding and separator...");
     log_success(format!("Detected encoding: {}", parse_result.encoding));
     log_success(format!("Detected separator: '{}'", format_delimiter(parse_result.delimiter)));
@@ -268,24 +268,24 @@ async fn transform_parsed(
     }
 
     // Display columns
-    log_info(format!("📋 CSV has {} columns:", parse_result.headers.len()));
+    log_info(format!("CSV has {} columns:", parse_result.headers.len()));
     for (i, col) in parse_result.headers.iter().enumerate() {
         log_info(format!("[{:2}] {}", i + 1, col));
     }
 
     // Step 2: Get or generate matrix (with fallback)
-    log_info("🔄 Auto-detecting format and transforming...");
+    log_info("Auto-detecting format and transforming...");
     let (matrix, template_id, transform_result, valid_count, invalid_count, validation_errors) = 
         get_matrix_with_fallback(&parse_result, &options, source_path).await?;
 
     // Step 5: Group by ISWC
-    log_info("📦 Grouping by ISWC...");
+    log_info("Grouping by ISWC...");
     let grouped = flat_to_grouped(transform_result.records.clone());
     log_success(format!("{} musical works", grouped.len()));
 
     // Step 6: Validate grouped format against schema (before sending to blockchain)
     if !options.skip_validation {
-        log_info("✔️  Validating grouped MIDDS format...");
+        log_info("Validating grouped MIDDS format...");
         let mut grouped_errors = 0;
         for (i, work) in grouped.iter().enumerate() {
             if let Err(errs) = validate_musical_work_grouped(work) {
@@ -372,7 +372,7 @@ async fn get_matrix_with_fallback(
                     registry_mut.update_stats(&template.id, success);
                     
                     if success {
-                        log_success(format!("✅ Template \"{}\" worked!", template.name));
+                        log_success(format!("Template \"{}\" worked!", template.name));
                         return result;
                     } else {
                         log_warning(format!("Template \"{}\" failed ({} records, 0 valid)", template.name, tr.records.len()));
@@ -385,7 +385,7 @@ async fn get_matrix_with_fallback(
     }
 
     // Option 3: Fallback to AI
-    log_info("🤖 Fallback: Generating new matrix with AI...");
+    log_info("Fallback: Generating new matrix with AI...");
     log_info("Using Claude API...");
     let client = AiClient::from_env()?;
     let preview_count = options.preview_rows.min(parse_result.records.len());
@@ -428,11 +428,11 @@ fn try_matrix(
 ) -> Result<(TransformationMatrix, Option<String>, super::dsl::TransformResult, usize, usize, Vec<(usize, Vec<String>)>), PipelineError> {
     print_matrix_mapping(&matrix);
     
-    log_info("⚙️  Executing transformation...");
+    log_info("Executing transformation...");
     let transform_result = execute(&parse_result.records, &matrix);
     print_transform_result(&transform_result);
     
-    log_info("✔️  Validating records...");
+    log_info("Validating records...");
     let (valid_count, invalid_count, validation_errors) = if options.skip_validation {
         log_info("(validation skipped)");
         (transform_result.records.len(), 0, vec![])
@@ -447,7 +447,7 @@ fn try_matrix(
 
 /// Print matrix mapping
 fn print_matrix_mapping(matrix: &TransformationMatrix) {
-    log_info("🗺️  Matrix mapping:");
+    log_info("Matrix mapping:");
     for (field, transform) in &matrix.transforms {
         if let Some(ref src) = transform.source {
             log_info(format!("{} → {}", src, field));

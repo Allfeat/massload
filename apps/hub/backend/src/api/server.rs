@@ -35,8 +35,8 @@ use std::sync::Arc;
 
 /// Start the HTTP server (like faucet: serves frontend + backend API)
 pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
-    println!("🚀 Starting Allfeat Apps Hub");
-    println!("🔒 Backend: PRIVATE (integrated)");
+    println!("Starting Allfeat Apps Hub");
+    println!("Backend: PRIVATE (integrated)");
     println!();
     
     // Install pipeline logger to capture all processing logs
@@ -98,11 +98,11 @@ pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
         .layer(cors);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
-    println!("✅ Server ready on http://localhost:{}", port);
-    println!("🌐 Frontend: http://localhost:{} (CSR)", port);
-    println!("🔐 Backend API: http://localhost:{}/api/* (PRIVATE)", port);
+    println!("Server ready on http://localhost:{}", port);
+    println!("Frontend: http://localhost:{} (CSR)", port);
+    println!("Backend API: http://localhost:{}/api/* (PRIVATE)", port);
     println!();
-    println!("📝 Blockchain submission via frontend SDK (@allfeat/client)");
+    println!("Blockchain submission via frontend SDK (@allfeat/client)");
 
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app).await?;
@@ -181,13 +181,13 @@ async fn upload_csv(mut multipart: Multipart) -> Result<Json<UploadResponse>, (S
     let options = TransformOptions::default();
     
     let result = transform_bytes(&bytes, options).await.map_err(|e| {
-        eprintln!("❌ Transform error: {}", e);
+        eprintln!("Transform error: {}", e);
         LOG_BROADCASTER.end_session();
         (StatusCode::INTERNAL_SERVER_ERROR, Json(error_response(&e.to_string())))
     })?;
 
     println!("\n{}", "=".repeat(70));
-    println!("📊 SUMMARY");
+    println!("SUMMARY");
     println!("{}", "=".repeat(70));
     println!("   Flat records:   {}", result.flat.len());
     println!("   Grouped works:  {}", result.grouped.len());
