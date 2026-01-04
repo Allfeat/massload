@@ -155,17 +155,22 @@ async fn upload_csv(mut multipart: Multipart) -> Result<Json<UploadResponse>, (S
         (StatusCode::BAD_REQUEST, Json(error_response("No file provided")))
     })?;
 
+    // Start a new log session for this upload
+    let session_id = LOG_BROADCASTER.start_session();
+
     println!("\n{}", "=".repeat(70));
     println!("📄 NEW UPLOAD: {} ({} bytes)", 
         file_name.as_deref().unwrap_or("unknown"), 
         bytes.len()
     );
+    println!("   Session ID: {}", session_id);
     println!("{}\n", "=".repeat(70));
 
     let options = TransformOptions::default();
     
     let result = transform_bytes(&bytes, options).await.map_err(|e| {
         eprintln!("❌ Transform error: {}", e);
+        LOG_BROADCASTER.end_session();
         (StatusCode::INTERNAL_SERVER_ERROR, Json(error_response(&e.to_string())))
     })?;
 
@@ -180,6 +185,9 @@ async fn upload_csv(mut multipart: Multipart) -> Result<Json<UploadResponse>, (S
         println!("   Template ID:    {}", tid);
     }
     println!("{}\n", "=".repeat(70));
+
+    // End the log session
+    LOG_BROADCASTER.end_session();
 
     let response = UploadResponse::from(result);
     
