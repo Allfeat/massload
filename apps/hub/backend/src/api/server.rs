@@ -28,15 +28,27 @@ use tower_http::{
     services::ServeDir,
 };
 
-use super::logs::LOG_BROADCASTER;
+use super::logs::{LOG_BROADCASTER, LogEntry};
 use super::types::{error_response, UploadResponse};
 use allfeat_services::{transform_bytes, TransformOptions};
+use std::sync::Arc;
 
 /// Start the HTTP server (like faucet: serves frontend + backend API)
 pub async fn start_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
     println!("🚀 Starting Allfeat Apps Hub");
     println!("🔒 Backend: PRIVATE (integrated)");
     println!();
+    
+    // Install pipeline logger to capture all processing logs
+    allfeat_services::set_pipeline_logger(Arc::new(|msg: &str, level| {
+        let entry = match level {
+            allfeat_services::LogLevel::Info => LogEntry::info(msg),
+            allfeat_services::LogLevel::Success => LogEntry::success(msg),
+            allfeat_services::LogLevel::Warning => LogEntry::warning(msg),
+            allfeat_services::LogLevel::Error => LogEntry::error(msg),
+        };
+        LOG_BROADCASTER.log(entry);
+    }));
     
     // Determine frontend dist path - check multiple locations
     let frontend_paths = [

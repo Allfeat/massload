@@ -35,18 +35,73 @@ use crate::ai::{AiClient, AiError};
 // Use allfeat-core for validation
 use allfeat_core::validation::{validate_musical_work_flat, validate_musical_work_grouped};
 
-// Simple logging macros (can be replaced with proper log infrastructure)
+use std::sync::Arc;
+
+/// Logger trait for pipeline operations
+pub type LogCallback = Arc<dyn Fn(&str, LogLevel) + Send + Sync>;
+
+/// Log levels for pipeline
+#[derive(Debug, Clone, Copy)]
+pub enum LogLevel {
+    Info,
+    Success,
+    Warning,
+    Error,
+}
+
+/// Global logger storage
+static mut GLOBAL_LOGGER: Option<LogCallback> = None;
+
+/// Set global logger for the pipeline
+pub fn set_pipeline_logger(logger: LogCallback) {
+    unsafe {
+        GLOBAL_LOGGER = Some(logger);
+    }
+}
+
+/// Simple logging macros (can be replaced with proper log infrastructure)
 fn log_info(msg: impl AsRef<str>) {
-    println!("[INFO] {}", msg.as_ref());
+    let msg_str = msg.as_ref();
+    unsafe {
+        if let Some(ref logger) = GLOBAL_LOGGER {
+            logger(msg_str, LogLevel::Info);
+        } else {
+            println!("[INFO] {}", msg_str);
+        }
+    }
 }
+
 fn log_success(msg: impl AsRef<str>) {
-    println!("[OK] {}", msg.as_ref());
+    let msg_str = msg.as_ref();
+    unsafe {
+        if let Some(ref logger) = GLOBAL_LOGGER {
+            logger(msg_str, LogLevel::Success);
+        } else {
+            println!("[OK] {}", msg_str);
+        }
+    }
 }
+
 fn log_warning(msg: impl AsRef<str>) {
-    println!("[WARN] {}", msg.as_ref());
+    let msg_str = msg.as_ref();
+    unsafe {
+        if let Some(ref logger) = GLOBAL_LOGGER {
+            logger(msg_str, LogLevel::Warning);
+        } else {
+            println!("[WARN] {}", msg_str);
+        }
+    }
 }
+
 fn log_error(msg: impl AsRef<str>) {
-    eprintln!("[ERROR] {}", msg.as_ref());
+    let msg_str = msg.as_ref();
+    unsafe {
+        if let Some(ref logger) = GLOBAL_LOGGER {
+            logger(msg_str, LogLevel::Error);
+        } else {
+            eprintln!("[ERROR] {}", msg_str);
+        }
+    }
 }
 
 /// Pipeline errors

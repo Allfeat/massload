@@ -39,7 +39,8 @@ pub use transform::dsl::{
 };
 pub use transform::flat_to_grouped;
 pub use transform::pipeline::{
-    transform_bytes, transform_csv, transform_records, transform_with_matrix, CsvInfo,
-    PipelineError, PipelineResult, TransformOptions, TransformWithMatrixResult,
+    set_pipeline_logger, transform_bytes, transform_csv, transform_records, 
+    transform_with_matrix, CsvInfo, LogCallback, LogLevel, PipelineError, PipelineResult, 
+    TransformOptions, TransformWithMatrixResult,
 };
 
