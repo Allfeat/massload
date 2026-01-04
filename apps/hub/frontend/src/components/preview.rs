@@ -391,19 +391,24 @@ struct RegistrationResult {
 fn ConfirmDialog(
     works_count: impl Fn() -> usize + 'static,
     on_confirm: impl Fn() + 'static,
-    on_cancel: impl Fn() + 'static,
+    on_cancel: impl Fn() + Copy + 'static,
 ) -> impl IntoView {
+    let _ = works_count; // Keep for future use
+    
     view! {
         <div class="modal-overlay">
             <div class="modal-content confirm-dialog">
-                <div class="confirm-icon"><IconAlertTriangle/></div>
+                <button 
+                    class="modal-close-button" 
+                    on:click=move |_| on_cancel()
+                    aria-label="Close"
+                >
+                    "×"
+                </button>
                 <h2>{move || t("preview.confirm_title")}</h2>
                 <p class="confirm-message">
                     {move || t("preview.confirm_message")}
                 </p>
-                <div class="confirm-count">
-                    <strong>{works_count}</strong> " " {move || t("preview.works_count")}
-                </div>
                 <div class="confirm-buttons">
                     <button class="btn btn-secondary" on:click=move |_| on_cancel()>
                         {move || t("preview.cancel")}
@@ -428,10 +433,24 @@ fn SuccessMessage(
             <div class="modal-content success-message">
                 <div class="success-icon"><IconCheckCircle/></div>
                 <h2>{move || t("preview.success_title")}</h2>
-                <p class="success-count">
-                    <strong>{move || result.get().map(|r| r.works_count).unwrap_or(0)}</strong>
-                    " " {move || t("preview.works_registered")}
+                
+                <div class="success-illustration">
+                    <svg width="180" height="140" viewBox="0 0 180 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="40" y="20" width="100" height="80" rx="8" fill="var(--color-primary)" opacity="0.15"/>
+                        <rect x="50" y="30" width="80" height="60" rx="6" fill="var(--color-primary)" opacity="0.25"/>
+                        <rect x="60" y="40" width="60" height="40" rx="4" fill="var(--color-primary)" opacity="0.35"/>
+                        <path d="M75 60L85 70L105 50" stroke="var(--color-primary)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                
+                <p class="success-description">
+                    {move || t("preview.success_message")}
                 </p>
+                
+                <p class="success-immutable">
+                    {move || t("preview.success_immutable")}
+                </p>
+                
                 <Show
                     when=move || result.get().and_then(|r| r.tx_hash.clone()).is_some()
                     fallback=|| view! { }
@@ -443,6 +462,7 @@ fn SuccessMessage(
                         </code>
                     </div>
                 </Show>
+                
                 <button class="btn btn-primary" on:click=move |_| on_close()>
                     {move || t("preview.back_to_upload")}
                 </button>
