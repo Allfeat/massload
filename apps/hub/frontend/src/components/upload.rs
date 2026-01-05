@@ -252,19 +252,6 @@ pub fn UploadSection(
         }
     };
     
-    // Effet pour lancer automatiquement l'upload quand le wallet se connecte
-    // et qu'un fichier est sélectionné (waiting for validation)
-    create_effect(move |_| {
-        // Si wallet vient de se connecter ET qu'un fichier est en attente
-        if wallet_connected.get() && selected_file.get().is_some() {
-            // Vérifier qu'on n'est pas déjà en train d'uploader
-            if !is_uploading.get() {
-                // Déclencher la validation et l'upload
-                do_validate_and_upload();
-            }
-        }
-    });
-    
     // Handler pour drag over (empêcher le comportement par défaut)
     let on_drag_over = move |ev: DragEvent| {
         ev.prevent_default();
