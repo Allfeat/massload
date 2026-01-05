@@ -30,6 +30,7 @@ use tower_http::{
 
 use super::logs::{LOG_BROADCASTER, LogEntry};
 use super::types::{error_response, UploadResponse};
+use super::excel;
 use allfeat_services::{transform_bytes, TransformOptions};
 use std::sync::Arc;
 
@@ -163,7 +164,7 @@ async fn upload_csv(mut multipart: Multipart) -> Result<Json<UploadResponse>, (S
         }
     }
 
-    let bytes = file_data.ok_or_else(|| {
+    let mut bytes = file_data.ok_or_else(|| {
         (StatusCode::BAD_REQUEST, Json(error_response("No file provided")))
     })?;
 
@@ -177,6 +178,27 @@ async fn upload_csv(mut multipart: Multipart) -> Result<Json<UploadResponse>, (S
     );
     println!("   Session ID: {}", session_id);
     println!("{}\n", "=".repeat(70));
+
+    // Detect and convert Excel files to CSV
+    if let Some(excel_type) = excel::detect_excel_type(&bytes) {
+        LOG_BROADCASTER.log(LogEntry::info(&format!(
+            "Detected {:?} file, converting to CSV...", 
+            excel_type
+        )));
+        
+        let csv_string = excel::excel_to_csv(&bytes, excel_type).map_err(|e| {
+            eprintln!("Excel conversion error: {}", e);
+            LOG_BROADCASTER.end_session();
+            (StatusCode::BAD_REQUEST, Json(error_response(&format!("Excel conversion failed: {}", e))))
+        })?;
+        
+        bytes = csv_string.into_bytes();
+        
+        LOG_BROADCASTER.log(LogEntry::success(&format!(
+            "Converted to CSV ({} bytes)", 
+            bytes.len()
+        )));
+    }
 
     let options = TransformOptions::default();
     

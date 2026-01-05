@@ -356,7 +356,7 @@ pub fn UploadSection(
                 <input
                     type="file"
                     id="fileInput"
-                    accept=".csv"
+                    accept=".csv,.xlsx,.xls"
                     style="display:none"
                     on:change=on_file_change
                 />

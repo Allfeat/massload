@@ -54,13 +54,13 @@ pub fn or_click_to_select(lang: Language) -> &'static str {
 
 pub fn supported_formats(lang: Language) -> &'static str {
     match lang {
-        Language::English => "Supported formats: SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
-        Language::French => "Formats supportés : SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
-        Language::Spanish => "Formatos soportados: SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
-        Language::German => "Unterstützte Formate: SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
-        Language::Japanese => "対応フォーマット: SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
-        Language::Korean => "지원 형식: SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
-        Language::Greek => "Υποστηριζόμενες μορφές: SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
+        Language::English => "Supported formats: CSV, Excel (.xlsx, .xls) | SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
+        Language::French => "Formats supportés : CSV, Excel (.xlsx, .xls) | SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
+        Language::Spanish => "Formatos soportados: CSV, Excel (.xlsx, .xls) | SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
+        Language::German => "Unterstützte Formate: CSV, Excel (.xlsx, .xls) | SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
+        Language::Japanese => "対応フォーマット: CSV, Excel (.xlsx, .xls) | SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
+        Language::Korean => "지원 형식: CSV, Excel (.xlsx, .xls) | SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
+        Language::Greek => "Υποστηριζόμενες μορφές: CSV, Excel (.xlsx, .xls) | SACEM, ASCAP, GEMA, JASRAC, PRS, SGAE",
     }
 }
 

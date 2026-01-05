@@ -5,6 +5,7 @@
 pub mod server;
 pub mod types;
 pub mod logs;
+pub mod excel;
 
 pub use server::start_server;
 pub use types::*;
