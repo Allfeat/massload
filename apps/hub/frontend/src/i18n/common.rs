@@ -17,26 +17,26 @@ pub fn title(lang: Language) -> &'static str {
 
 pub fn subtitle(lang: Language) -> &'static str {
     match lang {
-        Language::English => "Bulk registration of musical works on the Allfeat blockchain. Import your CSV file to certify your metadata in a decentralized manner.",
-        Language::French => "Enregistrement en masse d'œuvres musicales sur la blockchain Allfeat. Importez votre fichier CSV pour certifier vos métadonnées de manière décentralisée.",
-        Language::Spanish => "Registro masivo de obras musicales en la blockchain Allfeat. Importe su archivo CSV para certificar sus metadatos de forma descentralizada.",
-        Language::German => "Massenregistrierung von Musikwerken auf der Allfeat-Blockchain. Importieren Sie Ihre CSV-Datei, um Ihre Metadaten dezentral zu zertifizieren.",
-        Language::Japanese => "Allfeatブロックチェーン上での音楽作品の一括登録。CSVファイルをインポートして、メタデータを分散型で認証します。",
-        Language::Korean => "Allfeat 블록체인에 음악 작품 대량 등록. CSV 파일을 가져와 메타데이터를 분산 방식으로 인증하세요.",
-        Language::Greek => "Μαζική εγγραφή μουσικών έργων στο blockchain Allfeat. Εισάγετε το αρχείο CSV σας για να πιστοποιήσετε τα μεταδεδομένα σας με αποκεντρωμένο τρόπο.",
+        Language::English => "Bulk registration of musical works on the Allfeat blockchain. Import your CSV or Excel file to certify your metadata in a decentralized manner.",
+        Language::French => "Enregistrement en masse d'œuvres musicales sur la blockchain Allfeat. Importez votre fichier CSV ou Excel pour certifier vos métadonnées de manière décentralisée.",
+        Language::Spanish => "Registro masivo de obras musicales en la blockchain Allfeat. Importe su archivo CSV o Excel para certificar sus metadatos de forma descentralizada.",
+        Language::German => "Massenregistrierung von Musikwerken auf der Allfeat-Blockchain. Importieren Sie Ihre CSV- oder Excel-Datei, um Ihre Metadaten dezentral zu zertifizieren.",
+        Language::Japanese => "Allfeatブロックチェーン上での音楽作品の一括登録。CSVまたはExcelファイルをインポートして、メタデータを分散型で認証します。",
+        Language::Korean => "Allfeat 블록체인에 음악 작품 대량 등록. CSV 또는 Excel 파일을 가져와 메타데이터를 분산 방식으로 인증하세요.",
+        Language::Greek => "Μαζική εγγραφή μουσικών έργων στο blockchain Allfeat. Εισάγετε το αρχείο CSV ή Excel σας για να πιστοποιήσετε τα μεταδεδομένα σας με αποκεντρωμένο τρόπο.",
     }
 }
 
 // Upload section
 pub fn drag_csv_here(lang: Language) -> &'static str {
     match lang {
-        Language::English => "Drag a CSV file here",
-        Language::French => "Glissez un fichier CSV ici",
-        Language::Spanish => "Arrastre un archivo CSV aquí",
-        Language::German => "CSV-Datei hierher ziehen",
-        Language::Japanese => "CSVファイルをここにドラッグ",
-        Language::Korean => "CSV 파일을 여기에 드래그",
-        Language::Greek => "Σύρετε ένα αρχείο CSV εδώ",
+        Language::English => "Drag a CSV or Excel file here",
+        Language::French => "Glissez un fichier CSV ou Excel ici",
+        Language::Spanish => "Arrastre un archivo CSV o Excel aquí",
+        Language::German => "CSV- oder Excel-Datei hierher ziehen",
+        Language::Japanese => "CSVまたはExcelファイルをここにドラッグ",
+        Language::Korean => "CSV 또는 Excel 파일을 여기에 드래그",
+        Language::Greek => "Σύρετε ένα αρχείο CSV ή Excel εδώ",
     }
 }
 
@@ -78,13 +78,13 @@ pub fn auto_transform_ai(lang: Language) -> &'static str {
 
 pub fn choose_csv_file(lang: Language) -> &'static str {
     match lang {
-        Language::English => "Choose a CSV file",
-        Language::French => "Choisir un fichier CSV",
-        Language::Spanish => "Elegir un archivo CSV",
-        Language::German => "CSV-Datei auswählen",
-        Language::Japanese => "CSVファイルを選択",
-        Language::Korean => "CSV 파일 선택",
-        Language::Greek => "Επιλέξτε αρχείο CSV",
+        Language::English => "Choose a CSV or Excel file",
+        Language::French => "Choisir un fichier CSV ou Excel",
+        Language::Spanish => "Elegir un archivo CSV o Excel",
+        Language::German => "CSV- oder Excel-Datei auswählen",
+        Language::Japanese => "CSVまたはExcelファイルを選択",
+        Language::Korean => "CSV 또는 Excel 파일 선택",
+        Language::Greek => "Επιλέξτε αρχείο CSV ή Excel",
     }
 }
 
