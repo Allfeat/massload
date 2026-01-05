@@ -5,6 +5,7 @@ use crate::{PreviewItem, LogEntry, LogLevel};
 use crate::services::BlockchainService;
 use crate::i18n::t;
 use crate::components::midds_display::WorkDisplayJson;
+use crate::network::use_network;
 use allfeat_ui::components::IconCheckCircle;
 
 /// Available page sizes for pagination
@@ -21,6 +22,9 @@ pub fn PreviewSection(
     #[prop(optional)] set_preview_data: Option<WriteSignal<Option<Vec<PreviewItem>>>>,
     #[prop(optional)] set_musical_works_json: Option<WriteSignal<Option<serde_json::Value>>>,
 ) -> impl IntoView {
+    // Get current network
+    let network = use_network();
+    
     // Pagination state
     let (current_page, set_current_page) = create_signal(1usize);
     let (items_per_page, set_items_per_page) = create_signal(10usize);
@@ -82,7 +86,12 @@ pub fn PreviewSection(
         let address = wallet_address.get();
         
         if let Some(works_json) = works {
+            // Capture current network RPC URL
+            let current_network = network.get();
+            let rpc_url = current_network.rpc_url().to_string();
+            
             log::info!("Envoi des transactions...");
+            log::info!("Using network: {} ({})", current_network.name(), rpc_url);
             set_is_processing.set(true);
             
             let works_count = works_json.as_array().map(|a| a.len()).unwrap_or(0);
@@ -96,7 +105,7 @@ pub fn PreviewSection(
             });
             
             spawn_local(async move {
-                let blockchain = BlockchainService::new();
+                let blockchain = BlockchainService::with_rpc_url(rpc_url);
                 
                 match blockchain.submit_works(works_json.clone(), address).await {
                     Ok(result) => {

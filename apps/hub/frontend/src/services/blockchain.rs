@@ -35,11 +35,16 @@ pub struct BlockchainService {
 }
 
 impl BlockchainService {
-    /// Create a new service.
+    /// Create a new service with default RPC from config.
     pub fn new() -> Self {
         Self { 
             rpc_url: blockchain_rpc()
         }
+    }
+    
+    /// Create a new service with a specific RPC URL.
+    pub fn with_rpc_url(rpc_url: String) -> Self {
+        Self { rpc_url }
     }
     
     /// Submit works using @allfeat/client SDK with wallet signer.
