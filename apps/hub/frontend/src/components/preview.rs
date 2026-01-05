@@ -55,7 +55,7 @@ pub fn PreviewSection(
     
     // Handler pour annuler - reset tout et revient à la zone de drop
     let on_cancel = move || {
-        log::info!("🚫 Annulation - retour à la zone de drop");
+        log::info!("Annulation - retour à la zone de drop");
         if let Some(setter) = set_preview_data {
             setter.set(None);
         }
@@ -82,7 +82,7 @@ pub fn PreviewSection(
         let address = wallet_address.get();
         
         if let Some(works_json) = works {
-            log::info!("📤 Envoi des transactions...");
+            log::info!("Envoi des transactions...");
             set_is_processing.set(true);
             
             let works_count = works_json.as_array().map(|a| a.len()).unwrap_or(0);
@@ -102,7 +102,7 @@ pub fn PreviewSection(
                     Ok(result) => {
                         if result.success {
                             let success_count = result.work_results.iter().filter(|w| w.success).count();
-                            log::info!("✅ Transaction confirmée: {:?}", result.tx_hash);
+                            log::info!("Transaction confirmée: {:?}", result.tx_hash);
                             
                             // Set success result
                             set_registration_result.set(Some(RegistrationResult {
@@ -115,7 +115,7 @@ pub fn PreviewSection(
                             set_logs.update(|logs| {
                                 logs.push(LogEntry {
                                     level: LogLevel::Success,
-                                    message: format!("✅ {}/{} {} {}", 
+                                    message: format!("{}/{} {} {}", 
                                         success_count, works_count,
                                         t("preview.works_registered"),
                                         result.tx_hash.as_deref().unwrap_or("?")),
@@ -123,22 +123,22 @@ pub fn PreviewSection(
                                 });
                             });
                         } else {
-                            log::error!("❌ Transaction échouée: {:?}", result.error);
+                            log::error!("Transaction échouée: {:?}", result.error);
                             set_logs.update(|logs| {
                                 logs.push(LogEntry {
                                     level: LogLevel::Error,
-                                    message: format!("❌ {}: {}", t("common.error"), result.error.as_deref().unwrap_or("Erreur inconnue")),
+                                    message: format!("{}: {}", t("common.error"), result.error.as_deref().unwrap_or("Erreur inconnue")),
                                     timestamp: js_sys::Date::new_0().to_locale_time_string("fr-FR").as_string().unwrap_or_default(),
                                 });
                             });
                         }
                     }
                     Err(e) => {
-                        log::error!("❌ Erreur blockchain: {}", e);
+                        log::error!("Erreur blockchain: {}", e);
                         set_logs.update(|logs| {
                             logs.push(LogEntry {
                                 level: LogLevel::Error,
-                                message: format!("❌ {}: {}", t("common.error"), e),
+                                message: format!("{}: {}", t("common.error"), e),
                                 timestamp: js_sys::Date::new_0().to_locale_time_string("fr-FR").as_string().unwrap_or_default(),
                             });
                         });

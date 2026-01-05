@@ -79,12 +79,12 @@ function decodeBytes(bytes) {
 
 async function ensureWeb3Enabled() {
     if (!web3Initialized) {
-        console.log('🔌 Initializing web3...');
+        console.log('Initializing web3...');
         const extensions = await web3Enable('Mass Load');
         if (extensions.length === 0) {
             throw new Error('No wallet extension found. Please install SubWallet, Polkadot.js or Talisman.');
         }
-        console.log(`✅ Web3 initialized with ${extensions.length} extension(s)`);
+        console.log(`Web3 initialized with ${extensions.length} extension(s)`);
         web3Initialized = true;
     }
 }
@@ -103,11 +103,11 @@ async function getClient(rpcUrl) {
         }
     }
     
-    console.log('🔌 Connecting to blockchain:', rpcUrl);
+    console.log('Connecting to blockchain:', rpcUrl);
     const provider = new AllfeatProvider(rpcUrl);
     cachedClient = await MelodieClient.create(provider);
     cachedRpcUrl = rpcUrl;
-    console.log('✅ Connected to blockchain');
+    console.log('Connected to blockchain');
     
     return cachedClient;
 }
@@ -119,10 +119,10 @@ async function checkBalance(client, address) {
     try {
         const balance = await client.getBalanceOf(address);
         const balanceFeat = Number(balance) / 10 ** 12;
-        console.log(`💰 Balance: ${balanceFeat.toFixed(4)} FEAT`);
+        console.log(`Balance: ${balanceFeat.toFixed(4)} FEAT`);
         
         if (balanceFeat < 1) {
-            console.warn('⚠️ Warning: Low balance! Transaction may fail.');
+            console.warn('Warning: Low balance! Transaction may fail.');
         }
         return balanceFeat;
     } catch (e) {
@@ -137,7 +137,7 @@ async function checkBalance(client, address) {
 export async function submitMusicalWorksBatch(rpcUrl, worksJson, walletAddress) {
     try {
         const works = JSON.parse(worksJson);
-        console.log(`📤 Submitting batch of ${works.length} musical works...`);
+        console.log(`Submitting batch of ${works.length} musical works...`);
         console.log('   RPC:', rpcUrl);
         console.log('   Wallet:', walletAddress);
 
@@ -147,22 +147,22 @@ export async function submitMusicalWorksBatch(rpcUrl, worksJson, walletAddress) 
         await checkBalance(client, walletAddress);
         
         // Get wallet signer
-        console.log('🔑 Getting signer from wallet...');
+        console.log('Getting signer from wallet...');
         await ensureWeb3Enabled();
         const injector = await web3FromAddress(walletAddress);
         
         if (!injector || !injector.signer) {
             throw new Error('Signer not available from wallet');
         }
-        console.log('✅ Signer obtained');
+        console.log('Signer obtained');
 
         // Convert IPI values to BigInt
-        console.log('📦 Preparing works for SDK...');
+        console.log('Preparing works for SDK...');
         const sdkWorks = works.map(work => convertIpiToBigInt(work));
         
         // Debug: log the first work structure
         if (sdkWorks.length > 0) {
-            console.log('📋 First work structure:', JSON.stringify(sdkWorks[0], (key, value) =>
+            console.log('First work structure:', JSON.stringify(sdkWorks[0], (key, value) =>
                 typeof value === 'bigint' ? value.toString() + 'n' : value
             , 2));
         }
@@ -173,27 +173,27 @@ export async function submitMusicalWorksBatch(rpcUrl, worksJson, walletAddress) 
         }
         
         // Build calls
-        console.log('🔨 Building transaction calls...');
+        console.log('Building transaction calls...');
         const calls = sdkWorks.map((work, index) => {
             try {
                 const tx = client.tx.musicalWorks.register(work);
-                console.log(`  ✓ Call ${index + 1} built successfully`);
+                console.log(`  Call ${index + 1} built successfully`);
                 return tx.call;
             } catch (err) {
-                console.error(`  ✗ Call ${index + 1} failed:`, err);
+                console.error(`  Call ${index + 1} failed:`, err);
                 throw new Error(`Failed to build call for work ${index + 1}: ${err.message}`);
             }
         });
-        console.log(`✅ ${calls.length} transactions prepared`);
+        console.log(`${calls.length} transactions prepared`);
 
         // Create batch (using batch instead of batchAll for resilience)
         // batchAll is atomic: if ONE tx fails, ALL fail
         // batch is non-atomic: continues even if some tx fail
-        console.log('📤 Creating batch transaction...');
+        console.log('Creating batch transaction...');
         const batchTx = client.tx.utility.batch(calls);
         
         // Sign and send with callback for finalization
-        console.log('✍️ Signing and submitting (waiting for finalization)...');
+        console.log('Signing and submitting (waiting for finalization)...');
         
         const result = await new Promise((resolve, reject) => {
             // Timeout after 60 seconds
@@ -238,7 +238,7 @@ export async function submitMusicalWorksBatch(rpcUrl, worksJson, walletAddress) 
             });
         });
         
-        console.log(`🎉 Batch finalized in block:`, result.blockHash);
+        console.log(`Batch finalized in block:`, result.blockHash);
 
         return works.map(() => ({
             hash: result.blockHash,
@@ -247,7 +247,7 @@ export async function submitMusicalWorksBatch(rpcUrl, worksJson, walletAddress) 
         }));
         
     } catch (error) {
-        console.error('❌ Batch submission failed:', error);
+        console.error('Batch submission failed:', error);
         
         let works = [];
         try {
@@ -291,7 +291,7 @@ export async function getWalletBalance(rpcUrl, walletAddress) {
             formatted = balanceNum.toFixed(4);
         }
         
-        console.log(`💰 Balance for ${walletAddress.slice(0,8)}...: ${formatted} MEL`);
+        console.log(`Balance for ${walletAddress.slice(0,8)}...: ${formatted} MEL`);
         
         return {
             balance: balanceNum,
@@ -313,7 +313,7 @@ export async function disconnect() {
     if (cachedClient) {
         try {
             await cachedClient.disconnect();
-            console.log('🔌 Disconnected from blockchain');
+            console.log('Disconnected from blockchain');
         } catch (e) {
             console.warn('Disconnect error:', e);
         }
@@ -329,7 +329,7 @@ export async function disconnect() {
  */
 export async function getBlockchainMetrics(rpcUrl) {
     try {
-        console.log('📊 Fetching blockchain metrics...');
+        console.log('Fetching blockchain metrics...');
         const client = await getClient(rpcUrl);
         
         // Query storage entries for each MIDDS type
@@ -341,7 +341,7 @@ export async function getBlockchainMetrics(rpcUrl) {
         const recordings = recordingsEntries.length;
         const releases = releasesEntries.length;
         
-        console.log(`✅ Metrics: ${works} works, ${recordings} recordings, ${releases} releases`);
+        console.log(`Metrics: ${works} works, ${recordings} recordings, ${releases} releases`);
         
         return {
             works,
@@ -350,7 +350,7 @@ export async function getBlockchainMetrics(rpcUrl) {
             total: works + recordings + releases
         };
     } catch (error) {
-        console.error('❌ Failed to fetch metrics:', error);
+        console.error('Failed to fetch metrics:', error);
         throw new Error(`Failed to fetch metrics: ${error.message}`);
     }
 }
@@ -362,12 +362,12 @@ export async function getBlockchainMetrics(rpcUrl) {
  */
 export async function getAllMusicalWorks(rpcUrl) {
     try {
-        console.log('🎵 Fetching all musical works...');
+        console.log('Fetching all musical works...');
         const client = await getClient(rpcUrl);
         
         // Query all musical works
         const entries = await client.query.musicalWorks.middsOf.entries();
-        console.log(`📦 Found ${entries.length} entries`);
+        console.log(`Found ${entries.length} entries`);
         
         const works = [];
         
@@ -409,7 +409,7 @@ export async function getAllMusicalWorks(rpcUrl) {
                     }
                 }
                 
-                console.log(`✅ Work ${id}: ${title} (${iswc || 'no ISWC'})`);
+                console.log(`Work ${id}: ${title} (${iswc || 'no ISWC'})`);
                 
                 works.push({
                     id: String(id),
@@ -423,15 +423,15 @@ export async function getAllMusicalWorks(rpcUrl) {
                     musicalKey: value.key || null
                 });
             } catch (entryError) {
-                console.warn('⚠️ Failed to parse entry:', entryError);
+                console.warn('Failed to parse entry:', entryError);
             }
         }
         
-        console.log(`✅ Fetched ${works.length} musical works`);
+        console.log(`Fetched ${works.length} musical works`);
         return works;
         
     } catch (error) {
-        console.error('❌ Failed to fetch musical works:', error);
+        console.error('Failed to fetch musical works:', error);
         throw new Error(`Failed to fetch musical works: ${error.message}`);
     }
 }
@@ -443,7 +443,7 @@ export async function getAllMusicalWorks(rpcUrl) {
  */
 export async function getAllRecordings(rpcUrl) {
     try {
-        console.log('🎙️ Fetching all recordings from blockchain...');
+        console.log('Fetching all recordings from blockchain...');
         
         const client = await getClient(rpcUrl);
         
@@ -480,7 +480,7 @@ export async function getAllRecordings(rpcUrl) {
                     };
                 });
                 
-                console.log(`✅ Recording ${id}: ${title} (${isrc || 'no ISRC'})`);
+                console.log(`Recording ${id}: ${title} (${isrc || 'no ISRC'})`);
                 
                 recordings.push({
                     id: String(id),
@@ -493,15 +493,15 @@ export async function getAllRecordings(rpcUrl) {
                     recordingLocation: value.recordingLocation || null
                 });
             } catch (entryError) {
-                console.warn('⚠️ Failed to parse recording entry:', entryError);
+                console.warn('Failed to parse recording entry:', entryError);
             }
         }
         
-        console.log(`✅ Fetched ${recordings.length} recordings`);
+        console.log(`Fetched ${recordings.length} recordings`);
         return recordings;
         
     } catch (error) {
-        console.error('❌ Failed to fetch recordings:', error);
+        console.error('Failed to fetch recordings:', error);
         throw new Error(`Failed to fetch recordings: ${error.message}`);
     }
 }
@@ -513,7 +513,7 @@ export async function getAllRecordings(rpcUrl) {
  */
 export async function getAllReleases(rpcUrl) {
     try {
-        console.log('💿 Fetching all releases from blockchain...');
+        console.log('Fetching all releases from blockchain...');
         
         const client = await getClient(rpcUrl);
         
@@ -543,7 +543,7 @@ export async function getAllReleases(rpcUrl) {
                 // Recording IDs
                 const recordingIds = (value.recordings || []).map((rec, idx) => String(rec || idx));
                 
-                console.log(`✅ Release ${id}: ${title} (${upc || 'no UPC'})`);
+                console.log(`Release ${id}: ${title} (${upc || 'no UPC'})`);
                 
                 releases.push({
                     id: String(id),
@@ -557,15 +557,15 @@ export async function getAllReleases(rpcUrl) {
                     totalTracks: value.totalTracks || null
                 });
             } catch (entryError) {
-                console.warn('⚠️ Failed to parse release entry:', entryError);
+                console.warn('Failed to parse release entry:', entryError);
             }
         }
         
-        console.log(`✅ Fetched ${releases.length} releases`);
+        console.log(`Fetched ${releases.length} releases`);
         return releases;
         
     } catch (error) {
-        console.error('❌ Failed to fetch releases:', error);
+        console.error('Failed to fetch releases:', error);
         throw new Error(`Failed to fetch releases: ${error.message}`);
     }
 }

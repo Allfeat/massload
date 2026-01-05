@@ -58,7 +58,7 @@ impl BlockchainService {
             return Err("No works to submit".to_string());
         }
         
-        log::info!("📤 Submitting {} works via @allfeat/client SDK...", works_array.len());
+        log::info!("Submitting {} works via @allfeat/client SDK...", works_array.len());
 
         // Call JavaScript SDK directly - it handles signing with the wallet
         let works_str = serde_json::to_string(&works_json)
@@ -87,9 +87,9 @@ impl BlockchainService {
         let first_error = results.iter().find(|r| !r.success).and_then(|r| r.error.clone());
         
         if all_success {
-            log::info!("✅ All {} works submitted successfully!", results.len());
+            log::info!("All {} works submitted successfully!", results.len());
         } else {
-            log::error!("❌ Some works failed: {:?}", first_error);
+            log::error!("Some works failed: {:?}", first_error);
         }
 
         Ok(SubmissionResult {
@@ -120,7 +120,7 @@ impl BlockchainService {
     ) -> Result<SubmissionResult, String> {
         let address = wallet_address.ok_or("No wallet address provided")?;
         
-        log::info!("📤 Submitting single work via @allfeat/client SDK...");
+        log::info!("Submitting single work via @allfeat/client SDK...");
 
         // Call JavaScript SDK directly
         let work_str = serde_json::to_string(&work_json)
@@ -149,9 +149,9 @@ impl BlockchainService {
             .to_string();
         
         if result.success {
-            log::info!("✅ Work {} submitted successfully!", iswc);
+            log::info!("Work {} submitted successfully!", iswc);
         } else {
-            log::error!("❌ Work {} failed: {:?}", iswc, result.error);
+            log::error!("Work {} failed: {:?}", iswc, result.error);
         }
         
         Ok(SubmissionResult {

@@ -282,7 +282,7 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                 let work_json = serde_json::to_value(&work).unwrap();
                 
                 // Debug: log the serialized JSON
-                logging::log!("📦 Serialized work JSON:");
+                logging::log!("Serialized work JSON:");
                 logging::log!("{}", serde_json::to_string_pretty(&work_json).unwrap_or_default());
                 
                 set_is_submitting.set(true);
@@ -293,16 +293,16 @@ pub fn MusicalWorkFormV2() -> impl IntoView {
                     match service.submit_single_work(work_json, wallet_address.get()).await {
                         Ok(result) => {
                             if result.success {
-                                logging::log!("✅ Work submitted! Tx: {:?}", result.tx_hash);
+                                logging::log!("Work submitted! Tx: {:?}", result.tx_hash);
                                 set_submission_success.set(true);
                             } else {
                                 let err_msg = result.error.unwrap_or_else(|| t("form.unknown_error"));
-                                logging::error!("❌ Submission failed: {}", err_msg);
+                                logging::error!("Submission failed: {}", err_msg);
                                 set_validation_errors.set(vec![err_msg]);
                             }
                         },
                         Err(e) => {
-                            logging::error!("❌ Submission error: {}", e);
+                            logging::error!("Submission error: {}", e);
                             set_validation_errors.set(vec![e]);
                         }
                     }
