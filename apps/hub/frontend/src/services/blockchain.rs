@@ -190,8 +190,8 @@ pub struct WalletBalance {
 }
 
 /// Get wallet balance from blockchain
-pub async fn get_wallet_balance(wallet_address: &str) -> Result<WalletBalance, String> {
-    let promise = get_balance_js(&blockchain_rpc(), wallet_address);
+pub async fn get_wallet_balance(rpc_url: &str, wallet_address: &str) -> Result<WalletBalance, String> {
+    let promise = get_balance_js(rpc_url, wallet_address);
     
     let js_result = JsFuture::from(promise)
         .await

@@ -114,6 +114,9 @@ pub fn Header(
         
         log::info!("🔑 Attempting to connect {}...", wallet_key);
         
+        // Capture current network RPC URL
+        let rpc_url = network.get().rpc_url().to_string();
+        
         spawn_local(async move {
             match PolkadotWallet::connect_specific(wallet_key).await {
                 Ok(account) => {
@@ -121,8 +124,8 @@ pub fn Header(
                     set_wallet_connected.set(true);
                     set_wallet_address.set(Some(account.address.clone()));
                     
-                    // Fetch balance
-                    match get_wallet_balance(&account.address).await {
+                    // Fetch balance from current network
+                    match get_wallet_balance(&rpc_url, &account.address).await {
                         Ok(bal) => {
                             log::info!("💰 Balance: {} MEL", bal.formatted);
                             set_balance.set(Some(bal.formatted));
@@ -149,6 +152,28 @@ pub fn Header(
     create_effect(move |_| {
         let current_network = network.get();
         test_network_connection(current_network);
+    });
+    
+    // Update balance when network changes (if wallet is connected)
+    create_effect(move |_| {
+        let current_network = network.get();
+        let rpc_url = current_network.rpc_url().to_string();
+        
+        if let Some(address) = wallet_address.get() {
+            log::info!("Network changed to {}, updating balance...", current_network.name());
+            spawn_local(async move {
+                match get_wallet_balance(&rpc_url, &address).await {
+                    Ok(bal) => {
+                        log::info!("Balance updated: {} MEL", bal.formatted);
+                        set_balance.set(Some(bal.formatted));
+                    }
+                    Err(e) => {
+                        log::warn!("Could not fetch balance: {}", e);
+                        set_balance.set(Some("?".to_string()));
+                    }
+                }
+            });
+        }
     });
 
     view! {
