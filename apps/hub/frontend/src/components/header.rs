@@ -43,6 +43,8 @@ pub fn Header(
     let (network_dropdown_open, set_network_dropdown_open) = create_signal(false);
     // Wallet modal state
     let (wallet_modal_open, set_wallet_modal_open) = create_signal(false);
+    // Network connection state
+    let (network_connected, set_network_connected) = create_signal(false);
     
     // Toggle theme (now uses ThemeState)
     let toggle_theme = move |_| {
@@ -65,10 +67,32 @@ pub fn Header(
         set_network_dropdown_open.update(|open| *open = !*open);
     };
     
+    // Test network connection
+    let test_network_connection = move |network: Network| {
+        set_network_connected.set(false); // Reset to false while testing
+        
+        spawn_local(async move {
+            log::info!("Testing connection to {}...", network.name());
+            
+            // Try to get blockchain metrics to test connection
+            match crate::services::explorer::fetch_blockchain_metrics(network.rpc_url()).await {
+                Ok(_) => {
+                    log::info!("Connected to {} successfully", network.name());
+                    set_network_connected.set(true);
+                }
+                Err(e) => {
+                    log::error!("Failed to connect to {}: {}", network.name(), e);
+                    set_network_connected.set(false);
+                }
+            }
+        });
+    };
+    
     // Select network
     let select_network = move |new_network: Network| {
         set_network.set(new_network);
         set_network_dropdown_open.set(false);
+        test_network_connection(new_network);
     };
     
     // Handler pour ouvrir la modal de wallet
@@ -120,6 +144,12 @@ pub fn Header(
     let on_wallet_modal_close = Callback::new(move |_| {
         set_wallet_modal_open.set(false);
     });
+    
+    // Test network connection on mount and when network changes
+    create_effect(move |_| {
+        let current_network = network.get();
+        test_network_connection(current_network);
+    });
 
     view! {
         <>
@@ -151,7 +181,7 @@ pub fn Header(
                         class="network-selector"
                         on:click=toggle_network_dropdown
                     >
-                        <span class="network-indicator" class:devnet=move || network.get() == Network::Devnet class:melodie=move || network.get() == Network::Melodie></span>
+                        <span class="network-indicator" class:connected=move || network_connected.get()></span>
                         <span class="network-text">{move || network.get().name()}</span>
                     </button>
                     
@@ -166,7 +196,7 @@ pub fn Header(
                                         on:click=move |_| select_network(n)
                                     >
                                         <div class="network-option-header">
-                                            <span class="network-indicator" class:devnet=n == Network::Devnet class:melodie=n == Network::Melodie></span>
+                                            <span class="network-indicator" class:connected=move || network_connected.get() && network.get() == n></span>
                                             <span class="network-name">{n.name()}</span>
                                         </div>
                                         <span class="network-url">{n.rpc_url()}</span>

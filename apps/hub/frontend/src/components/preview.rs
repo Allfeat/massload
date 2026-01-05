@@ -5,7 +5,7 @@ use crate::{PreviewItem, LogEntry, LogLevel};
 use crate::services::BlockchainService;
 use crate::i18n::t;
 use crate::components::midds_display::WorkDisplayJson;
-use allfeat_ui::components::{IconCheckCircle, IconAlertTriangle};
+use allfeat_ui::components::IconCheckCircle;
 
 /// Available page sizes for pagination
 const PAGE_SIZES: [usize; 4] = [10, 25, 50, 100];
@@ -107,7 +107,6 @@ pub fn PreviewSection(
                             // Set success result
                             set_registration_result.set(Some(RegistrationResult {
                                 success: true,
-                                works_count: success_count,
                                 tx_hash: result.tx_hash.clone(),
                                 error: None,
                             }));
@@ -380,7 +379,6 @@ pub fn PreviewSection(
 #[derive(Clone, Debug)]
 struct RegistrationResult {
     success: bool,
-    works_count: usize,
     tx_hash: Option<String>,
     #[allow(dead_code)]
     error: Option<String>,
