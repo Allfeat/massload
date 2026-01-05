@@ -72,7 +72,7 @@ pub fn init_sse_logs(set_logs: WriteSignal<Vec<LogEntry>>) {
     
     // Handle open
     let onopen = Closure::wrap(Box::new(move |_: web_sys::Event| {
-        log::info!("📡 SSE connected to logs stream");
+        log::info!("SSE connected to logs stream");
     }) as Box<dyn FnMut(web_sys::Event)>);
     
     event_source.set_onopen(Some(onopen.as_ref().unchecked_ref()));
@@ -90,7 +90,7 @@ pub fn init_sse_logs(set_logs: WriteSignal<Vec<LogEntry>>) {
     // We leak it intentionally as it should live for the app's lifetime
     std::mem::forget(event_source);
     
-    log::info!("📡 SSE log stream initialized");
+    log::info!("SSE log stream initialized");
 }
 
 /// Real-time logs panel component (display only, SSE is initialized elsewhere)
@@ -121,7 +121,7 @@ pub fn LogsPanel(
     view! {
         <div class="logs-panel">
             <div class="logs-header">
-                <span class="logs-title">"📋 " {t("common.logs")}</span>
+                <span class="logs-title">{t("common.logs")}</span>
                 <button 
                     class="logs-clear"
                     on:click=move |_| set_logs.set(vec![])

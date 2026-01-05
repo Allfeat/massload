@@ -148,7 +148,7 @@ extern "C" {
 
 /// Fetch blockchain metrics using JS SDK
 pub async fn fetch_blockchain_metrics(rpc_url: &str) -> Result<BlockchainMetrics, String> {
-    log::info!("📊 Fetching blockchain metrics via JS SDK...");
+    log::info!("Fetching blockchain metrics via JS SDK...");
     
     let js_result = js_get_blockchain_metrics(rpc_url)
         .await
@@ -157,7 +157,7 @@ pub async fn fetch_blockchain_metrics(rpc_url: &str) -> Result<BlockchainMetrics
     let metrics: BlockchainMetrics = serde_wasm_bindgen::from_value(js_result)
         .map_err(|e| format!("Failed to deserialize metrics: {}", e))?;
     
-    log::info!("✅ Metrics: {} works, {} recordings, {} releases", 
+    log::info!("Metrics: {} works, {} recordings, {} releases", 
         metrics.works, metrics.recordings, metrics.releases);
     
     Ok(metrics)
@@ -165,7 +165,7 @@ pub async fn fetch_blockchain_metrics(rpc_url: &str) -> Result<BlockchainMetrics
 
 /// Fetch all musical works from blockchain using JS SDK
 pub async fn fetch_all_musical_works(rpc_url: &str) -> Result<Vec<MusicalWorkData>, String> {
-    log::info!("🎵 Fetching all musical works via JS SDK...");
+    log::info!("Fetching all musical works via JS SDK...");
     
     let js_result = js_get_all_musical_works(rpc_url)
         .await
@@ -174,14 +174,14 @@ pub async fn fetch_all_musical_works(rpc_url: &str) -> Result<Vec<MusicalWorkDat
     let works: Vec<MusicalWorkData> = serde_wasm_bindgen::from_value(js_result)
         .map_err(|e| format!("Failed to deserialize works: {}", e))?;
     
-    log::info!("✅ Fetched {} musical works", works.len());
+    log::info!("Fetched {} musical works", works.len());
     
     Ok(works)
 }
 
 /// Fetch all recordings from blockchain using JS SDK
 pub async fn fetch_all_recordings(rpc_url: &str) -> Result<Vec<RecordingData>, String> {
-    log::info!("🎙️ Fetching all recordings via JS SDK...");
+    log::info!("Fetching all recordings via JS SDK...");
     
     let js_result = js_get_all_recordings(rpc_url)
         .await
@@ -190,14 +190,14 @@ pub async fn fetch_all_recordings(rpc_url: &str) -> Result<Vec<RecordingData>, S
     let recordings: Vec<RecordingData> = serde_wasm_bindgen::from_value(js_result)
         .map_err(|e| format!("Failed to deserialize recordings: {}", e))?;
     
-    log::info!("✅ Fetched {} recordings", recordings.len());
+    log::info!("Fetched {} recordings", recordings.len());
     
     Ok(recordings)
 }
 
 /// Fetch all releases from blockchain using JS SDK
 pub async fn fetch_all_releases(rpc_url: &str) -> Result<Vec<ReleaseData>, String> {
-    log::info!("💿 Fetching all releases via JS SDK...");
+    log::info!("Fetching all releases via JS SDK...");
     
     let js_result = js_get_all_releases(rpc_url)
         .await
@@ -206,7 +206,7 @@ pub async fn fetch_all_releases(rpc_url: &str) -> Result<Vec<ReleaseData>, Strin
     let releases: Vec<ReleaseData> = serde_wasm_bindgen::from_value(js_result)
         .map_err(|e| format!("Failed to deserialize releases: {}", e))?;
     
-    log::info!("✅ Fetched {} releases", releases.len());
+    log::info!("Fetched {} releases", releases.len());
     
     Ok(releases)
 }

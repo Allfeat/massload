@@ -112,7 +112,7 @@ pub fn Header(
             WalletType::PolkadotJs => "polkadot-js",
         };
         
-        log::info!("🔑 Attempting to connect {}...", wallet_key);
+        log::info!("Attempting to connect {}...", wallet_key);
         
         // Capture current network RPC URL
         let rpc_url = network.get().rpc_url().to_string();
@@ -120,14 +120,14 @@ pub fn Header(
         spawn_local(async move {
             match PolkadotWallet::connect_specific(wallet_key).await {
                 Ok(account) => {
-                    log::info!("✅ Wallet connected: {}", account.address);
+                    log::info!("Wallet connected: {}", account.address);
                     set_wallet_connected.set(true);
                     set_wallet_address.set(Some(account.address.clone()));
                     
                     // Fetch balance from current network
                     match get_wallet_balance(&rpc_url, &account.address).await {
                         Ok(bal) => {
-                            log::info!("💰 Balance: {} MEL", bal.formatted);
+                            log::info!("Balance: {} MEL", bal.formatted);
                             set_balance.set(Some(bal.formatted));
                         }
                         Err(e) => {
@@ -137,7 +137,7 @@ pub fn Header(
                     }
                 }
                 Err(e) => {
-                    log::error!("❌ Wallet connection failed: {}", e);
+                    log::error!("Wallet connection failed: {}", e);
                 }
             }
         });
