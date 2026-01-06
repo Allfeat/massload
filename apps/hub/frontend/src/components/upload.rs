@@ -114,17 +114,7 @@ pub fn UploadSection(
                         return;
                     }
                     
-                    // 🔒 Vérifier si le wallet est connecté AVANT de stocker le fichier
-                    if !wallet_connected.get() {
-                        // Stocker temporairement le fichier
-                        set_selected_file.set(Some(file.clone()));
-                        set_selected_file_size.set(file_size);
-                        // Ouvrir le dialog pour connecter le wallet
-                        set_show_wallet_required_dialog.set(true);
-                        return;
-                    }
-                    
-                    // Wallet déjà connecté : stocker le fichier pour validation
+                    // Stocker le fichier (toujours)
                     set_selected_file.set(Some(file.clone()));
                     set_selected_file_size.set(file_size);
                     set_error.set(None);
@@ -262,14 +252,6 @@ pub fn UploadSection(
         }
     };
     
-    // Effet pour fermer automatiquement le dialog de wallet une fois connecté
-    create_effect(move |_| {
-        if wallet_connected.get() && show_wallet_required_dialog.get() {
-            log::info!("Wallet connected, closing dialog...");
-            set_show_wallet_required_dialog.set(false);
-        }
-    });
-    
     // Handler pour drag over (empêcher le comportement par défaut)
     let on_drag_over = move |ev: DragEvent| {
         ev.prevent_default();
@@ -312,17 +294,7 @@ pub fn UploadSection(
                                 return;
                             }
                             
-                            // 🔒 Vérifier si le wallet est connecté AVANT de stocker le fichier
-                            if !wallet_connected.get() {
-                                // Stocker temporairement le fichier
-                                set_selected_file.set(Some(file.clone()));
-                                set_selected_file_size.set(file_size);
-                                // Ouvrir le dialog pour connecter le wallet
-                                set_show_wallet_required_dialog.set(true);
-                                return;
-                            }
-                            
-                            // Wallet déjà connecté : stocker le fichier pour validation
+                            // Stocker le fichier (toujours)
                             set_selected_file.set(Some(file.clone()));
                             set_selected_file_size.set(file_size);
                             set_error.set(None);
@@ -396,9 +368,8 @@ pub fn UploadSection(
         </Show>
         
         // FILE VALIDATION STAGE (file selected but not validated yet)
-        // Ne s'affiche QUE si le wallet est connecté
         <Show
-            when=move || selected_file.get().is_some() && !is_uploading.get() && wallet_connected.get()
+            when=move || selected_file.get().is_some() && !is_uploading.get()
             fallback=move || view! { <></> }
         >
             <div class="file-validation-section">
