@@ -396,8 +396,9 @@ pub fn UploadSection(
         </Show>
         
         // FILE VALIDATION STAGE (file selected but not validated yet)
+        // Ne s'affiche QUE si le wallet est connecté
         <Show
-            when=move || selected_file.get().is_some() && !is_uploading.get()
+            when=move || selected_file.get().is_some() && !is_uploading.get() && wallet_connected.get()
             fallback=move || view! { <></> }
         >
             <div class="file-validation-section">
