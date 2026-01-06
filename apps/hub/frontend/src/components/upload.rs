@@ -262,6 +262,14 @@ pub fn UploadSection(
         }
     };
     
+    // Effet pour fermer automatiquement le dialog de wallet une fois connecté
+    create_effect(move |_| {
+        if wallet_connected.get() && show_wallet_required_dialog.get() {
+            log::info!("Wallet connected, closing dialog...");
+            set_show_wallet_required_dialog.set(false);
+        }
+    });
+    
     // Handler pour drag over (empêcher le comportement par défaut)
     let on_drag_over = move |ev: DragEvent| {
         ev.prevent_default();
