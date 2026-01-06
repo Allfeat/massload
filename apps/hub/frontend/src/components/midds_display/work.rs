@@ -2,7 +2,7 @@
 
 use leptos::*;
 use serde_json::Value;
-use crate::services::explorer::{MusicalWorkData, CreatorData};
+use crate::services::explorer::{MusicalWorkData, CreatorData, ClassicalInfo};
 use super::common::{format_party_id, MiddsHeader, MiddsField};
 
 /// Convert JSON Value to MusicalWorkData for massload compatibility
@@ -72,6 +72,16 @@ fn value_to_musical_work_data(work: &Value) -> Option<MusicalWorkData> {
             .or_else(|| work.get("musicalKey"))
             .and_then(|v| v.as_str())
             .map(String::from),
+        // BPM (beats per minute / tempo)
+        bpm: work.get("bpm").and_then(|v| v.as_u64()).map(|b| b as u16),
+        // Classical music information
+        classical_info: work.get("classicalInfo").and_then(|ci| {
+            Some(ClassicalInfo {
+                opus: ci.get("opus").and_then(|v| v.as_str()).map(String::from),
+                catalog_number: ci.get("catalogNumber").and_then(|v| v.as_str()).map(String::from),
+                number_of_voices: ci.get("numberOfVoices").and_then(|v| v.as_u64()).map(|n| n as u32),
+            })
+        }),
     };
     
     log::debug!("✅ Successfully converted work: {}", result.title);
@@ -191,15 +201,27 @@ pub fn WorkDisplay(
                 </MiddsField>
             })}
             
-            // Work Type
-            <MiddsField label="workType" class="type-value">
-                {work.work_type}
-            </MiddsField>
+            // Work Type (only if not "Unknown" or empty)
+            {if !work.work_type.is_empty() && work.work_type != "Unknown" {
+                view! {
+                    <MiddsField label="workType" class="type-value">
+                        {work.work_type.clone()}
+                    </MiddsField>
+                }.into_view()
+            } else {
+                view! {}.into_view()
+            }}
             
-            // Instrumental
-            <MiddsField label="instrumental" class="bool-value">
-                {if work.is_instrumental { "true" } else { "false" }}
-            </MiddsField>
+            // Instrumental (only if true)
+            {if work.is_instrumental {
+                view! {
+                    <MiddsField label="instrumental" class="bool-value">
+                        "true"
+                    </MiddsField>
+                }.into_view()
+            } else {
+                view! {}.into_view()
+            }}
             
             // Language (optional)
             {work.language.map(|lang| view! {
@@ -214,6 +236,40 @@ pub fn WorkDisplay(
                 <MiddsField label="key">
                     {key}
                 </MiddsField>
+            })}
+            
+            // BPM / Tempo (optional)
+            {work.bpm.map(|bpm| view! {
+                <MiddsField label="bpm">
+                    {bpm}
+                </MiddsField>
+            })}
+            
+            // Classical Info (optional)
+            {work.classical_info.clone().map(|ci| view! {
+                <div class="midds-field">
+                    <div class="midds-label">"classicalInfo"</div>
+                    <div class="midds-object">
+                        {ci.opus.map(|opus| view! {
+                            <div class="midds-prop">
+                                <span class="prop-key">"opus"</span>
+                                <span class="prop-value">{opus}</span>
+                            </div>
+                        })}
+                        {ci.catalog_number.map(|cat| view! {
+                            <div class="midds-prop">
+                                <span class="prop-key">"catalogNumber"</span>
+                                <span class="prop-value">{cat}</span>
+                            </div>
+                        })}
+                        {ci.number_of_voices.map(|voices| view! {
+                            <div class="midds-prop">
+                                <span class="prop-key">"numberOfVoices"</span>
+                                <span class="prop-value">{voices}</span>
+                            </div>
+                        })}
+                    </div>
+                </div>
             })}
         </div>
     }

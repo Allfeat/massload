@@ -37,6 +37,15 @@ pub struct PerformerData {
 // MIDDS Type: Musical Work
 // =============================================================================
 
+/// Classical music specific information
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ClassicalInfo {
+    pub opus: Option<String>,
+    pub catalog_number: Option<String>,
+    pub number_of_voices: Option<u32>,
+}
+
 /// Musical work data from blockchain
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -50,6 +59,8 @@ pub struct MusicalWorkData {
     pub work_type: String,
     pub language: Option<String>,
     pub musical_key: Option<String>,
+    pub bpm: Option<u16>,
+    pub classical_info: Option<ClassicalInfo>,
 }
 
 // =============================================================================
