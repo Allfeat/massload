@@ -88,7 +88,7 @@ pub fn UploadSection(
         set_wallet_modal_open.set(false);
     });
 
-    // Handler pour le changement de fichier (ne lance PAS l'upload)
+    // Handler pour le changement de fichier
     let on_file_change = move |ev: Event| {
         let input: HtmlInputElement = event_target(&ev);
         
@@ -114,7 +114,17 @@ pub fn UploadSection(
                         return;
                     }
                     
-                    // Stocker le fichier pour validation (ne pas uploader encore)
+                    // 🔒 Vérifier si le wallet est connecté AVANT de stocker le fichier
+                    if !wallet_connected.get() {
+                        // Stocker temporairement le fichier
+                        set_selected_file.set(Some(file.clone()));
+                        set_selected_file_size.set(file_size);
+                        // Ouvrir le dialog pour connecter le wallet
+                        set_show_wallet_required_dialog.set(true);
+                        return;
+                    }
+                    
+                    // Wallet déjà connecté : stocker le fichier pour validation
                     set_selected_file.set(Some(file.clone()));
                     set_selected_file_size.set(file_size);
                     set_error.set(None);
@@ -294,7 +304,17 @@ pub fn UploadSection(
                                 return;
                             }
                             
-                            // Stocker le fichier pour validation (ne pas uploader encore)
+                            // 🔒 Vérifier si le wallet est connecté AVANT de stocker le fichier
+                            if !wallet_connected.get() {
+                                // Stocker temporairement le fichier
+                                set_selected_file.set(Some(file.clone()));
+                                set_selected_file_size.set(file_size);
+                                // Ouvrir le dialog pour connecter le wallet
+                                set_show_wallet_required_dialog.set(true);
+                                return;
+                            }
+                            
+                            // Wallet déjà connecté : stocker le fichier pour validation
                             set_selected_file.set(Some(file.clone()));
                             set_selected_file_size.set(file_size);
                             set_error.set(None);
