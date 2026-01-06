@@ -42,6 +42,9 @@ pub fn UploadSection(
     
     // Wallet modal state
     let (wallet_modal_open, set_wallet_modal_open) = create_signal(false);
+    
+    // Flag pour indiquer qu'on attend la connexion du wallet pour lancer la validation
+    let (pending_validation, set_pending_validation) = create_signal(false);
 
     // Handler pour ouvrir la wallet modal depuis le dialog de confirmation
     let on_connect_wallet_click = Callback::new(move |_| {
@@ -129,10 +132,12 @@ pub fn UploadSection(
             // 🔒 Vérifier que le wallet est connecté AVANT l'upload
             if !wallet_connected.get() {
                 set_show_wallet_required_dialog.set(true);
+                set_pending_validation.set(true); // Marquer qu'on attend la connexion wallet
                 return;
             }
             
             // Réinitialiser l'état
+            set_pending_validation.set(false); // Reset le flag
             set_error.set(None);
             set_preview_data.set(None);
             set_logs.set(Vec::new());
@@ -251,6 +256,16 @@ pub fn UploadSection(
             }
         }
     };
+    
+    // Effet pour lancer automatiquement la validation après connexion du wallet
+    // si l'utilisateur avait cliqué sur "Validate" sans wallet
+    create_effect(move |_| {
+        if wallet_connected.get() && pending_validation.get() && selected_file.get().is_some() {
+            log::info!("Wallet connected, launching pending validation...");
+            set_show_wallet_required_dialog.set(false); // Fermer le dialog
+            do_validate_and_upload(); // Lancer automatiquement l'upload
+        }
+    });
     
     // Handler pour drag over (empêcher le comportement par défaut)
     let on_drag_over = move |ev: DragEvent| {
