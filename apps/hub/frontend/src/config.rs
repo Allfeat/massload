@@ -49,7 +49,7 @@ pub fn blockchain_rpc() -> String {
         .filter(|s| !s.is_empty())
         .unwrap_or_else(|| {
             log::warn!("BLOCKCHAIN_RPC not set in config.js, using default");
-            "wss://node-dev.allfeat.io".to_string()
+            "wss://dev.rpc.allfeat.org".to_string()
         })
 }
 

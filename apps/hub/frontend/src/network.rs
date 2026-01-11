@@ -15,7 +15,7 @@ pub enum Network {
 impl Network {
     pub fn rpc_url(&self) -> &'static str {
         match self {
-            Network::Devnet => "wss://node-dev.allfeat.io",
+            Network::Devnet => "wss://dev.rpc.allfeat.org",
             Network::Melodie => "wss://melodie-rpc.allfeat.io",
         }
     }

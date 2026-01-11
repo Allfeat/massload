@@ -7,7 +7,7 @@ set -e
 
 # Default values
 BACKEND_URL="${BACKEND_URL:-http://localhost:3000}"
-BLOCKCHAIN_RPC="${BLOCKCHAIN_RPC:-wss://node-dev.allfeat.io}"
+BLOCKCHAIN_RPC="${BLOCKCHAIN_RPC:-wss://dev.rpc.allfeat.org}"
 
 # Generate config.js from template
 echo "[MassLoad] Generating runtime config..."

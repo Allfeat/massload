@@ -11,7 +11,7 @@ services:
       - PORT=3000
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - RUST_LOG=${RUST_LOG:-info}
-      # Optional: Override blockchain RPC endpoint (default: wss://node-dev.allfeat.io)
+      # Optional: Override blockchain RPC endpoint (default: wss://dev.rpc.allfeat.org)
       # - BLOCKCHAIN_RPC=wss://melodie-rpc.allfeat.io
     restart: unless-stopped
     healthcheck:

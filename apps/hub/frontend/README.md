@@ -140,7 +140,7 @@ All configuration uses runtime environment detection:
 ```rust
 /// Blockchain RPC endpoint (default: devnet)
 pub fn blockchain_rpc() -> String {
-    "wss://node-dev.allfeat.io".to_string()
+    "wss://dev.rpc.allfeat.org".to_string()
 }
 
 /// App name for wallet popups

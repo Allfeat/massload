@@ -200,7 +200,7 @@ Allfeat_ecosystem/
 └──────────────────────────────────────────────────────────────────┘
                                                   ↓
                                Allfeat Blockchain (Devnet)
-                            wss://node-dev.allfeat.io
+                            wss://dev.rpc.allfeat.org
 ```
 
 ## API Reference
@@ -220,7 +220,7 @@ The frontend uses the following defaults (configurable via `src/config.rs`):
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `BLOCKCHAIN_RPC` | `wss://node-dev.allfeat.io` | Allfeat blockchain RPC endpoint |
+| `BLOCKCHAIN_RPC` | `wss://dev.rpc.allfeat.org` | Allfeat blockchain RPC endpoint |
 
 All API calls use **relative paths** (`/api/upload`), so no backend URL configuration is needed.
 
