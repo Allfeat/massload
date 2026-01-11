@@ -156,11 +156,17 @@ pub fn Header(
     
     // Update balance when network changes (if wallet is connected)
     create_effect(move |_| {
+        // Track both network and wallet_address
         let current_network = network.get();
-        let rpc_url = current_network.rpc_url().to_string();
+        let maybe_address = wallet_address.get();
         
-        if let Some(address) = wallet_address.get() {
+        if let Some(address) = maybe_address {
+            // Reset balance immediately to show loading state
+            set_balance.set(None);
+            
+            let rpc_url = current_network.rpc_url().to_string();
             log::info!("Network changed to {}, updating balance...", current_network.name());
+            
             spawn_local(async move {
                 match get_wallet_balance(&rpc_url, &address).await {
                     Ok(bal) => {
@@ -173,6 +179,9 @@ pub fn Header(
                     }
                 }
             });
+        } else {
+            // No wallet connected, reset balance
+            set_balance.set(None);
         }
     });
 

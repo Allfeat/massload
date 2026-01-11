@@ -46,12 +46,21 @@ pub fn ExplorePage() -> impl IntoView {
     let (releases, set_releases) = create_signal(None::<Vec<ReleaseData>>);
     let (is_loading_releases, set_is_loading_releases) = create_signal(false);
     
-    // Effect to load works when filter changes
+    // Effect to reset data when network changes
+    create_effect(move |_| {
+        let _url = rpc_url.get(); // Track network changes
+        log::info!("Network changed, resetting explore data");
+        set_works.set(None);
+        set_recordings.set(None);
+        set_releases.set(None);
+    });
+    
+    // Effect to load works when filter or network changes
     create_effect(move |_| {
         let current_filter = filter.get();
+        let url = rpc_url.get(); // Track network changes
         if current_filter == "works" && works.get().is_none() {
             set_is_loading_works.set(true);
-            let url = rpc_url.get();
             spawn_local(async move {
                 match fetch_all_musical_works(&url).await {
                     Ok(works_vec) => {
@@ -68,12 +77,12 @@ pub fn ExplorePage() -> impl IntoView {
         }
     });
     
-    // Effect to load recordings when filter changes
+    // Effect to load recordings when filter or network changes
     create_effect(move |_| {
         let current_filter = filter.get();
+        let url = rpc_url.get(); // Track network changes
         if current_filter == "recordings" && recordings.get().is_none() {
             set_is_loading_recordings.set(true);
-            let url = rpc_url.get();
             spawn_local(async move {
                 match fetch_all_recordings(&url).await {
                     Ok(recordings_vec) => {
@@ -90,12 +99,12 @@ pub fn ExplorePage() -> impl IntoView {
         }
     });
     
-    // Effect to load releases when filter changes
+    // Effect to load releases when filter or network changes
     create_effect(move |_| {
         let current_filter = filter.get();
+        let url = rpc_url.get(); // Track network changes
         if current_filter == "releases" && releases.get().is_none() {
             set_is_loading_releases.set(true);
-            let url = rpc_url.get();
             spawn_local(async move {
                 match fetch_all_releases(&url).await {
                     Ok(releases_vec) => {
